@@ -25,7 +25,7 @@ class pfammsa(object):
 
         if opt=='ambaa':
             # convert all abnormal characters into '.'
-            trans = string.maketrans(''.join(cp.ambaa), ''.join(['.' for i in range(len(cp.ambaa))]))
+            trans = str.maketrans(''.join(cp.ambaa), ''.join(['.' for i in range(len(cp.ambaa))]))
             for head, seq in cp.fasta_iter(msafile):
                 self.msalist.append((head, seq.translate(trans).upper()))
         else:

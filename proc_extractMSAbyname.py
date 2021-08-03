@@ -5,7 +5,7 @@ def fasta_iter(fastafile):
     fh = open(fastafile)
     faiter = (x[1] for x in groupby(fh, lambda line: line[0] == ">"))
     for header in faiter:
-        header = header.next()[1:].strip()
+        header = next(header)[1:].strip()
         seq = "".join(s.strip() for s in next(faiter))
         yield header, seq
 

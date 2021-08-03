@@ -156,7 +156,7 @@ def appendseq2msa(arglist):
     pfamid = arglist[4]
 
     # load sequences
-    seq = cp.fasta_iter(seqfafile).next()[1]
+    seq = next(cp.fasta_iter(seqfafile))[1]
     msahead, msaseq = next(cp.fasta_iter(msafafile))
 
     # load pfamscan json object
@@ -502,7 +502,7 @@ def dca2msa(arglist):
         cp._err('%s not found' % msahead)
 
     '''
-    head, msa = cp.fasta_iter(msafile).next()
+    head, msa = next(cp.fasta_iter(msafile))
     seq = msa.translate(None, ''.join(cp.gaps))
     #print '%s\n%s\n%s' % (head, msa, seq)
     resi=head.split('/')[1]

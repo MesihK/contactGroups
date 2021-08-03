@@ -649,8 +649,8 @@ def normmax(nplist):
 # s1: aligned string index, s2: pdb sequence index
 def posmap(s1, s2, key=1):
     gap = ['.', '-', '_']
-    ps1 = s1.translate(None, ''.join(gap))
-    ps2 = s2.translate(None, ''.join(gap))
+    ps1 = s1.translate({ord(i):None for i in gap})
+    ps2 = s2.translate({ord(i):None for i in gap})
     #print 'ps1: %s\nps2: %s' % (ps1, ps2)
 
     retmap={}
@@ -689,8 +689,8 @@ def posmap(s1, s2, key=1):
 # s1: aligned string index, s2: pdb sequence index
 def posmap1(s1, s2, key=1):
     gap = ['.', '-', '_']
-    ps1 = s1.translate(None, ''.join(gap))
-    ps2 = s2.translate(None, ''.join(gap))
+    ps1 = s1.translate({ord(i):None for i in gap})
+    ps2 = s2.translate({ord(i):None for i in gap})
 
     retmap={}
     if ps1!=ps2:
@@ -725,8 +725,8 @@ def posmap1(s1, s2, key=1):
 # return map pos[s1_index] = s2_index;
 # index starts from 0
 def posmap_homoseq(s1, s2):
-    ps1 = s1.translate(None, ''.join(gaps))
-    ps2 = s2.translate(None, ''.join(gaps))
+    ps1 = s1.translate({ord(i):None for i in gap})
+    ps2 = s2.translate({ord(i):None for i in gap})
 
     if ps1!=ps2:
         _err(_fatal, 'unmatched raw sequence\ns1: %s\ns2: %s\n' % (ps1, ps2))
@@ -760,8 +760,8 @@ def posmap_homoseq(s1, s2):
 def posmap_subseq(s1, s2):
     s1=s1.upper()
     s2=s2.upper()
-    ps1 = s1.translate(None, ''.join(gaps))
-    ps2 = s2.translate(None, ''.join(gaps))
+    ps1 = s1.translate({ord(i):None for i in gaps})
+    ps2 = s2.translate({ord(i):None for i in gaps})
     #print 'ps1:\n%s\n' % ps1
     #print 'ps2:\n%s\n' % ps2
 
@@ -780,8 +780,8 @@ def posmap_subseq(s1, s2):
 def posmap_subseq_d(s1, s2):
     s1=s1.upper()
     s2=s2.upper()
-    ps1 = s1.translate(None, ''.join(gaps))
-    ps2 = s2.translate(None, ''.join(gaps))
+    ps1 = s1.translate({ord(i):None for i in gaps})
+    ps2 = s2.translate({ord(i):None for i in gaps})
     #print 'ps1:\n%s\n' % ps1
     #print 'ps2:\n%s\n' % ps2
 

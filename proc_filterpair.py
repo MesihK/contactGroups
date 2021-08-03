@@ -53,10 +53,10 @@ def main():
         #for j in xrange(0, len(outlist)):
         for p in outlist:
             pa = palign(lines[i].strip())
-            s1a = p.seqA.translate(None, ''.join(gap))
-            s1b = p.seqB.translate(None, ''.join(gap))
-            s2a = pa.seqA.translate(None, ''.join(gap))
-            s2b = pa.seqB.translate(None, ''.join(gap))
+            s1a = p.seqA.translate({ord(i):None for i in gap})
+            s1b = p.seqB.translate({ord(i):None for i in gap})
+            s2a = pa.seqA.translate({ord(i):None for i in gap})
+            s2b = pa.seqB.translate({ord(i):None for i in gap})
 
             #print '%s - %s' % (p.name, pa.name)
             if smcheck(s1a,s1b,s2a,s2b) == False:

@@ -134,7 +134,7 @@ class utils_pfamscan(object):
 
     def getPDBseq(self, pfamid):
         ps = self.getMatchpfs(pfamid)
-        return ps.alnseq.upper().translate(None, ''.join(cp.gaps))
+        return ps.alnseq.upper().translate({ord(i):None for i in cp.gaps})
 
 ################### procedures #####################
 

@@ -662,7 +662,7 @@ def splitfa2seq(args):
 
     count = 0
     for header, s in cp.fasta_iter(fafile):
-        seq = s.translate(None, ''.join(cp.abaa))
+        seq = s.translate({ord(i):None for i in cp.abaa})
         with open('%s%05d.fa' % (outprefix, count), 'w') as fout:
             fout.write('>%s\n%s\n' % (header, seq))
         count+=1

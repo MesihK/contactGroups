@@ -92,8 +92,8 @@ def rmsd(v, w):
 # s1: aligned string index, s2: pdb sequence index
 def posmap(s1, s2, key=1):
     gap = ['.', '-', '_']
-    ps1 = s1.translate(None, ''.join(gap))
-    ps2 = s2.translate(None, ''.join(gap))
+    ps1 = s1.translate({ord(i):None for i in gap})
+    ps2 = s2.translate({ord(i):None for i in gap})
     #print 'ps1: %s\nps2: %s' % (ps1, ps2)
 
     retmap={}

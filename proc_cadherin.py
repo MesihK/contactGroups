@@ -99,7 +99,7 @@ def split(args):
     for line in cp.loadlines(seqfile):
         head = '3q2v65_%04d' % (count)
         outfile = head+'.fa'
-        seq = line.translate(None, ''.join(cp.abaa))
+        seq = line.translate({ord(i):None for i in cp.abaa})
         with open(outfile, 'w') as fout:
             fout.write('>%s\n%s\n' % (head, seq))
         count+=1

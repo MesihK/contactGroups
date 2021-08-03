@@ -287,7 +287,7 @@ def columnsmsa(arglist):
     outfile = arglist[2]
 
     m = pfammsa(msafile)
-    #msadict = dict((s[0].translate(None, ''.join(cp.illab)), s[1])for s in m.msalist)
+    #msadict = dict((s[0].translate({ord(i):None for i in cp.illab}), s[1])for s in m.msalist)
     msadict = dict((s[0], s[1])for s in m.msalist)
 
     # KFB45953/57-241 425 426 429 432 441 444 445 446 452 454
@@ -588,7 +588,7 @@ def seqfa(arglist):
 
     with open(outfile, 'w') as fp:
         for head, msa in cp.fasta_iter(msafile):
-            seq = msa.translate(None, ''.join(cp.gaps))
+            seq = msa.translate({ord(i):None for i in cp.gaps})
             fp.write('>%s\n%s' % (head, seq))
             cp._info('save to %s' % outfile)
             break # only get the first one
@@ -735,7 +735,7 @@ def getsinglemsa(arglist):
 
     outseqfile = '%s_seq.fa' % outprefix
     with open(outseqfile, 'w') as fp:
-        fp.write('>%s\n%s' % (msa[0],msa[1].translate(None, ''.join(cp.gaps))))
+        fp.write('>%s\n%s' % (msa[0],msa[1].translate({ord(i):None for i in cp.gaps})))
 
     outmsafile = '%s_MSA.fa' % outprefix
     with open(outmsafile, 'w') as fp:
@@ -759,7 +759,7 @@ def getbatchmsa(arglist):
     for h,s in pfm.msalist:
         if h in headerset:
             outmsalist.append('>%s\n%s' % (h,s))
-            outseqlist.append('>%s\n%s' % (h,s.translate(None, ''.join(cp.gaps))))
+            outseqlist.append('>%s\n%s' % (h,s.translate({ord(i):None for i in cp.gaps})))
 
     outmsafile = outprefix+'_msa.fa'
     with open(outmsafile, 'w') as fout:
@@ -871,17 +871,17 @@ def msa2rawseq(args):
     outfile = args[2]
 
     pfm = pfammsa(infile)
-    # msa[1].translate(None, ''.join(cp.gaps))
+    # msa[1].translate({ord(i):None for i in cp.gaps})
     if opt == '1': # needs to remove redundancy
         outseqs = {}
         for s in pfm.msalist:
-            seq = s[1].translate(None, ''.join(cp.gaps)) # remove gaps
+            seq = s[1].translate({ord(i):None for i in cp.gaps}) # remove gaps
             outseqs[seq] = s[0] #  use raw seq as keys to remove duplicated sequences
         outlist = ['>%s\n%s' % (outseqs[k],k) for k in outseqs]
     else:
         outlist = []
         for s in pfm.msalist:
-            seq = s[1].translate(None, ''.join(cp.gaps)) # remove gaps
+            seq = s[1].translate({ord(i):None for i in cp.gaps}) # remove gaps
             outlist.append('>%s\n%s' % (s[0], seq))
 
     with open(outfile, 'w') as fout:
@@ -1303,8 +1303,8 @@ def splitheadfa(arglist):
 
     count = 0
     for head, gapseq in cp.fasta_iter(fastafile):
-        h= head.translate(None, ''.join(cp.illab))
-        s= gapseq.translate(None, ''.join(cp.gaps))
+        h= head.translate({ord(i):None for i in cp.illab})
+        s= gapseq.translate({ord(i):None for i in cp.gaps})
         with open(('%s.fa' % h), 'w') as fout:
             fout.write(">%s\n%s\n" % (head, s))
             cp._info('%s %s' % (head, h))

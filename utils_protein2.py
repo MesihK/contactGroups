@@ -397,7 +397,7 @@ def splitpdbbyseq(arglist):
     # load seqfa
     for h,s in cp.fasta_iter(seqfile):
         seqheader = h
-        seqbody=s.translate(None, ''.join(cp.gaps)).upper()
+        seqbody=s.translate({ord(i):None for i in cp.gaps}).upper()
 
     outres = p.slicebyseq(seqbody)
     if len(outres) == 0:

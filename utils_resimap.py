@@ -23,11 +23,11 @@ class pfamscan(object):
 def map_hmm2hmm(seq1, json1, seq2, json2):
 
     # get hmm seq
-    hmm1 = json1.alnhmm.translate(None, ''.join(cp.gaps))
-    hmm2 = json2.alnhmm.translate(None, ''.join(cp.gaps))
+    hmm1 = json1.alnhmm.translate({ord(i):None for i in cp.gaps})
+    hmm2 = json2.alnhmm.translate({ord(i):None for i in cp.gaps})
 
     # aligned position indices of two raw hmm sequences
-    title = '%s-.-%s' % (json1.seqname.translate(None, ''.join(cp.illab)), json2.seqname.translate(None,''.join(cp.illab)))
+    title = '%s-.-%s' % (json1.seqname.translate({ord(i):None for i in cp.illab}), json2.seqname.translate({ord(i):None for i in cp.illab}))
     embosshmm = ea(uea.flatenalign(title, hmm1, hmm2))
     #embosshmm.dump()
 
@@ -494,7 +494,7 @@ def dca2msa(arglist):
     for h, s in cp.fasta_iter(msafile):
         if msahead == h:
             msa = s
-            seq = s.translate(None, ''.join(cp.gaps))
+            seq = s.translate({ord(i):None for i in cp.gaps})
             resi=h.split('/')[1]
             resi_start = int(resi.split('-')[0])
 
@@ -503,7 +503,7 @@ def dca2msa(arglist):
 
     '''
     head, msa = next(cp.fasta_iter(msafile))
-    seq = msa.translate(None, ''.join(cp.gaps))
+    seq = msa.translate({ord(i):None for i in cp.gaps})
     #print '%s\n%s\n%s' % (head, msa, seq)
     resi=head.split('/')[1]
     resi_start = int(resi.split('-')[0])

@@ -234,7 +234,7 @@ def findsimilar(arglist):
     #with open(targetfile) as fp:
     #       target = fp.readline().strip()
     for h, s in cp.fasta_iter(targetfile):
-        target = s.translate(None, ''.join(cp.gaps)).lower()
+        target = s.translate({ord(i):None for i in cp.gaps}).lower()
     if target == '':
         cp._err('error in targetfile: %s\n%s' % (targetfile, cp.loadlines(targetfile)))
 
@@ -248,7 +248,7 @@ def findsimilar(arglist):
     for s in cp.fasta_iter(msafile):
         # remove gaps
         msadict[s[0]] = s[1]
-        msaseq = s[1].translate(None, ''.join(cp.gaps)).lower()
+        msaseq = s[1].translate({ord(i):None for i in cp.gaps}).lower()
         alignflat = getflat('%s::%s' % (targetfile, '.'.join(s[0].split())), align_exec(target, msaseq))
         ea = embossalign(alignflat)
         #ea.dump()
@@ -274,7 +274,7 @@ def outsimilar(arglist):
 
     target = ''
     for h, s in cp.fasta_iter(targetfile):
-        target = s.translate(None, ''.join(cp.gaps)).lower()
+        target = s.translate({ord(i):None for i in cp.gaps}).lower()
     if target == '':
         cp._err('error in targetfile: %s\n%s' % (targetfile, cp.loadlines(targetfile)))
 
@@ -285,7 +285,7 @@ def outsimilar(arglist):
     for s in cp.fasta_iter(msafile):
         # remove gaps
         msadict[s[0]] = s[1]
-        msaseq = s[1].translate(None, ''.join(cp.gaps)).lower()
+        msaseq = s[1].translate({ord(i):None for i in cp.gaps}).lower()
         alignflat = getflat('%s::%s' % (targetfile, '.'.join(s[0].split())), align_exec(target, msaseq))
         ea = embossalign(alignflat)
 

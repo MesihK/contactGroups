@@ -35,7 +35,7 @@ def topce_outlierfilter(args):
 
     cutoff, adj_m, adj_s = _outlierfilter(celist, threshold)
     # output celines with a ce value larger than the cutoff
-    outlist = ['%s %.8f' % (celines[i], (celist[i]-adj_m)/adj_s) for i in xrange(0, len(celist)) if celist[i] > cutoff]
+    outlist = ['%s %.8f' % (celines[i], (celist[i]-adj_m)/adj_s) for i in range(0, len(celist)) if celist[i] > cutoff]
 
     with open(outfile, 'w') as fout:
         fout.write('%s\n' % '\n'.join(outlist))
@@ -54,7 +54,7 @@ def zscore_outlierfilter(args):
 
     cutoff, adj_m, adj_s = _outlierfilter(celist, 0) # cutoff is not used here
     cp._info('adj_m: %.8f, adj_s: %.8f' % (adj_m, adj_s))
-    outlist = ['%s %.8f' % (celines[i], (celist[i]-adj_m)/adj_s) for i in xrange(0, len(celist))]
+    outlist = ['%s %.8f' % (celines[i], (celist[i]-adj_m)/adj_s) for i in range(0, len(celist))]
 
     with open(outfile, 'w') as fout:
         fout.write('%s\n' % '\n'.join(outlist))
@@ -63,13 +63,13 @@ def zscore_outlierfilter(args):
 
 
 # caculate the count of unique alphabets for given columns
-# input: 
-#   a csv file; 
+# input:
+#   a csv file;
 #   a set of column indices, separated by ','. such as {1,2,3}
 #   .stub file: output indices
 # options: patch or output indices with a given stub (will be the xticks in the plot)
 # output:
-#   csv file in the order of the given .stub file 
+#   csv file in the order of the given .stub file
 #   format: resi msai count
 # works for both pairs and triplets
 def alphabetfreq(args):
@@ -90,9 +90,9 @@ def alphabetfreq(args):
 
     # get unique alphabet counts with given stub
     countdict = collections.Counter(elist)
-    stublist = [alphabet for alphabet in cp.loadlines(stubfile)] if stubfile != 'na' else countdict.keys()
+    stublist = [alphabet for alphabet in cp.loadlines(stubfile)] if stubfile != 'na' else list(countdict.keys())
 
-    resimap = collections.defaultdict(lambda: '-191') 
+    resimap = collections.defaultdict(lambda: '-191')
     if mapfile!='na':
         for line in cp.loadlines(mapfile):
             sarr = line.split(' ')
@@ -126,7 +126,7 @@ def keymap(args):
     for line in values:
         sarr = line.split(' ')
         key = ' '.join([sarr[i] for i in vkclist])
-        value = ' '.join([sarr[j] for j in xrange(0,len(sarr)) if j not in vkclist])
+        value = ' '.join([sarr[j] for j in range(0,len(sarr)) if j not in vkclist])
         value_dict[key] = value
     num_v = len(values[0].split(' '))
 
@@ -137,11 +137,11 @@ def keymap(args):
         key = ' '.join([sarr[i] for i in skclist])
         stub_key_list.append(key)
 
-    if patch_value == 'no_patch': # output min(value_key_list, mapped(stub_key_list)) 
+    if patch_value == 'no_patch': # output min(value_key_list, mapped(stub_key_list))
         outlist = ['%s %s' % (k, value_dict[k]) for k in stub_key_list if k in value_dict] # only output available value, igore non-existing key
     else:
         outlist = ['%s %s' % (k, value_dict[k]) if k in value_dict else '%s %s' % (k, ' '.join([patch_value]*(num_v-len(skclist)))  ) for k in stub_key_list]
-    
+
     with open(outfile, 'w') as fout:
         fout.write('%s\n' % '\n'.join(outlist))
 
@@ -164,10 +164,10 @@ def keymerge_old(args):
     for line in values:
         sarr = line.split(' ')
         key = ' '.join([sarr[i] for i in vkclist])
-        value = ' '.join([sarr[j] for j in xrange(0,len(sarr)) if j not in vkclist]) # save values with key columns
+        value = ' '.join([sarr[j] for j in range(0,len(sarr)) if j not in vkclist]) # save values with key columns
         value_dict[key] = value
 
-    # append key-value to target line 
+    # append key-value to target line
     # same order with the target file
     outlist = []
     for line in cp.loadlines(targetfile):
@@ -176,7 +176,7 @@ def keymerge_old(args):
         if key in value_dict:
             outlist.append('%s %s' % (line, value_dict[key]))
         else:
-            print('key: %s not found in %s' %(key, stubfile))
+            print(('key: %s not found in %s' %(key, stubfile)))
 
     with open(outfile, 'w') as fout:
         fout.write('%s\n' % '\n'.join(outlist))
@@ -261,9 +261,9 @@ def _ce2dict(celines, keyclist, ceclist):
         k = ' '.join(['%s' % sarr[c] for c in keyclist]) # keyclist should always have two columns {id1, id2}
         # save the same order as the input file
         # this will control the order of output
-        idpairstub.append(k) 
+        idpairstub.append(k)
 
-        # save ce scores 
+        # save ce scores
         #print k, repr(ceclist), len(sarr)
         cedict[k] = [float(sarr[c]) for c in ceclist]
 
@@ -284,9 +284,9 @@ MI_rcw(i,j) = MI(i,j)/rcw(i,j)
 def _rcw(cedict, idpairstub, colslist):
     # calculate column-wise sum
     sumdict = {}
-    for i in xrange(0, len(colslist)):
+    for i in range(0, len(colslist)):
         ith_column_sum = 0.0
-        for j in xrange(0, len(colslist)):
+        for j in range(0, len(colslist)):
             if i==j:
                 continue
             k = ('%s %s' % (colslist[i], colslist[j])) if i<j else ('%s %s' % (colslist[j], colslist[i]))
@@ -302,7 +302,7 @@ def _rcw(cedict, idpairstub, colslist):
         rcw = (sumdict[col[0]] + sumdict[col[1]] - cedict[k]) / (len(cedict)-1)
         # MI_rcw(i,j) = MI(i,j)/rcw(i,j)
         mi_rcw = cedict[k] / rcw
-        outlist.append((rcw, mi_rcw))    
+        outlist.append((rcw, mi_rcw))
     return outlist
 
 
@@ -314,26 +314,26 @@ APC(a,b) = (MIax * MIbx) / avgMI
 output: single column MIp corresponding to the original order in SDII file (for paste to append)
 '''
 def _apc(cedict, idpairstub, colslist):
-    avgMI = sum(cedict.itervalues()) / len(cedict)
+    avgMI = sum(cedict.values()) / len(cedict)
 
     # column-wise sum
     MIax = {}
-    for i in xrange(0, len(colslist)):
+    for i in range(0, len(colslist)):
         marginMI = 0.0
-        for j in xrange(0, len(colslist)):
+        for j in range(0, len(colslist)):
             if i == j:
                 continue
             k = ('%s %s' % (colslist[i], colslist[j])) if i < j else ('%s %s' % (colslist[j], colslist[i]))
             if k in cedict:
                 marginMI+= cedict[k]
         MIax[colslist[i]] = marginMI / (len(colslist)-1)
-    
+
     # calculate MIp
     MIpdict={}
     MIp = 0.0
     MIplist=[]
-    for p in xrange(0, len(colslist)):
-        for q in xrange(p+1, len(colslist)):
+    for p in range(0, len(colslist)):
+        for q in range(p+1, len(colslist)):
             apc = (MIax[colslist[p]] * MIax[colslist[q]])/avgMI
             k = '%d %d' % (colslist[p], colslist[q])
             if k in cedict:
@@ -368,14 +368,14 @@ def adjustment(args):
 
     # calculate the adjustment one by one
     outlists = []
-    for i in xrange(0, len(ceclist)):
-        cedict = dict((k, cedicts[k][i]) for k in cedicts.keys())
+    for i in range(0, len(ceclist)):
+        cedict = dict((k, cedicts[k][i]) for k in list(cedicts.keys()))
         outlist = adj_func(cedict, idpairstub, colslist) # returns a list of pair tuple (rcw_value, ce_rcw)
         outlists.append(outlist)
 
     #print '\n'.join([' '.join([' '.join(['%.8f' % v for v in outlist[i]]) for outlist in outlists]) for i in xrange(0, len(idpairstub))])
     with open(outfile, 'w') as fout:
-        flatstr = '\n'.join([' '.join([' '.join(['%.8f' % v for v in outlist[i]]) for outlist in outlists]) for i in xrange(0, len(idpairstub))])
+        flatstr = '\n'.join([' '.join([' '.join(['%.8f' % v for v in outlist[i]]) for outlist in outlists]) for i in range(0, len(idpairstub))])
         fout.write('%s\n' % flatstr)
     cp._info('save {rcw rcw_ce rcw2 rcw_ce2 ...} to %s' % outfile)
 
@@ -386,7 +386,7 @@ def adjustment(args):
 # value_colid: the one column that contains ce value
 # outprefix: two output files are generated, ccmat in np.loadtxt() format and the IDs {resi or msai} to label the matrix
 # example:
-# 
+#
 # kjia@kjia-PC ~/workspace/src 2020-08-24 17:05:01
 # $ python utils_ce.py cflat2ccmat t.cflat 2,3 6 t.out
 # 2020-08-24 17:05:13|41238|0|INFO|save to t.out {.ccmat, .ccmat.tick}

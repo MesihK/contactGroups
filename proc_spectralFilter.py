@@ -11,10 +11,10 @@ import sys
 
 def main():
     if len(sys.argv)< 3:
-        print "Usage: proc_spectralFilter.py pdb(tip)file cluster_size>> tip_clusters.txt"
-        return 
+        print("Usage: proc_spectralFilter.py pdb(tip)file cluster_size>> tip_clusters.txt")
+        return
     p=protein(sys.argv[1], 'v4',center='TIP')
     n = int(sys.argv[2])
     p.spectralClustering(n)
 if __name__=="__main__":
-	main()    
+    main()

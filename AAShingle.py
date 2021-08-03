@@ -31,17 +31,17 @@ class AAShingle(object):# -*- coding: utf-8 -*-
 
     def getValue(self, A):
         return self.baseAlphabet[A]
-    
-    
+
+
     def shingle2Index(self, s, base=20):
         value = 0
         n = len(s) - 1
-        for i in s:         
-               value = value  + self.baseAlphabet[i]*pow(base,n)
-               n = n -1 
+        for i in s:
+            value = value  + self.baseAlphabet[i]*pow(base,n)
+            n = n -1
         return value
- 
- 
+
+
     def index2Shingle(self, index, base=20):
         return ((index == 0) and  "0" ) or ( self.index2Shingle(index // base, base).lstrip("0") + "ACDEFGHIKLMNPQRSTVWY"[index % base])
 #       shingle = ""
@@ -52,7 +52,7 @@ class AAShingle(object):# -*- coding: utf-8 -*-
 #               remainder_string = self.baseAlphabet[remainder]
 #           shingle = remainder_string+shingle
 #           index = index / base
-#       return shingle    
+#       return shingle
     def fasta_iter(self, fasta_name):
         """
         given a fasta file. yield tuples of header, sequence
@@ -66,19 +66,19 @@ class AAShingle(object):# -*- coding: utf-8 -*-
             # drop the ">"
             header = header.next()[1:].strip()
             # join all sequence lines to one.
-            seq = "".join(s.strip() for s in faiter.next())
+            seq = "".join(s.strip() for s in next(faiter))
             yield header, seq
-            
-            
+
+
     # s: sequence
-    # n: shingle length 
+    # n: shingle length
     def seq2Shingle(self, s, n):
         singles=''
-        for i in xrange(0, len(s)-n+1):
+        for i in range(0, len(s)-n+1):
             singles = singles +' '+ s[i:i+n]
         return singles.lstrip(' ')
-            
-            
+
+
     # infile: fasta file (not alignment)
     # outfile: output file with fasta foramt
     # n: shingle length
@@ -90,7 +90,7 @@ class AAShingle(object):# -*- coding: utf-8 -*-
             fh.write(self.seq2Shingle(s[1],n)+'\n')
         fh.close()
 
-        
+
     # infile: fasta file (not alignment)
     # outfile: output file with fasta foramt
     # n: shingle length
@@ -103,7 +103,4 @@ class AAShingle(object):# -*- coding: utf-8 -*-
             for sh in self.seq2Shingle(s[1],n).split(' '):
                 vstr=vstr+' '+str(self.shingle2Index(sh))
             fh.write(vstr.lstrip(' ')+'\n')
-        fh.close()        
-        
-        
-        
+        fh.close()

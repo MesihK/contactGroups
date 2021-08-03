@@ -48,7 +48,7 @@ def heatmap(data, row_labels, col_labels, ax=None,
     #plt.setp(ax.get_xticklabels(), rotation=-30, ha="right", rotation_mode="anchor")
 
     # Turn spines off and create white grid.
-    for edge, spine in ax.spines.items():
+    for edge, spine in list(ax.spines.items()):
         spine.set_visible(False)
 
     ax.set_xticks(np.arange(data.shape[1]+1)-.5, minor=True)
@@ -132,7 +132,7 @@ def main():
             ddict[sarr[1]] = [float(f) for f in sarr[4:]]
             ddict[rk] = ddict[sarr[1]]
 
-    table = [ddict['%s%s' % (aat01[i],aat01[j])] for i in xrange(0,len(aat01)) for j in xrange(i, len(aat01))]
+    table = [ddict['%s%s' % (aat01[i],aat01[j])] for i in range(0,len(aat01)) for j in range(i, len(aat01))]
     #table = ['%s%s' % (aat01[i],aat01[j]) for i in xrange(0,len(aat01)) for j in xrange(i, len(aat01))]
     harvest = np.array(table)
     np.savetxt('pf.210x400.txt',harvest)
@@ -141,14 +141,14 @@ def main():
     #print harvest.shape
     #return
 
-    label210 = ['%s%s' % (aat01[i],aat01[j]) for i in xrange(0,len(aat01)) for j in xrange(i, len(aat01))]
-    label400 = ['%s%s' % (aat01[i],aat01[j]) for i in xrange(0,len(aat01)) for j in xrange(0, len(aat01))]
+    label210 = ['%s%s' % (aat01[i],aat01[j]) for i in range(0,len(aat01)) for j in range(i, len(aat01))]
+    label400 = ['%s%s' % (aat01[i],aat01[j]) for i in range(0,len(aat01)) for j in range(0, len(aat01))]
 
     '''
     print repr(harvest)
     print label210
     print label400
-    return 
+    return
     '''
     '''
     harvest = np.array([[0.8, 2.4, 2.5, 3.9, 0.0, 4.0, 0.0],
@@ -167,24 +167,7 @@ def main():
     #texts = annotate_heatmap(im, valfmt="{x:.1f} t")
 
     fig.tight_layout()
-    plt.show()    
+    plt.show()
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

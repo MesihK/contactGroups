@@ -8,7 +8,7 @@ from scipy.cluster.hierarchy import linkage
 from scipy.spatial.distance import squareform
 from sklearn import metrics
 
-colorscheme1 = ['#a93a28', '#afc8cd', '#266674', '#fb8c32', '#cbc96d', 
+colorscheme1 = ['#a93a28', '#afc8cd', '#266674', '#fb8c32', '#cbc96d',
 '#60e6c1', '#d7295e', '#008ed0', '#747474']
 #1c225c
 
@@ -83,7 +83,7 @@ def barplot_fgdist(arglist):
 
     data = np.loadtxt(infile, delimiter=' ')
     # be consistent with utils_pfammsa.py::wfreqcsfgdist
-    xt = ['%s-%s' % (cp.aas01[i], cp.aas01[j]) for i in xrange(len(cp.aas01)) for j in xrange(i,len(cp.aas01))]
+    xt = ['%s-%s' % (cp.aas01[i], cp.aas01[j]) for i in range(len(cp.aas01)) for j in range(i,len(cp.aas01))]
     fig ,ax = plt.subplots(spnum, figsize=(18,6), sharey=True)
 
     index  = np.arange(105)
@@ -162,7 +162,7 @@ def _augmented_dendrogram(*args, **kwargs):
 
 def dendrogram_fgdist(arglist):
     if len(arglist) < 1:
-	    cp._err('Usage: python utils_vis_sm.py dendrogram_fgdist cs3.210dist.vec')
+        cp._err('Usage: python utils_vis_sm.py dendrogram_fgdist cs3.210dist.vec')
     sys.setrecursionlimit(10000)
 
     datafile = arglist[0]
@@ -172,17 +172,17 @@ def dendrogram_fgdist(arglist):
     linkage_matrix = linkage(x, "single", metric='correlation')
     plt.figure(figsize=(24, 15))
     #ddata = dendrogram(linkage_matrix)
-    xt = ['%s-%s' % (cp.aas01[i], cp.aas01[j]) for i in xrange(len(cp.aas01)) for j in xrange(i,len(cp.aas01))]
+    xt = ['%s-%s' % (cp.aas01[i], cp.aas01[j]) for i in range(len(cp.aas01)) for j in range(i,len(cp.aas01))]
     ddata = dendrogram(linkage_matrix, labels=xt, leaf_rotation=90, color_threshold=1, link_color_func=lambda x: "k")
     #ddata = _augmented_dendrogram(linkage_matrix, labels=xt, leaf_rotation=90, color_threshold=1)
-    #plt.show()	        
+    #plt.show()
     plt.savefig(outfile)
     cp._info('save to %s' % outfile)
 
 
 def dendrogram_fgdist_1(arglist):
     if len(arglist) < 1:
-	    cp._err('Usage: python utils_vis_sm.py dendrogram_fgdist_1 cs3.210dist_1.vec')
+        cp._err('Usage: python utils_vis_sm.py dendrogram_fgdist_1 cs3.210dist_1.vec')
     sys.setrecursionlimit(10000)
 
     datafile = arglist[0]
@@ -195,14 +195,14 @@ def dendrogram_fgdist_1(arglist):
     xt = cp.aas01
     ddata = dendrogram(linkage_matrix, labels=xt, leaf_rotation=90, color_threshold=1)
     #ddata = _augmented_dendrogram(linkage_matrix, labels=xt, leaf_rotation=90, color_threshold=1)
-    #plt.show()	        
+    #plt.show()
     plt.savefig(outfile)
     cp._info('save to %s' % outfile)
 
 
 def dendrogram_emboss_sm(arglist):
     if len(arglist) < 1:
-	    cp._err('Usage: python utils_vis_sm.py dendrogram_emboss_sm b62.sm.dat')
+        cp._err('Usage: python utils_vis_sm.py dendrogram_emboss_sm b62.sm.dat')
     sys.setrecursionlimit(10000)
 
     datafile = arglist[0]
@@ -214,7 +214,7 @@ def dendrogram_emboss_sm(arglist):
     xt = cp.aa201 # emboss sm order
     ddata = dendrogram(linkage_matrix, labels=xt, leaf_rotation=90, color_threshold=1, link_color_func=lambda x: "k")
     #ddata = _augmented_dendrogram(linkage_matrix, labels=xt, leaf_rotation=90, color_threshold=1)
-    #plt.show()	        
+    #plt.show()
     plt.savefig(outfile)
     cp._info('save to %s' % outfile)
 
@@ -275,7 +275,7 @@ def bar_sbs(arglist):
     spnum = int(arglist[2])
     n_groups=itv= (totalnum / spnum) +1
 
-    print n_groups
+    print(n_groups)
 
     # x-tick
     xt = cp.loadlines(arglist[3])
@@ -289,30 +289,30 @@ def bar_sbs(arglist):
     bar_width = 0.25
     opacity = 1.0
     for i in range(0, spnum):
-            index = np.arange(n_groups if (i+1)*itv <totalnum else (totalnum - i*itv))
-            sxt = xt[i*itv:((i+1)*itv if (i+1)*itv <totalnum else totalnum)]
+        index = np.arange(n_groups if (i+1)*itv <totalnum else (totalnum - i*itv))
+        sxt = xt[i*itv:((i+1)*itv if (i+1)*itv <totalnum else totalnum)]
 
-            ax[i].bar(index, d1[i*itv:((i+1)*itv if (i+1)*itv < totalnum else totalnum)], bar_width,
-                            alpha=opacity,
-                            color='#75a8b9',
-                            label='Ordered region')
+        ax[i].bar(index, d1[i*itv:((i+1)*itv if (i+1)*itv < totalnum else totalnum)], bar_width,
+                        alpha=opacity,
+                        color='#75a8b9',
+                        label='Ordered region')
 
-            ax[i].bar(index + bar_width, d2[i*itv:((i+1)*itv if (i+1)*itv < totalnum else totalnum)], bar_width,
-                            alpha=opacity,
-                            color='#8d5543',
-                            label='Disordered region')
-            '''
-            ax[i].bar(index + 2*bar_width, scsc23a[i*itv:((i+1)*itv if (i+1)*itv <210 else 210)], bar_width,
-                            alpha=opacity,
-                            color='#f3db81',
-                            label='SCSC2')
-            '''
-            plt.sca(ax[i])
-            plt.xticks(index + bar_width / 2, sxt, rotation='vertical')
+        ax[i].bar(index + bar_width, d2[i*itv:((i+1)*itv if (i+1)*itv < totalnum else totalnum)], bar_width,
+                        alpha=opacity,
+                        color='#8d5543',
+                        label='Disordered region')
+        '''
+        ax[i].bar(index + 2*bar_width, scsc23a[i*itv:((i+1)*itv if (i+1)*itv <210 else 210)], bar_width,
+                        alpha=opacity,
+                        color='#f3db81',
+                        label='SCSC2')
+        '''
+        plt.sca(ax[i])
+        plt.xticks(index + bar_width / 2, sxt, rotation='vertical')
 
-            # plt.xlabel('xxx')
-            plt.ylabel('Normalized correlation level')
-            plt.legend()
+        # plt.xlabel('xxx')
+        plt.ylabel('Normalized correlation level')
+        plt.legend()
 
     plt.tight_layout()
     plt.show()
@@ -329,7 +329,7 @@ def hist(arglist):
     n_bins = int(arglist[1])
     x = np.loadtxt(datafile)
     n = x.shape[0]
-    print n
+    print(n)
     fig, axs = plt.subplots(tight_layout=True)
     axs.hist(x, bins=n_bins)
     plt.show()
@@ -343,8 +343,8 @@ def hist_sbs(arglist):
     datafile2 = arglist[1]
     data1 = np.loadtxt(datafile1)
     data2 = np.loadtxt(datafile2)
-    print data1.shape
-    print data2.shape
+    print(data1.shape)
+    print(data2.shape)
     x = data1
     y = data2
     n_bins = 50
@@ -364,7 +364,7 @@ def signalplot(arglist):
     if len(arglist) < 2:
         cp._err('Usage: python utils_vis_sm.py singalplot infile')
 
-    infile = arglist[0] 
+    infile = arglist[0]
     outfile = arglist[1]
 
     valuelist= []
@@ -374,7 +374,7 @@ def signalplot(arglist):
         ticklist.append(int(sarr[0]))
         valuelist.append(float(sarr[1]))
 
-    print '%d records loaded.' % (len(valuelist))
+    print('%d records loaded.' % (len(valuelist)))
 
     fig, ax = plt.subplots(figsize=(14,3),tight_layout=True)
     ax.plot(ticklist, valuelist, label="score")
@@ -393,7 +393,7 @@ def signalplotws(arglist):
     if len(arglist) < 2:
         cp._err('Usage: python utils_vis_sm.py singalplot_ws infile outfile')
 
-    infile = arglist[0] 
+    infile = arglist[0]
     sarr = infile.split('-')
     dstart = int(sarr[4])
     dend = int(sarr[5])
@@ -412,7 +412,7 @@ def signalplotws(arglist):
     ax.plot(ticklist, valuelist, label="score")
     ax.grid(True)
     ax.legend()
-    print outfile, dstart, dend
+    print(outfile, dstart, dend)
     plt.axvline(dstart, linestyle='--', c='r')
     plt.axvline(dend, linestyle='--', c='r')
 
@@ -421,7 +421,7 @@ def signalplotws(arglist):
     plt.show()
     #plt.savefig(outfile)
 
-# plot roc curves 
+# plot roc curves
 # infile: true/false score1 score2 ...
 def roc(args):
     assert len(args) == 3, 'Usage: python utils_vis_sm.py roc roc_score_file legend,legend2,.. outfile'
@@ -430,15 +430,15 @@ def roc(args):
     outfile = args[2]
 
     data = np.loadtxt(infile)
-    print(data.shape)
+    print((data.shape))
     p = data.shape[1] # get how many scores
 
     y = data[:,0]
-    curves = [metrics.roc_curve(y, data[:,i], pos_label=1) for i in xrange(1,p)]
+    curves = [metrics.roc_curve(y, data[:,i], pos_label=1) for i in range(1,p)]
 
     plt.figure(1)
     plt.plot([0, 1], [0, 1], 'k--')
-    for k in xrange(0, len(curves)):
+    for k in range(0, len(curves)):
         c = curves[k]
         plt.plot(c[0], c[1], color=colorscheme1[k], label=legends[k])
 
@@ -447,7 +447,7 @@ def roc(args):
     plt.title('ROC curve')
     plt.legend(loc='best')
     plt.savefig(outfile)
-    print('save to %s' % outfile)
+    print(('save to %s' % outfile))
     plt.show()
 
 def _gridheatmap(data, row_labels, col_labels, ax=None,
@@ -497,7 +497,7 @@ def _gridheatmap(data, row_labels, col_labels, ax=None,
     #plt.setp(ax.get_xticklabels(), rotation=-30, ha="right", rotation_mode="anchor")
 
     # Turn spines off and create white grid.
-    for edge, spine in ax.spines.items():
+    for edge, spine in list(ax.spines.items()):
         spine.set_visible(False)
 
     ax.set_xticks(np.arange(data.shape[1]+1)-.5, minor=True)
@@ -568,7 +568,7 @@ def heatmap(args):
 
     data = np.loadtxt(args[0])
     assert len(data.shape) != 1, 'Error, data has only one row/column'
-        
+
     xticktext = cp.loadlines(args[1]) if args[1]!='na' else np.arange(data.shape[1])
     yticktext = cp.loadlines(args[2]) if args[2]!='na' else np.arange(data.shape[0])
 
@@ -613,26 +613,26 @@ def heatmap(args):
 
     # show every 10 count of ticks
     ax.set_xticks(np.arange(1, data.shape[1]+1,10))
-    ax.set_yticks(np.arange(1, data.shape[0]+1,10)) 
+    ax.set_yticks(np.arange(1, data.shape[0]+1,10))
     #ax.set_xticks(np.arange(1, data.shape[1]+1))
-    #ax.set_yticks(np.arange(1, data.shape[0]+1)) 
+    #ax.set_yticks(np.arange(1, data.shape[0]+1))
     # ... and label them with the respective list entries.
     ax.set_xticklabels([xticktext[i-1] for i in np.arange(1, data.shape[1]+1,10)], rotation=90)
     ax.set_yticklabels([yticktext[i-1] for i in np.arange(1, data.shape[0]+1,10)])
     #ax.set_xticklabels([xticktext[i-1] for i in np.arange(1, data.shape[1])])
     #ax.set_yticklabels([yticktext[i-1] for i in np.arange(1, data.shape[0])])
-    #ax.set_yticklabels(yticktext) 
+    #ax.set_yticklabels(yticktext)
 
     # Let the horizontal axes labeling appear on top.
 
     #plt.xticks(rotation=90)
-    ax.tick_params(top=True, bottom=False, labeltop=True, labelbottom=False)    
+    ax.tick_params(top=True, bottom=False, labeltop=True, labelbottom=False)
 
     fig.tight_layout()
     outfile = args[0]+'.png'
     fig.savefig(outfile)
     cp._info('save figure to %s' % outfile)
-    #plt.show()                        
+    #plt.show()
 
 
 def heatmap_colorgrid(args):
@@ -641,7 +641,7 @@ def heatmap_colorgrid(args):
 
     data = np.loadtxt(args[0])
     assert len(data.shape) != 1, 'Error, data has only one row/column'
-        
+
     xticktext = cp.loadlines(args[1]) if args[1]!='na' else np.arange(data.shape[1])
     yticktext = cp.loadlines(args[2]) if args[2]!='na' else np.arange(data.shape[0])
 
@@ -673,7 +673,7 @@ def heatmap_colorgrid(args):
     bounds=[0,0.5,1.0,1.5,2.0,2.5,3.0,3.5]
     norm = clr.BoundaryNorm(bounds, mycmap.N)
     '''
-    
+
 
     #im = ax.imshow(data, interpolation='nearest', cmap=mycmap, norm=norm, vmin=minmax[0], vmax=minmax[1])
 
@@ -687,21 +687,21 @@ def heatmap_colorgrid(args):
 
     # show every 10 count of ticks
     ax.set_xticks(np.arange(1, data.shape[1]+1,10))
-    ax.set_yticks(np.arange(1, data.shape[0]+1,10)) 
+    ax.set_yticks(np.arange(1, data.shape[0]+1,10))
     #ax.set_xticks(np.arange(1, data.shape[1]+1))
-    #ax.set_yticks(np.arange(1, data.shape[0]+1)) 
+    #ax.set_yticks(np.arange(1, data.shape[0]+1))
     # ... and label them with the respective list entries.
     ax.set_xticklabels([xticktext[i-1] for i in np.arange(1, data.shape[1]+1,10)], rotation=90)
     ax.set_yticklabels([yticktext[i-1] for i in np.arange(1, data.shape[0]+1,10)])
     #ax.set_xticklabels([xticktext[i-1] for i in np.arange(1, data.shape[1])])
     #ax.set_yticklabels([yticktext[i-1] for i in np.arange(1, data.shape[0])])
-    #ax.set_yticklabels(yticktext) 
+    #ax.set_yticklabels(yticktext)
 
     # Let the horizontal axes labeling appear on top.
-    ax.tick_params(top=True, bottom=False, labeltop=True, labelbottom=False)    
+    ax.tick_params(top=True, bottom=False, labeltop=True, labelbottom=False)
 
     fig.tight_layout()
-    plt.show()                        
+    plt.show()
 
 
 def colorpalette(args):
@@ -711,13 +711,13 @@ def colorpalette(args):
     #cs = ['#266674','#ffffff','#a93a28']
 
     # plot psudodata
-    csdata = np.array([range(len(cs))])
+    csdata = np.array([list(range(len(cs)))])
     fig, ax = plt.subplots(figsize=(8,5))
     #plt.gca().set_visible(False) # hide it
     plt.gca().get_yaxis().set_visible(False)
 
     ax.set_xticks(np.arange(0, csdata.shape[1]+1))
-    ax.set_yticks(np.arange(0, csdata.shape[0]+1)) 
+    ax.set_yticks(np.arange(0, csdata.shape[0]+1))
     # ... and label them with the respective list entries.
     ax.set_xticklabels(cs)
     #ax.set_yticklabels([yticktext[i-1] for i in np.arange(1, data.shape[0]+1,10)])
@@ -725,11 +725,11 @@ def colorpalette(args):
     mycmap = clr.LinearSegmentedColormap.from_list('mybar', cs, N=256)
 
     im = ax.imshow(psudodata, cmap=mycmap)
-    cbar = ax.figure.colorbar(im, ticks=[range(len(cs))], orientation="horizontal")
+    cbar = ax.figure.colorbar(im, ticks=[list(range(len(cs)))], orientation="horizontal")
     cbar.ax.set_xticklabels(cs, rotation=-90)
 
     plt.show()
-    #plt.savefig("colorbar.pdf")    
+    #plt.savefig("colorbar.pdf")
 
 class seq(object):
     def __init__(self, props):
@@ -750,9 +750,9 @@ class seq(object):
 
 def t_seq(args):
     res = {'resi': '30', 'resn': 'LYS' }
-    print res['resi']
+    print(res['resi'])
     sq = seq(res)
-    print repr(sq)
+    print(repr(sq))
 
 def seqdraw(args):
     # import matplotlib.pyplot as plt
@@ -766,40 +766,40 @@ def seqdraw(args):
 
     #seqs = [seq(__parseseq(line)) for line in cp.loadlines('t_seqdraw.data')]
     seqs = [seq(__parseseq(line)) for line in cp.loadlines('3k54_seqdraw.data')]
-    print len(seqs)
+    print(len(seqs))
 
     sscolor = {'s':'#ff39ff', 'h':'#39ffff', 'l': '#ff9999'}
 
-    fs = 8 
+    fs = 8
 
     # draw seq
     for i in range(len(seqs)):
-        x = 0 
+        x = 0
         y = float(len(seqs)-i-1)/len(seqs)
         sq = seqs[i]
         # draw sequence
-        ax.text( 
-            x,y, 
-            '%s %s' % (sq.resn, sq.resi), 
+        ax.text(
+            x,y,
+            '%s %s' % (sq.resn, sq.resi),
             ha='center', va='center',
-            fontsize=fs, family= 'monospace', color='black', 
+            fontsize=fs, family= 'monospace', color='black',
             bbox=dict(pad=0.3, facecolor=sscolor[sq.ss], edgecolor=sscolor[sq.ss], alpha=0.3, boxstyle='square'))
         # highlight
         x+=0.07
         fc = 'gray' if sq.highlight == 1 else 'white'
-        ax.text( 
-            x,y, 
+        ax.text(
+            x,y,
             ' ',
             ha='center', va='center',
-            fontsize=fs-2, family= 'monospace', color='black', 
+            fontsize=fs-2, family= 'monospace', color='black',
             bbox=dict(pad=0.3, facecolor=fc, edgecolor='white', boxstyle='square'))
         # conservation
         x+=0.05
-        ax.text( 
-            x,y, 
+        ax.text(
+            x,y,
             '%s' % (sq.consv) if sq.consv != 'na' else ' ',
             ha='center', va='center',
-            fontsize=fs-1, family= 'monospace', color='black', 
+            fontsize=fs-1, family= 'monospace', color='black',
             bbox=dict(pad=0.3, facecolor='white', edgecolor='gray', alpha=0.3, boxstyle='square'))
     plt.axis('off')
     #plt.show()
@@ -840,4 +840,4 @@ def seqdraw(args):
     '''
 
 if __name__ == '__main__':
-        cp.dispatch(__name__)
+    cp.dispatch(__name__)

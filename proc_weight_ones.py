@@ -9,4 +9,4 @@ def onesweight(arglist):
         fout.write('%s\n' % '\n'.join(['1.00000000' for line in cp.loadlines(arglist[0])]))
     cp._info('save to %s' % arglist[1])
 if __name__ == '__main__':
-	cp.dispatch(__name__)
+    cp.dispatch(__name__)

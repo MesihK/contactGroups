@@ -10,7 +10,7 @@ import commp as cp
 def blastfarm(arglist):
     if len(arglist) < 6:
         cp._err('Usage: python utils_blasp.py blastfarm seq.stub sm.stub outstring.stub dbname evalue outfile')
-        
+
     seqlistfile = arglist[0]
     seqlist = cp.loadlines(seqlistfile)
 
@@ -37,9 +37,9 @@ def blastfarm(arglist):
             gaplist = cp.gapdict[sm]
         else:
             binpath = '/home/kjia/apps/ncbi-blast-2.2.31+-src/c++/built/%s.ReleaseMT/bin/blastp' % sm
-            smdata = 'BLOSUM62' 
+            smdata = 'BLOSUM62'
             gaplist = cp.gapdict['BLOSUM62']
-        
+
         for fa in seqlist:
             for g in gaplist:
                 fout.write('%s -query %s -db $%s -outfmt "%s" -evalue %s -matrix %s -gapopen %d -gapextend %d -out %s_%s_%d_%d.out\n' % (binpath, fa, dbname, outstrings[0], evalue, smdata, g[0], g[1], fa, sm, g[0], g[1]))
@@ -60,7 +60,7 @@ def blastfarm(arglist):
 def blastfarmfmt(arglist):
     if len(arglist) < 6:
         cp._err('Usage: python utils_blasp.py blastfarm seq.stub sm.stub outstring.stub dbname evalue outfile')
-        
+
     seqlistfile = arglist[0]
     seqlist = cp.loadlines(seqlistfile)
 
@@ -87,9 +87,9 @@ def blastfarmfmt(arglist):
             gaplist = cp.gapdict[sm]
         else:
             binpath = '/home/kjia/apps/ncbi-blast-2.2.31+-src/c++/built/%s.ReleaseMT/bin/blastp' % sm
-            smdata = 'BLOSUM62' 
+            smdata = 'BLOSUM62'
             gaplist = cp.gapdict['BLOSUM62']
-        
+
         for fa in seqlist:
             for g in gaplist:
                 fout.write('%s -query %s -db $%s -outfmt "%s" -evalue %s -matrix %s -gapopen %d -gapextend %d -out %s_%s_%d_%d.out\n' % (binpath, fa, dbname, outstrings[0], evalue, smdata, g[0], g[1], fa, sm, g[0], g[1]))
@@ -98,4 +98,4 @@ def blastfarmfmt(arglist):
 
 # main routine
 if __name__ == '__main__':
-	cp.dispatch(__name__)
+    cp.dispatch(__name__)

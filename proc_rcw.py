@@ -3,7 +3,7 @@ import commp as cp
 import numpy as np
 
 '''
-==> PF00098_p90.mip <== 
+==> PF00098_p90.mip <==
 id1 id2 mi apc mip
 7 8 0.02396475 0.00938778 0.01457697
 7 9 0.10794275 0.08943567 0.01850708
@@ -22,7 +22,7 @@ def _mi2dict(cefile):
         k = '%s %s' % (sarr[0], sarr[1]) # use the first two column; sarr[0] < sarr[1] order
         idpairstub.append(k) # save the same order as the input file
         # save ce score (MI)
-        cedict[k] = float(sarr[2]) 
+        cedict[k] = float(sarr[2])
         # get all column index in the infile
         idxset.add(int(sarr[0]))
         idxset.add(int(sarr[1]))
@@ -42,9 +42,9 @@ def rcw(args):
 
     # calculate ith column MI sum
     sumdict = {}
-    for i in xrange(0, len(colslist)):
+    for i in range(0, len(colslist)):
         ith_column_sum = 0.0
-        for j in xrange(0, len(colslist)):
+        for j in range(0, len(colslist)):
             if i==j:
                 continue
             k = ('%s %s' % (colslist[i], colslist[j])) if i<j else ('%s %s' % (colslist[j], colslist[i]))
@@ -53,7 +53,7 @@ def rcw(args):
         sumdict[colslist[i]]=ith_column_sum
 
     # calculate mi_rcw and write to outfile
-    fout = open(outfile, 'w') 
+    fout = open(outfile, 'w')
     for k in idpairstub:
         col = [int(s) for s in k.split(' ')]
         # calculate rcw(i,j) = (v(i)+v(j) - M(i,j)) / (n-1)

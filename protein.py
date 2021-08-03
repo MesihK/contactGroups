@@ -13,8 +13,8 @@ import commp as cp
 __all__=['protein']
 
 class protein(object):
-    
-    
+
+
     # read pdb from file
     def __init__(self, pdbname, chain = 'all', top='', pfam='', center='CA', cutoff=5, scutoff=1, flag=0, desc='', nbcutoff=4):
         self.atoms=[]
@@ -35,22 +35,22 @@ class protein(object):
         self.seqheader = self.pdb
         self.flag = flag
         self.desc = desc
-        
+
         self.nbcutoff = nbcutoff
         self.ca = []
         self.reslist = []
-        
+
         fin=open(pdbname, 'r')
         lines=fin.readlines()
         fin.close()
-       
+
         lastname =''
         lastres = ''
         ratoms = [] # store residue atoms
         rlist = []
         aamap = AAmap()
         lastresi = '' # redundant ... should make this better (when have time)
-        for i in xrange(0,len(lines)):
+        for i in range(0,len(lines)):
             line = lines[i]
             # load only one model
             if 'END' in line[0:6]:
@@ -75,7 +75,7 @@ class protein(object):
                     lastname = at.name
                     lastres = at.resSeq
 
-                # store atoms by residueID 
+                # store atoms by residueID
                 if (at.resSeq != lastresi): # reach a new residue
                     if(len(ratoms)!=0):
                         self.reslist.append(ratoms) # put atoms for last residue in reslist
@@ -96,7 +96,7 @@ class protein(object):
         self.seq, self.resArray, self.resAtoms = self.getSeq()
 
         # resAtomsDict[key] = list() of atom
-        # 1gzh_A.pdb resAtomsDict['A196'] = 
+        # 1gzh_A.pdb resAtomsDict['A196'] =
         '''
             ATOM    745  N   ARG A 196      20.463  12.417  35.872  1.00 27.01           N
             ATOM    746  CA  ARG A 196      20.781  11.116  36.427  1.00 29.11           C
@@ -110,7 +110,7 @@ class protein(object):
             ATOM    754  NH1 ARG A 196      25.120  13.806  41.674  1.00 36.31           N1+
             ATOM    755  NH2 ARG A 196      23.508  12.337  42.403  1.00 38.20           N
         '''
-        self.resAtomsDict = {} 
+        self.resAtomsDict = {}
         for rlist in self.resAtoms:
             key = '%s%d%s' % (rlist[0].chainID, rlist[0].resSeq, rlist[0].iCode)
             if key in self.resAtomsDict:
@@ -126,7 +126,7 @@ class protein(object):
         self.seqDict = {-1: '.'}
         for r in self.resDict:
             self.seqDict[self.resDict[r][0]] = '%s(%s)' % (r, self.resDict[r][1])
-        
+
 
     # get atom by atom name, ie. CA, CB, ...
     def atomsbyname(self, aname):
@@ -147,7 +147,7 @@ class protein(object):
                 y+=a.y
                 z+=a.z
 
-            # replace geom center to template coordinate 
+            # replace geom center to template coordinate
             # and save for output
             reta = copy.copy(al[0])
             reta.x = x/len(al)
@@ -188,7 +188,7 @@ class protein(object):
                     y+=a.y
                     z+=a.z
 
-            # replace geom center to template coordinate 
+            # replace geom center to template coordinate
             # and save for output
             reta = copy.copy(al[0])
             if count == 0:
@@ -199,8 +199,8 @@ class protein(object):
             reta.z = z/count
             ats.append(reta)
 
-        return ats        
-    
+        return ats
+
     # return a redundant list of Chain+resi
     # the redundancy is the contact affinity
     def contactbyallatom(self, chain, resi, cutoff, seqcutoff=0.0):
@@ -246,9 +246,9 @@ class protein(object):
     def residistbyallatom(self):
         retlist = []
         # keys in resAtomsDict: 'A100', ...
-        rlist = self.resAtomsDict.keys()
-        for i in xrange(0, len(rlist)):
-            for j in xrange(i+1, len(rlist)):
+        rlist = list(self.resAtomsDict.keys())
+        for i in range(0, len(rlist)):
+            for j in range(i+1, len(rlist)):
                 # get asymmetrical keys
                 r1 = rlist[i]
                 r2 = rlist[j]
@@ -267,14 +267,14 @@ class protein(object):
 
 
     # output residue contact by dist cutoff and seqcutoff
-    # no redundancy 
+    # no redundancy
     def contactbycutoff(self, atomset, cutoff, seqcutoff=0.0):
         cgs = []
-        for i in xrange(0, len(atomset)):
-            for j in xrange(i+1, len(atomset)):
+        for i in range(0, len(atomset)):
+            for j in range(i+1, len(atomset)):
                 a = atomset[i]
                 b = atomset[j]
-                dist =  np.linalg.norm(np.array((a.x, a.y, a.z))-np.array((b.x, b.y, b.z)))                
+                dist =  np.linalg.norm(np.array((a.x, a.y, a.z))-np.array((b.x, b.y, b.z)))
                 if dist <= cutoff and abs(a.resSeq-b.resSeq) > seqcutoff:
                     cgs.append((a,b))
         return cgs
@@ -296,23 +296,23 @@ class protein(object):
             key = ' '.join(sorted(['%s%d' % (a.chainID, a.resSeq) for a in c.atoms]))
             #if key in dup:
             #    print 'duplicate key: %s' % key
-            if key not in dup:            
+            if key not in dup:
                 cgs.append(c.atoms)
                 dup.add(key)
         return cgs
 
-    
+
     # print PDB content
     def printPDB(self):
-        for i in xrange(0,len(self.atoms)):
+        for i in range(0,len(self.atoms)):
             a=self.atoms[i]
             a.dump()
-        
+
     # print Coordinates
     def printCoor(self):
-        for i in xrange(0,len(self.atoms)):
+        for i in range(0,len(self.atoms)):
             a=self.atoms[i]
-            print a.getCoor()
+            print(a.getCoor())
 
     # return sequence extracted from pdb file
     # assign values for self.resDict['B641'] = (seqpos, 'R')
@@ -326,7 +326,7 @@ class protein(object):
 
         resAtomsAll = []
         resatoms = []
-        for i in xrange(0,len(self.atoms)):
+        for i in range(0,len(self.atoms)):
             a=self.atoms[i]
             if last_resSeq != a.resSeq:
                 seq=seq+aamap.getAAmap(a.resName)
@@ -350,8 +350,8 @@ class protein(object):
         if len(resatoms)>0:
             resAtomsAll.append(resatoms)
 
-        return seq, resArray, resAtomsAll       
-           
+        return seq, resArray, resAtomsAll
+
     # print PDB sequence into fasta file
     def writeFASTA(self):
         fafile = self.pdb+'.fa'
@@ -360,7 +360,7 @@ class protein(object):
         seq=''
         count = 0
         last_resSeq = -1
-        for i in xrange(0,len(self.atoms)):
+        for i in range(0,len(self.atoms)):
             a=self.atoms[i]
             if last_resSeq != a.resSeq:
                 seq=seq+aamap.getAAmap(a.resName)
@@ -368,7 +368,7 @@ class protein(object):
                 count+=1
         seq=seq+'\n'
         header = '>%s/1-%d\n' % (self.pdb, count)
-        print header+seq
+        print(header+seq)
 
         fp=open(fafile, 'w')
         fp.write(header+seq)
@@ -379,7 +379,7 @@ class protein(object):
     def writeCA(self, filename, chain='all'):
         fd=open(filename, 'w')
         count=0
-        for i in xrange(0,len(self.atoms)):
+        for i in range(0,len(self.atoms)):
             a=self.atoms[i]
             #a.dump()
             if chain == 'all':
@@ -392,15 +392,15 @@ class protein(object):
                     count=count+1
         fd.close()
         if count==0:
-            print "No atom written in [%s]!" % (filename)      
-        
-        
-    
+            print("No atom written in [%s]!" % (filename))
+
+
+
     # extract all the CA atoms in Chain A from pdb. Write to a file
     def writeChainACA(self, filename):
         fd=open(filename, 'w')
         count=0
-        for i in xrange(0,len(self.atoms)):
+        for i in range(0,len(self.atoms)):
             a=self.atoms[i]
             #a.dump()
             if 'CA' in a.name and a.chainID=='A':
@@ -408,7 +408,7 @@ class protein(object):
                 count=count+1
         fd.close()
         if count==0:
-            print "No atom written in [%s]!" % (filename)
+            print("No atom written in [%s]!" % (filename))
 
 
     # get tip atom list
@@ -421,41 +421,41 @@ class protein(object):
         lines = fp.readlines()
         fp.close()
         AAtipDict={}
-        for i in xrange(0,len(lines)):  
+        for i in range(0,len(lines)):
             line = lines[i].strip()
             AAstr = line.split(',')
             AAname = AAstr[0]
             AAtips = AAstr[2]
-           
+
             AAtipDict[AAname]=AAtips.split(' ')
 #            print '%s %s' % (AAname, AAtipDict[AAname])
 
         # iterate all atoms
-        #fd=open(filename, 'w') 
+        #fd=open(filename, 'w')
         lastAtom = self.atoms[0]
-        currentResi = lastAtom.resSeq    
-        matchCount=0  
+        currentResi = lastAtom.resSeq
+        matchCount=0
         outputCount=0
         X=0.0
         Y=0.0
-        Z=0.0 
+        Z=0.0
         isDone = 0
-        for i in xrange(0,len(self.atoms)):
+        for i in range(0,len(self.atoms)):
             a = copy.copy(self.atoms[i])
             #if a.chainID!='A':
             #    continue
             if a.resName not in AAtipDict:
-                print 'err:%s:: non AA atom %s %d [%s]]' % (self.pdb, a.resName, a.resSeq, a.name.strip())
+                print('err:%s:: non AA atom %s %d [%s]]' % (self.pdb, a.resName, a.resSeq, a.name.strip()))
                 continue
 
             if a.resSeq == currentResi: # if in the same residue
                 if isDone == 0:
                     # check against all the tip atoms
                     for tipAtom in AAtipDict[a.resName]:
-                        
+
                         # summing up coordinates if matching
                         if a.name.strip()==tipAtom:
-                            
+
                             X+=a.x
                             Y+=a.y
                             Z+=a.z
@@ -473,7 +473,7 @@ class protein(object):
                         outputCount+=1
                         X=0.0
                         Y=0.0
-                        Z=0.0 
+                        Z=0.0
                         isDone = 1
 #                lastAtom = a
 #                print 'matchCount trace : %d' % (matchCount)
@@ -483,24 +483,24 @@ class protein(object):
                     #fd.write(lastAtom.writeAtom())
                     X=0.0
                     Y=0.0
-                    Z=0.0                     
+                    Z=0.0
                 if a.name.strip()!='N':
-                    print "err:%s:: No leading [N] for RESI [%d] [%s]" % (self.pdb, a.resSeq, a.resName)
+                    print("err:%s:: No leading [N] for RESI [%d] [%s]" % (self.pdb, a.resSeq, a.resName))
                 currentResi = a.resSeq
                 matchCount=0
                 isDone=0
             lastAtom = a # save last atom after all business' done
-        
+
         # for the last residue (there is no residue number change for it)
         if matchCount!=len(AAtipDict[lastAtom.resName]):
-            print "err:%s:: Tip atom not found for [%d] [%s]" % (self.pdb, lastAtom.resSeq, lastAtom.resName)
+            print("err:%s:: Tip atom not found for [%d] [%s]" % (self.pdb, lastAtom.resSeq, lastAtom.resName))
             #fd.write(a.writeAtom())
         if outputCount==0:
-            print "err:No atom written from %s" % (self.pdb)            
+            print("err:No atom written from %s" % (self.pdb))
 
         return cgs
 
-		
+
     # tip atom extraction
     # not for chain A only
     # def writeChainATips(self, profile, filename):
@@ -511,42 +511,42 @@ class protein(object):
         lines = fp.readlines()
         fp.close()
         AAtipDict={}
-        for i in xrange(0,len(lines)):  
+        for i in range(0,len(lines)):
             line = lines[i].strip()
             AAstr = line.split(',')
             AAname = AAstr[0]
             AAtips = AAstr[2]
-           
+
             AAtipDict[AAname]=AAtips.split(' ')
 #            print '%s %s' % (AAname, AAtipDict[AAname])
 
         # iterate all atoms
-        fd=open(filename, 'w') 
+        fd=open(filename, 'w')
         lastAtom = self.atoms[0]
-        currentResi = lastAtom.resSeq    
-        matchCount=0  
+        currentResi = lastAtom.resSeq
+        matchCount=0
         outputCount=0
         X=0.0
         Y=0.0
-        Z=0.0 
+        Z=0.0
         isDone = 0
-        for i in xrange(0,len(self.atoms)):
+        for i in range(0,len(self.atoms)):
             #a = self.atoms[i]
             a = copy.copy(self.atoms[i])
             #if a.chainID!='A':
             #    continue
             if a.resName not in AAtipDict:
-                print '%s:: non AA atom %s %d [%s]]' % (self.pdb, a.resName, a.resSeq, a.name.strip())
+                print('%s:: non AA atom %s %d [%s]]' % (self.pdb, a.resName, a.resSeq, a.name.strip()))
                 continue
 
             if a.resSeq == currentResi: # if in the same residue
                 if isDone == 0:
                     # check against all the tip atoms
                     for tipAtom in AAtipDict[a.resName]:
-                        
+
                         # summing up coordinates if matching
                         if a.name.strip()==tipAtom:
-                            
+
                             X+=a.x
                             Y+=a.y
                             Z+=a.z
@@ -563,7 +563,7 @@ class protein(object):
                         outputCount+=1
                         X=0.0
                         Y=0.0
-                        Z=0.0 
+                        Z=0.0
                         isDone = 1
 #                lastAtom = a
 #                print 'matchCount trace : %d' % (matchCount)
@@ -573,26 +573,26 @@ class protein(object):
                     #fd.write(lastAtom.writeAtom())
                     X=0.0
                     Y=0.0
-                    Z=0.0                     
+                    Z=0.0
                 if a.name.strip()!='N':
-                    print "%s:: No leading [N] for RESI [%d] [%s]" % (self.pdb, a.resSeq, a.resName)
+                    print("%s:: No leading [N] for RESI [%d] [%s]" % (self.pdb, a.resSeq, a.resName))
                 currentResi = a.resSeq
                 matchCount=0
                 isDone=0
             lastAtom = a # save last atom after all business' done
-        
+
         # for the last residue (there is no residue number change for it)
         if matchCount!=len(AAtipDict[lastAtom.resName]):
-            print "%s:: Tip atom not found for [%d] [%s]" % (self.pdb, lastAtom.resSeq, lastAtom.resName)
+            print("%s:: Tip atom not found for [%d] [%s]" % (self.pdb, lastAtom.resSeq, lastAtom.resName))
             #fd.write(a.writeAtom())
         if outputCount==0:
-            print "No atom written from [%s]!" % (filename)            
+            print("No atom written from [%s]!" % (filename))
 
 
 
-    # write concise version of a tip file 
+    # write concise version of a tip file
     # x,y,z,resi,resn
-    # input tip file 
+    # input tip file
     # output the concised version
     def writeSPDB(self):
         aamap = AAmap()
@@ -600,13 +600,13 @@ class protein(object):
         for a in self.atoms:
             fo.write('%f %f %f %d %s\n' % (a.x, a.y, a.z, a.resSeq, aamap.getAAmap(a.resName)))
         fo.close()
-    
+
     # write all ATOM entries as a pdbfile
     def writepdb(self, filename):
         with open(filename, 'w') as fout:
             fout.write('%s\n' % ''.join([at.writeAtom() for at in atomlist]))
 
-    # use spectral clustering method to find residue contact groups        
+    # use spectral clustering method to find residue contact groups
     def spectralClustering(self, cluster_size):
         from sklearn.cluster import spectral_clustering
         from scipy.sparse import coo_matrix
@@ -615,9 +615,9 @@ class protein(object):
         collist = []
         datalist = []
         N = len(self.atoms)
-        for i in xrange(0,N):
+        for i in range(0,N):
             v1=np.array((self.atoms[i].x, self.atoms[i].y, self.atoms[i].z))
-            for j in xrange(0,N):
+            for j in range(0,N):
                 v2 = np.array((self.atoms[j].x, self.atoms[j].y, self.atoms[j].z))
                 if i == j:
                     euclidean = 0.0
@@ -633,13 +633,13 @@ class protein(object):
                 collist.append(j)
                 datalist.append(affinity)
 
-        # prepare affinity matrix for clustering       
+        # prepare affinity matrix for clustering
         row = np.array(rowlist)
         col = np.array(collist)
         data = np.array(datalist)
 
         graph = coo_matrix((data, (row, col)), shape=(N, N))
-        #labels = spectral_clustering(graph, n_clusters=int(N/cluster_size), eigen_solver='arpack') 
+        #labels = spectral_clustering(graph, n_clusters=int(N/cluster_size), eigen_solver='arpack')
         labels = spectral_clustering(graph, n_clusters=int(N/cluster_size))
 
         amap = AAmap()
@@ -651,29 +651,29 @@ class protein(object):
         for key in cluster2fid: # for each cluster
             c=cluster(self.pdb, self.top, self.pfam, '', '', self.seqheader, '', '', self.center, self.cutoff, self.scutoff, self.flag, 1.0, self.desc)
             for index in cluster2fid[key]:
-                c.addNeighbor(amap, self.atoms[index],index) 
+                c.addNeighbor(amap, self.atoms[index],index)
             c.pdbidx=c.pdbidx.lstrip() # will change meanDist
             c.pdbResSeq=c.pdbResSeq.lstrip()
             meanDist = self.clusterMeanDist(c)
-            print ('%s,%0.2f,%s,%s,%s') % (self.pdb, meanDist, ''.join(sorted(c.str)), ''.join(sorted(c.typeStr)), c.pdbResSeq)
+            print(('%s,%0.2f,%s,%s,%s') % (self.pdb, meanDist, ''.join(sorted(c.str)), ''.join(sorted(c.typeStr)), c.pdbResSeq))
 
     # pairwise
     # read all atom XXXX_A.pdb and get pairwise contact within a cutoff and a sequential distance
     # output XXXX_A.res.csu_d
     def pairContactbyCutoff(self, cutoff, seqdist):
-        print self.pdbfile 
+        print(self.pdbfile)
         cid = self.pdbfile[5] # just for XXXX_A.pdb naming format
         existDict = {}
         fo = open(self.pdbfile[:-4]+'.res.csu_d', 'w')
-        for i in xrange(0, len(self.atoms)):
-            for j in xrange(0, len(self.atoms)):
+        for i in range(0, len(self.atoms)):
+            for j in range(0, len(self.atoms)):
                 a = self.atoms[i]
                 b = self.atoms[j]
                 if abs(a.resSeq - b.resSeq) <= seqdist or a.resSeq == b.resSeq:
                     continue
                 v1 = np.array((a.x, a.y, a.z))
                 v2 = np.array((b.x, b.y, b.z))
-                dist =  np.linalg.norm(v1-v2) 
+                dist =  np.linalg.norm(v1-v2)
                 key = '%d %d' % (a.resSeq, b.resSeq)
                 if key not in existDict and dist <= cutoff:
                     fo.write('%s\t%d%s\t%s\t%d%s\n' % (a.resName, a.resSeq, cid, b.resName, b.resSeq, cid))
@@ -685,68 +685,68 @@ class protein(object):
 
     # calculate pairwise distance
     def pairwise(self):
-        for i in xrange(0,len(self.atoms)):
+        for i in range(0,len(self.atoms)):
             v1=np.array((self.atoms[i].x, self.atoms[i].y, self.atoms[i].z))
-            for j in xrange(0,len(self.atoms)):
+            for j in range(0,len(self.atoms)):
                 key = "%d-%d" % (i,j)
                 v2 = np.array((self.atoms[j].x, self.atoms[j].y, self.atoms[j].z))
                 self.pairwiseDict[key]= np.linalg.norm(v1-v2)
-    
-    # print pairwise distance between atom[i] and /other atoms   
-    # index starts from 0         
+
+    # print pairwise distance between atom[i] and /other atoms
+    # index starts from 0
     def getPairwiseOf(self, index):
-            a = self.atoms[index]
-            a.dump()
-            v1=np.array((a.x, a.y, a.z))
-            for j in xrange(0,len(self.atoms)):
-                key = "%d-%d" % (index,j)
-                v2 = np.array((self.atoms[j].x, self.atoms[j].y, self.atoms[j].z))
-                print "%s: [%f], [%d]" % (key, np.linalg.norm(v1-v2), abs(index-j))
-        
+        a = self.atoms[index]
+        a.dump()
+        v1=np.array((a.x, a.y, a.z))
+        for j in range(0,len(self.atoms)):
+            key = "%d-%d" % (index,j)
+            v2 = np.array((self.atoms[j].x, self.atoms[j].y, self.atoms[j].z))
+            print("%s: [%f], [%d]" % (key, np.linalg.norm(v1-v2), abs(index-j)))
+
     # find clusters (centered by CA). Save all clusters in an array
     def filterClusters(self):
         if len(self.pairwiseDict)==0:
             self.pairwise()
         amap = AAmap()
 
-        for i in xrange(0,len(self.atoms)):
+        for i in range(0,len(self.atoms)):
             c=cluster(self.pdb, self.top, self.pfam, '', '', self.seqheader, '', '', self.center, self.cutoff, self.scutoff, self.flag, 1.0, self.desc)
             c.addNeighbor(amap, self.atoms[i],i) # put itself in first
             nbnum=0
-            for j in xrange(0,len(self.atoms)):
+            for j in range(0,len(self.atoms)):
                 key= "%d-%d" % (i, j)
                 if (self.pairwiseDict[key] <= self.cutoff) and (abs(i-j) >= self.scutoff):
                     c.addNeighbor(amap, self.atoms[j], j)
                     nbnum=nbnum+1
                     c.thetaPhi.append(self.calculateThetaPhi(self.atoms[i], self.atoms[j]))
-            if nbnum<self.nbcutoff: 
+            if nbnum<self.nbcutoff:
                 continue
-                
+
             c.pdbidx=c.pdbidx.lstrip() # will change meanDist
             c.pdbResSeq=c.pdbResSeq.lstrip()
             meanDist = self.clusterMeanDist(c)
             if meanDist < 5.8:
-                print ('%s,%0.2f,%s,%s,%s,%s') % (self.pdb, meanDist, ''.join(sorted(c.str)), ''.join(sorted(c.typeStr)), c.pdbResSeq, self.getSphericalStr(c))
+                print(('%s,%0.2f,%s,%s,%s,%s') % (self.pdb, meanDist, ''.join(sorted(c.str)), ''.join(sorted(c.typeStr)), c.pdbResSeq, self.getSphericalStr(c)))
                 self.clusters.append(c)
-                #self.writeClusterPDB(('%s%d.pdb') % (self.pdb,len(self.clusters)), templateAtom, c.thetaPhi)                
+                #self.writeClusterPDB(('%s%d.pdb') % (self.pdb,len(self.clusters)), templateAtom, c.thetaPhi)
 
 
     def calculateThetaPhi(self, at1, at2):
 #        v1 = np.array((at1.x, at1.y, at1.z))
 #        v2 = np.array((at2.x, at2.y, at2.z))
-#        v0 = (v1-v2)/np.linalg.norm(v1-v2)       
-#        
+#        v0 = (v1-v2)/np.linalg.norm(v1-v2)
+#
 #        x = v0[0]
 #        y = v0[1]
 #        z = v0[2]
         x=at1.x-at2.x
         y=at1.y-at2.y
         z=at1.z-at2.z
-        
+
         phi = math.atan2(z, math.sqrt(x*x+y*y))
-        th = math.atan2(y,x)        
+        th = math.atan2(y,x)
         return (th, phi)
-    
+
     def getSphericalStr(self, c):
         x=''
         y=''
@@ -764,8 +764,8 @@ class protein(object):
         dist=0.0
         count=0
         idxArray=cl.pdbidx.split(' ')
-        for i in xrange(0, len(idxArray)):
-            for j in xrange(i+1, len(idxArray)):
+        for i in range(0, len(idxArray)):
+            for j in range(i+1, len(idxArray)):
                 count+=1
                 key='%s-%s' % (idxArray[i],idxArray[j])
                 dist+=self.pairwiseDict[key]
@@ -774,42 +774,42 @@ class protein(object):
             return 0.0
         return dist/count
 
-                    
+
     # print a cluster object
     def dumpClusters(self):
-        for i in xrange(0,len(self.clusters)):
+        for i in range(0,len(self.clusters)):
             a=self.atoms[i]
             c=self.clusters[i]
-            print '++++++++++++++++++++++++++++++++++\n'
+            print('++++++++++++++++++++++++++++++++++\n')
             a.dump()
             c.dump()
-            print '++++++++++++++++++++++++++++++++++\n' 
-    
+            print('++++++++++++++++++++++++++++++++++\n')
+
     # print protein object
     def dump(self):
- 		print ('pdb:[%s]\n' + 
-		 	  'top:[%s]\n' +
-		 	  'pfam:[%s]\n' +
-		 	  'center:[%s]\n'+      
-		 	  'cutoff:[%f]\n' +
-		 	  'scutoff:[%d]\n' +
-		 	  'seqheader:[%s]\n' +
-		 	  'flag:[%d]\n' +
-		 	  'desc:[%s]\n') % \
-		 	  (
-		 	  	self.pdb,
-		 	  	self.top,
-		 	  	self.pfam,
-		 	  	self.center,
-		 	  	self.cutoff,
-		 	  	self.scutoff,
-		 	  	self.seqheader,
-		 	  	self.flag,
-		 	  	self.desc
-		 	  )
+        print(('pdb:[%s]\n' +
+                  'top:[%s]\n' +
+                  'pfam:[%s]\n' +
+                  'center:[%s]\n'+
+                  'cutoff:[%f]\n' +
+                  'scutoff:[%d]\n' +
+                  'seqheader:[%s]\n' +
+                  'flag:[%d]\n' +
+                  'desc:[%s]\n') % \
+                  (
+                        self.pdb,
+                        self.top,
+                        self.pfam,
+                        self.center,
+                        self.cutoff,
+                        self.scutoff,
+                        self.seqheader,
+                        self.flag,
+                        self.desc
+                  ))
 
     def getClusterNum(self):
-		return len(self.clusters) 
+        return len(self.clusters)
 
     # return sliced pdb atom array
     # s: input seq(substring) to match pdb seq
@@ -817,6 +817,3 @@ class protein(object):
         pdbseq = self.seq.upper()
         idx = pdbseq.find(s)
         return self.resAtoms[idx:idx+len(s)] if idx != -1 else []
-
-
-

@@ -54,8 +54,8 @@ def poolgen(arglist):
         '''
         count = num
         seqlist = list(clist)
-        for i in xrange(0, len(seqlist)):
-            for j in xrange(i+1, len(seqlist)):
+        for i in range(0, len(seqlist)):
+            for j in range(i+1, len(seqlist)):
                 if count >0:
                     outlist.append('%s %s %s' % (seqlist[i][0], seqlist[j][0], seqlist[i][3]))
                     count-=1
@@ -64,4 +64,4 @@ def poolgen(arglist):
     cp._info('save to %s' % outfile)
 
 if __name__ == '__main__':
-	cp.dispatch(__name__)
+    cp.dispatch(__name__)

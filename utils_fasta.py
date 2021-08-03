@@ -26,6 +26,6 @@ def splitbyname(arglist):
             continue
         with open(outfile, 'w') as fout:
             fout.write('>%s\n%s\n' % (name, fadict[name]))
-    
+
 if __name__ == '__main__':
-        cp.dispatch(__name__)
+    cp.dispatch(__name__)

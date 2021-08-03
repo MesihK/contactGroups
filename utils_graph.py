@@ -6,7 +6,7 @@ import commp as cp
 # equation 9
 # A_ij = 0 if i=j else rMI[X_i, X_j] * exp(-dij/lambda)
 # where lambda is the locality controlling parameter
-# input: 
+# input:
 # 1. ccmatfile, correlation matrix in np.loadtxt format
 # 2. dmatfile, spatial distance matrix in np.loadtxt() format, 'na' means no padding, equivalent to set loc = 'inf'
 # 3. loc, locality parameter
@@ -27,16 +27,16 @@ def eca_ccmat2adjmat(args):
 
     #rccmat = np.loadtxt(ccmatfile)
     #ccmat = (rccmat - rccmat.min()/(rccmat.max() - rccmat.min()))
-    
+
 
     # inf means no thresholding
     if threshold != float('inf'):
         cp._info('thresholding with %.4f cutoff' % threshold)
         ccmat[ccmat < threshold] = 0.0
-        print ccmat
-    
+        print(ccmat)
+
     # no locality damping
-    if dmatfile != 'na': 
+    if dmatfile != 'na':
         dmat = np.loadtxt(dmatfile)
         assert ccmat.shape == dmat.shape, 'Error. dimension mismatch. ccmat: %s, dmat: %s' % (repr(ccmat.shape), repr(dmat.shape))
         dampmat = np.exp(-dmat/loc)
@@ -47,8 +47,8 @@ def eca_ccmat2adjmat(args):
 
     # set A{i=j} = 0.0
     np.fill_diagonal(adjmat, 0.0)
-    
-    # eigen decomposition    
+
+    # eigen decomposition
     e, v = np.linalg.eig(adjmat)
     v = v[:, e.argsort()]
     e.sort()
@@ -86,9 +86,9 @@ def ccmat2adjmat(args):
         #print ccmat
 
     adjmat = ccmat
-    
+
     np.savetxt(outfile, adjmat, fmt = '%.4f')
-    cp._info('save adjmat to %s' % outfile) 
+    cp._info('save adjmat to %s' % outfile)
 
 
 def foo(args):

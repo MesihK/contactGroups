@@ -6,7 +6,7 @@ import collections
 # output: disportid pdb pfamid pfam_start:end disordered_start:end %_of_disorder pfam_seq
 def filterbypfam(arglist):
     if len(arglist) < 2:
-        cp._err('Usage: python proc_disprot.py filterbypfam disprot.json outfile') 
+        cp._err('Usage: python proc_disprot.py filterbypfam disprot.json outfile')
     # t.json
     jsonfile = arglist[0]
     outfile = arglist[1]
@@ -46,7 +46,7 @@ def filterbypfam(arglist):
             for r in x['disprot_consensus']['structural_state']:
                 if r['type'] == 'D':
                     disorderlist.append((r['start'], r['end']))
-        
+
         if (len(pfamlist)!=0) and (len(disorderlist)!=0):
             #print disprotid, len(pfamlist), len(disorderlist)
             for p in pfamlist:
@@ -68,8 +68,8 @@ def filterbypfam(arglist):
 
 
 # .dtype.cflat format
-# 0.pdbid 1.chainID 2.r1 3.r2 4.rn1 5.rn2 6.sc.d 7.ca.d 8.tip.d 9.area1 10.area2 11.PfamID 12.m1 13.m2 14.dca 15.trans_dca 16.trans_dca_zscore 17.mi 18.trans_mi 19.trans_mi_zscore 20.mip 21.trans_mip 22.trans_mip_zscore	
-# 23.dtype 24.disprotid 25.orig_posi1 26.orig_posi2	
+# 0.pdbid 1.chainID 2.r1 3.r2 4.rn1 5.rn2 6.sc.d 7.ca.d 8.tip.d 9.area1 10.area2 11.PfamID 12.m1 13.m2 14.dca 15.trans_dca 16.trans_dca_zscore 17.mi 18.trans_mi 19.trans_mi_zscore 20.mip 21.trans_mip 22.trans_mip_zscore
+# 23.dtype 24.disprotid 25.orig_posi1 26.orig_posi2
 # origpos: position id from the original disport sequence
 # scan through each amino acid
 # sum up ce value with other properties (specified in "opt")
@@ -98,7 +98,7 @@ def scancflat(arglist):
         if sarr[14] == '-191':
             continue
         ce = float(sarr[14]) # dca
-        score = 0 
+        score = 0
         if opt == 0:
             score = ce
         elif opt == 1:
@@ -120,7 +120,7 @@ def scancflat(arglist):
             disdict[pos1]+=score
             disdict[pos2]+=score
             cdis+=1
-        if (pos1>dend) or (pos2<dstart): # within the ordered region before / after the disordered 
+        if (pos1>dend) or (pos2<dstart): # within the ordered region before / after the disordered
             orderdict[pos1]+=score
             orderdict[pos2]+=score
             corder+=1
@@ -137,7 +137,7 @@ def scancflat(arglist):
             orderdict[pos2]+=score
             corder+=1
         else: # interactions ordered region only
-            if (pos1>=dstart) and (pos1<=dend): 
+            if (pos1>=dstart) and (pos1<=dend):
                 disdict[pos1]+=score
             if (pos2>=dstart) and (pos2<=dend):
                 disdict[pos2]+=score
@@ -145,10 +145,10 @@ def scancflat(arglist):
         '''
 
     #print '%s %.4f %4f %d %d %d %d' % (infile, sum(orderdict.values())/corder, sum(disdict.values())/cdis, len(orderdict), len(disdict), corder,cdis)
-    print '%s %.4f %4f %d %d %d %d' % (infile, sum(orderdict.values())/corder, sum(disdict.values())/cdis, len(orderdict), len(disdict), dstart,dend)
+    print(('%s %.4f %4f %d %d %d %d' % (infile, sum(orderdict.values())/corder, sum(disdict.values())/cdis, len(orderdict), len(disdict), dstart,dend)))
 
     total = sum(outdict.values())
-    x = outdict.keys()
+    x = list(outdict.keys())
     x.sort()
     with open(outfile, 'w') as fout:
         fout.write('%s\n' % ('\n'.join(['%d %.4f' % (i, outdict[i]/total) for i in x])))
@@ -160,7 +160,7 @@ def scancflat(arglist):
 def splitcflat2(arglist):
     if len(arglist) < 2:
         cp._err('Usage: python proc_disprot.py splitcflat2 seq2msamap.map PF00000.cflat2')
-    
+
     mapfile = arglist[0]
     cflatfile = arglist[1]
 
@@ -185,7 +185,7 @@ def splitcflat2(arglist):
 
     outfile = '%s-%d-%d-dtype.cflat' % (disprotid, plen, dlen)
 
-    # a dictionary from msai to posi 
+    # a dictionary from msai to posi
     # map index
     # >DP00822-PF00472-7-132-100-130
     # NVHLPDAEIELTAIRAQGAGGQNVNKVSSAMHLRFDINASSLPPFYKERLLALNDSRITSDGVIVLKAQQYRTQEQNRADALLRLSELIVNAAKVEKKRRPTRPTLGSKTRRLESKSKRGSIKAGR
@@ -203,7 +203,7 @@ def splitcflat2(arglist):
         m[int(sarr[2])] = int(sarr[0])+pstart # add pstart to restore the original index from disprot db
 
     # .cflat2 format
-    # 0.pdbid 1.chainID 2.r1 3.r2 4.rn1 5.rn2 6.sc.d 7.ca.d 8.tip.d 9.area1 10.area2 11.PfamID 12.m1 13.m2 
+    # 0.pdbid 1.chainID 2.r1 3.r2 4.rn1 5.rn2 6.sc.d 7.ca.d 8.tip.d 9.area1 10.area2 11.PfamID 12.m1 13.m2
     # 14.dca 15.trans_dca 16.trans_dca_zscore 17.mi 18.trans_mi 19.trans_mi_zscore 20.mip 21.trans_mip 22.trans_mip_zscore
 
     # append type 'O' or 'D', disprotid, orig_pos1, orig_pos2 to cflat2
@@ -223,11 +223,11 @@ def splitcflat2(arglist):
         else: # mark as "O"
             outstr.append('%s O %s %d %d' % (line, disprotid, m[msai1], m[msai2]))
             ocount+=1
-    
+
     # output a new .dtype.cflat file
     with open(outfile, 'w') as fout:
         fout.write('%s\n' % '\n'.join(outstr))
-    print ('%s %d %d %d %d' % (outfile, plen, dlen, dcount, ocount))
+    print(('%s %d %d %d %d' % (outfile, plen, dlen, dcount, ocount)))
 
 
 # window slide smoothing to detect disordered regions in the sequence
@@ -248,11 +248,11 @@ def windowslide(arglist):
         sarr = line.split(' ')
         ticklist.append(sarr[0])
         scorelist.append(float(sarr[1]))
-    
+
     #smlist = [sum(scorelist[i:wsize]) for i in xrange(0, scorelist)]
     smlist = []
     fout = open(outfile, 'w')
-    for i in xrange(0, len(scorelist)):
+    for i in range(0, len(scorelist)):
         slide = scorelist[i:i+wsize]
         smlist.append(sum(slide)/len(slide))
         fout.write('%s %.8f\n' % (ticklist[i], smlist[i]))

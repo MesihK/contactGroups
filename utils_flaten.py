@@ -3,7 +3,7 @@ import numpy as np
 from scipy.stats import skew
 
 def foo(arglist):
-    print arglist
+    print(arglist)
 
 # input: column infile, column index(0-based), outfile
 # output: .trans.zscore file with values (+zscore) raw zscore-raw trans zscore-trans
@@ -39,10 +39,10 @@ def zscoredist(arglist):
     # save raw, zscore-raw, trans, zscore-trans
     outfile = '%s.%d.trans.zscore' % (infile, int(idx))
     with open(outfile, 'w') as fout:
-        for i in xrange(0, len(rawlist)):
+        for i in range(0, len(rawlist)):
             fout.write('%.6f %.6f %.6f %.6f\n' % (nraw[i], zscore_raw[i], ntrans[i], zscore_trans[i]))
     # output infile, raw_skew, trans_skew
-    print '%s %d %.2f %.2f' % (outfile, int(idx), oldskew, newskew)
+    print(('%s %d %.2f %.2f' % (outfile, int(idx), oldskew, newskew)))
 
 if __name__=='__main__':
     cp.dispatch(__name__)

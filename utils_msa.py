@@ -1,5 +1,5 @@
 '''
-get msa position id 
+get msa position id
 '''
 import sys
 import numpy as np
@@ -10,134 +10,134 @@ from protein import protein
 
 # print out whether a uniprot name is existing in the PFam MSA
 def printUniprot():
-	if len(sys.argv) < 4:
-		print 'showUniprot: print existing target uniprot in PFXXXXX'
-		print 'example: python utils_msa.py printuniprot PF00154_full.txt Q7X416'
-		print 'output: PF00154_full.txt Q7X416 1'
-		return
+    if len(sys.argv) < 4:
+        print('showUniprot: print existing target uniprot in PFXXXXX')
+        print('example: python utils_msa.py printuniprot PF00154_full.txt Q7X416')
+        print('output: PF00154_full.txt Q7X416 1')
+        return
 
-	msafile = sys.argv[2]
-	target = sys.argv[3]
+    msafile = sys.argv[2]
+    target = sys.argv[3]
 
-	m = msa(msafile)
-	outArray = m.searchUniprot(target)
-	if len(outArray) == 0:
-		print '%s %s 0' % (msafile, target)
-	else:
-		for name in outArray:
-			print '%s %s %d' % (msafile, name, len(outArray), ' '.join(outArray))
+    m = msa(msafile)
+    outArray = m.searchUniprot(target)
+    if len(outArray) == 0:
+        print('%s %s 0' % (msafile, target))
+    else:
+        for name in outArray:
+            print('%s %s %d' % (msafile, name, len(outArray), ' '.join(outArray)))
 
 
 
 def sdii2resi():
-	if len(sys.argv) < 5:
-		print 'resi2target: given a residue number output the corresponding position in target msa'
-		print 'example:python utils_msa.py sdii2resi PF07714_full.fa.r50 BTK_HUMAN 1k2p.pdb PF07714_full.fa.r50.3128_3_sdii\n'
-		print 'output: PF07714_full.fa.r50.3128_3_sdii_resi'
-		return
+    if len(sys.argv) < 5:
+        print('resi2target: given a residue number output the corresponding position in target msa')
+        print('example:python utils_msa.py sdii2resi PF07714_full.fa.r50 BTK_HUMAN 1k2p.pdb PF07714_full.fa.r50.3128_3_sdii\n')
+        print('output: PF07714_full.fa.r50.3128_3_sdii_resi')
+        return
 
-	msafile = sys.argv[2]
-	target = sys.argv[3]
-	pdbfile = sys.argv[4]
-	sdiifile = sys.argv[5]
+    msafile = sys.argv[2]
+    target = sys.argv[3]
+    pdbfile = sys.argv[4]
+    sdiifile = sys.argv[5]
 
-	print 'msafile: %s\ntarget header: %s\npdbfile: %s\nsdii file: %s' % (msafile, target, pdbfile, sdiifile)
-	m = msa(msafile)
-	p = protein(pdbfile)
-	rtmap = m.getResiTargetMap(p, target)
-	if len(rtmap) < 1:
-		print 'error occoured in generating rtmap'
-		return
-	#print '%s: %s' % (tvar, repr(rtmap[tvar]))
-	# construct trmap from rtmap
-	# 3128: (B641, 'R')
-	trmap = {}
-	#trmap = {v: k for k, v in rtmap.iteritems()}
-	for k in rtmap:
-		msai, resn = rtmap[k]
-		if msai in trmap:
-			print 'error. duplicate key [%d] in rtmap' % msai
-			return
-		trmap[msai] = (k, resn)
+    print('msafile: %s\ntarget header: %s\npdbfile: %s\nsdii file: %s' % (msafile, target, pdbfile, sdiifile))
+    m = msa(msafile)
+    p = protein(pdbfile)
+    rtmap = m.getResiTargetMap(p, target)
+    if len(rtmap) < 1:
+        print('error occoured in generating rtmap')
+        return
+    #print '%s: %s' % (tvar, repr(rtmap[tvar]))
+    # construct trmap from rtmap
+    # 3128: (B641, 'R')
+    trmap = {}
+    #trmap = {v: k for k, v in rtmap.iteritems()}
+    for k in rtmap:
+        msai, resn = rtmap[k]
+        if msai in trmap:
+            print('error. duplicate key [%d] in rtmap' % msai)
+            return
+        trmap[msai] = (k, resn)
 
-	#print trmap
+    #print trmap
 
-	# read sdii file
-	with open(sdiifile) as f:
-		sdiilines = f.readlines()
+    # read sdii file
+    with open(sdiifile) as f:
+        sdiilines = f.readlines()
 
-	outfile = sdiifile + '_resi'
-	fout = open(outfile, 'w')
+    outfile = sdiifile + '_resi'
+    fout = open(outfile, 'w')
 
-	# 52 [pid:20029] 926-3089-3128 0.001106226720675
-	count = 0
-	for line in sdiilines:
-		count += 1
-		print '%d/%d processed ...' % (count, len(sdiilines))
-		strArr = line.strip().split(' ')
-		msailist = strArr[2].split('-')
-		sdiivalue = strArr[3]
-		fout.write('%s %s\n' % ('-'.join([repr(trmap[int(i)]) for i in msailist]), sdiivalue))
-	fout.close()
-	print 'done.\noutput file: [%s]' % outfile
+    # 52 [pid:20029] 926-3089-3128 0.001106226720675
+    count = 0
+    for line in sdiilines:
+        count += 1
+        print('%d/%d processed ...' % (count, len(sdiilines)))
+        strArr = line.strip().split(' ')
+        msailist = strArr[2].split('-')
+        sdiivalue = strArr[3]
+        fout.write('%s %s\n' % ('-'.join([repr(trmap[int(i)]) for i in msailist]), sdiivalue))
+    fout.close()
+    print('done.\noutput file: [%s]' % outfile)
 
 
 def msai2resi():
-	if len(sys.argv) < 4:
-		print 'msai2resi: output the mapping between msa position index and pdb residue number'
-		print 'example:python utils_msa.py msai2resi PF07714_full.fa BTK_HUMAN 1k2p.pdb\n'
-		print 'output: PF07714_full.fa.1k2p.pdb.map'
-		return
+    if len(sys.argv) < 4:
+        print('msai2resi: output the mapping between msa position index and pdb residue number')
+        print('example:python utils_msa.py msai2resi PF07714_full.fa BTK_HUMAN 1k2p.pdb\n')
+        print('output: PF07714_full.fa.1k2p.pdb.map')
+        return
 
-	msafile = sys.argv[2]
-	target = sys.argv[3]
-	pdbfile = sys.argv[4]
-	outfile = msafile+'.'+pdbfile+'.map'
+    msafile = sys.argv[2]
+    target = sys.argv[3]
+    pdbfile = sys.argv[4]
+    outfile = msafile+'.'+pdbfile+'.map'
 
-	print 'msafile: %s\ntarget header: %s\npdbfile: %s\noutput file: %s' % (msafile, target, pdbfile, outfile)
-	m = msa(msafile)
-	p = protein(pdbfile)
-	rtmap = m.getResiTargetMap(p, target)
-	if len(rtmap) < 1:
-		print 'error occoured in generating rtmap'
-		return
-	#print '%s: %s' % (tvar, repr(rtmap[tvar]))
-	# construct trmap from rtmap
-	# 3128: (B641, 'R')
-	trmap = {}
-	#trmap = {v: k for k, v in rtmap.iteritems()}
-	fout = open(outfile ,'w')
-	for k in rtmap:
-		msai, resn = rtmap[k]
-		if msai in trmap:
-			print 'error. duplicate key [%d] in rtmap' % msai
-			return
-		trmap[msai] = (k, resn)
-		fout.write('%d %d %d' % (msai, k, resn))
-	fout.close()
-	#print trmap	
+    print('msafile: %s\ntarget header: %s\npdbfile: %s\noutput file: %s' % (msafile, target, pdbfile, outfile))
+    m = msa(msafile)
+    p = protein(pdbfile)
+    rtmap = m.getResiTargetMap(p, target)
+    if len(rtmap) < 1:
+        print('error occoured in generating rtmap')
+        return
+    #print '%s: %s' % (tvar, repr(rtmap[tvar]))
+    # construct trmap from rtmap
+    # 3128: (B641, 'R')
+    trmap = {}
+    #trmap = {v: k for k, v in rtmap.iteritems()}
+    fout = open(outfile ,'w')
+    for k in rtmap:
+        msai, resn = rtmap[k]
+        if msai in trmap:
+            print('error. duplicate key [%d] in rtmap' % msai)
+            return
+        trmap[msai] = (k, resn)
+        fout.write('%d %d %d' % (msai, k, resn))
+    fout.close()
+    #print trmap
 
 # output: B641: (3128, 'R')
 def resi2target():
-	if len(sys.argv) < 5:
-		print 'resi2target: given a residue number output the corresponding position in target msa'
-		print 'example:python utils_msa.py resi2target PF07714_full.fa.r50 BTK_HUMAN 1k2p.pdb B641\n'
-		return
+    if len(sys.argv) < 5:
+        print('resi2target: given a residue number output the corresponding position in target msa')
+        print('example:python utils_msa.py resi2target PF07714_full.fa.r50 BTK_HUMAN 1k2p.pdb B641\n')
+        return
 
-	msafile = sys.argv[2]
-	target = sys.argv[3]
-	pdbfile = sys.argv[4]
-	tvar = sys.argv[5]
+    msafile = sys.argv[2]
+    target = sys.argv[3]
+    pdbfile = sys.argv[4]
+    tvar = sys.argv[5]
 
-	print 'msafile: %s\ntarget header: %s\npdbfile: %s\ntarget variable: %s' % (msafile, target, pdbfile, tvar)
-	m = msa(msafile)
-	p = protein(pdbfile)
-	print p.resDict[tvar]
-	rtmap = m.getResiTargetMap(p, target)
-	if len(rtmap) < 1:
-		return
-	print 'map %s: %s' % (tvar, repr(rtmap[tvar]))
-	return (tvar, rtmap[tvar][0], rtmap[tvar][1])
+    print('msafile: %s\ntarget header: %s\npdbfile: %s\ntarget variable: %s' % (msafile, target, pdbfile, tvar))
+    m = msa(msafile)
+    p = protein(pdbfile)
+    print(p.resDict[tvar])
+    rtmap = m.getResiTargetMap(p, target)
+    if len(rtmap) < 1:
+        return
+    print('map %s: %s' % (tvar, repr(rtmap[tvar])))
+    return (tvar, rtmap[tvar][0], rtmap[tvar][1])
 
 
 
@@ -148,12 +148,12 @@ def resi2target():
 # discard for implant alignment
 '''
 def sdiiparse(sdiiline, msai2seqi, pdbseqDict):
-	split1 = sdiiline.split(' ')
-	v_dep = split1[1].strip()
+        split1 = sdiiline.split(' ')
+        v_dep = split1[1].strip()
 
-	split2 = split1[0].split('-')
-	# some of the indices won't be in the msai2seqi since the column is significant but the position on target pdb msa seq are gaps
-	return '%s %s' % ('-'.join([pdbseqDict[msai2seqi[int(msai)] if int(msai) in msai2seqi else -1] for msai in split2]), v_dep)
+        split2 = split1[0].split('-')
+        # some of the indices won't be in the msai2seqi since the column is significant but the position on target pdb msa seq are gaps
+        return '%s %s' % ('-'.join([pdbseqDict[msai2seqi[int(msai)] if int(msai) in msai2seqi else -1] for msai in split2]), v_dep)
 '''
 
 # convert
@@ -169,386 +169,386 @@ def sdiiparse(sdiiline, msai2seqi, pdbseqDict):
 # discard for implant alignment
 '''
 def sdii2resi():
-	if len(sys.argv) < 5:
-		print 'sdii2resi: convert msa position to residue number in pdb for a sdii result file' 
-		print 'example: python utils_msa.py sdii2resi 1k2p_PF07714_full.fa.3128_3_sdii 1k2p_PF07714_full.fa 1k2p.pdb\n'
-		return
+        if len(sys.argv) < 5:
+                print 'sdii2resi: convert msa position to residue number in pdb for a sdii result file'
+                print 'example: python utils_msa.py sdii2resi 1k2p_PF07714_full.fa.3128_3_sdii 1k2p_PF07714_full.fa 1k2p.pdb\n'
+                return
 
-	sdiifile = sys.argv[2]
-	msafile = sys.argv[3]
-	pdbfile = sys.argv[4]
+        sdiifile = sys.argv[2]
+        msafile = sys.argv[3]
+        pdbfile = sys.argv[4]
 
-	p = protein(pdbfile)
-	m = msa(msafile)
-	seqi2msai, msai2seqi = m.getPosMap(p)
+        p = protein(pdbfile)
+        m = msa(msafile)
+        seqi2msai, msai2seqi = m.getPosMap(p)
 
-	with open(sdiifile) as f:
-		sdiilines = f.readlines()
+        with open(sdiifile) as f:
+                sdiilines = f.readlines()
 
-	for line in sdiilines:
-		print sdiiparse(line, msai2seqi, p.seqDict)
+        for line in sdiilines:
+                print sdiiparse(line, msai2seqi, p.seqDict)
 '''
 
 def writeUniprotSeq():
-	if len(sys.argv) < 4:
-		print 'writeUniprotSeq: get msa sequence without gaps by searching fasta name'
-		print 'example: python utils_msa.py writeuniprotseq PF07714_full.txt BTK_HUMAN\n'
-		return
+    if len(sys.argv) < 4:
+        print('writeUniprotSeq: get msa sequence without gaps by searching fasta name')
+        print('example: python utils_msa.py writeuniprotseq PF07714_full.txt BTK_HUMAN\n')
+        return
 
-	msafile = sys.argv[2]
-	msaheader = sys.argv[3].upper()
-	outfile = '%s-%s.seq' % (msafile[0:7], msaheader)
+    msafile = sys.argv[2]
+    msaheader = sys.argv[3].upper()
+    outfile = '%s-%s.seq' % (msafile[0:7], msaheader)
 
 
-	print 'msa file: %s' % msafile
-	print 'target entry: %s' % msaheader
+    print('msa file: %s' % msafile)
+    print('target entry: %s' % msaheader)
 
-	msaseq = ''
-	m = msa(msafile)
-	m.setTarget(msaheader)
+    msaseq = ''
+    m = msa(msafile)
+    m.setTarget(msaheader)
 
-	for s in m.msaArray:
-		if msaheader in s[0]:
-			msaheader = s[0]
-			msaseq = s[1]
+    for s in m.msaArray:
+        if msaheader in s[0]:
+            msaheader = s[0]
+            msaseq = s[1]
 
-	outputSeq = []
-	for a in msaseq:
-		if a in ['.', '-', '_']:
-			continue
-		else:
-			outputSeq.append(a)
+    outputSeq = []
+    for a in msaseq:
+        if a in ['.', '-', '_']:
+            continue
+        else:
+            outputSeq.append(a)
 
-	print msaheader
-	print 'writing: %s' % outfile
-	fout = open(outfile, 'w')
-	fout.write(''.join(outputSeq))
-	fout.close()
+    print(msaheader)
+    print('writing: %s' % outfile)
+    fout = open(outfile, 'w')
+    fout.write(''.join(outputSeq))
+    fout.close()
 
 
 def getSeqbyName():
-	if len(sys.argv) < 4:
-		print 'getSeqbyName: get msa sequence without gaps by searching fasta header (uniprot KB)'
-		print 'example: python utils_msa.py getseqbyname PF07714_full.fa BTK_HUMAN\n'
-		return
+    if len(sys.argv) < 4:
+        print('getSeqbyName: get msa sequence without gaps by searching fasta header (uniprot KB)')
+        print('example: python utils_msa.py getseqbyname PF07714_full.fa BTK_HUMAN\n')
+        return
 
-	msafile = sys.argv[2]
-	msaheader = sys.argv[3].upper()
-	#print 'msa file: %s' % msafile
-	#print 'target entry: %s' % msaheader
+    msafile = sys.argv[2]
+    msaheader = sys.argv[3].upper()
+    #print 'msa file: %s' % msafile
+    #print 'target entry: %s' % msaheader
 
-	msaseq = ''
-	m = msa(msafile)
-	#m.setTarget(msaheader)
+    msaseq = ''
+    m = msa(msafile)
+    #m.setTarget(msaheader)
 
-	for s in m.msaArray:
-		if msaheader in s[0]:
-			msaheader = s[0]
-			msaseq = s[1]
+    for s in m.msaArray:
+        if msaheader in s[0]:
+            msaheader = s[0]
+            msaseq = s[1]
 
-	outputSeq = []
-	for a in msaseq:
-		if a in ['.', '-', '_']:
-			continue
-		else:
-			outputSeq.append(a.upper())
+    outputSeq = []
+    for a in msaseq:
+        if a in ['.', '-', '_']:
+            continue
+        else:
+            outputSeq.append(a.upper())
 
-	#print msaheader
-	print ''.join(outputSeq)
+    #print msaheader
+    print(''.join(outputSeq))
 
 
 def getMsabyName():
-	if len(sys.argv) < 4:
-		print 'getMsabyName: get msa sequence with gaps by searching fasta name'
-		print 'example: python utils_msa.py getmsabyname PF07714_full.fa BTK_HUMAN\n'
-		return
+    if len(sys.argv) < 4:
+        print('getMsabyName: get msa sequence with gaps by searching fasta name')
+        print('example: python utils_msa.py getmsabyname PF07714_full.fa BTK_HUMAN\n')
+        return
 
-	msafile = sys.argv[2]
-	msaheader = sys.argv[3].upper()
-	#print 'msa file: %s' % msafile
-	#print 'target entry: %s' % msaheader
+    msafile = sys.argv[2]
+    msaheader = sys.argv[3].upper()
+    #print 'msa file: %s' % msafile
+    #print 'target entry: %s' % msaheader
 
-	msaseq = ''
-	m = msa(msafile)
-	#m.setTarget(msaheader)
+    msaseq = ''
+    m = msa(msafile)
+    #m.setTarget(msaheader)
 
-	for s in m.msaArray:
-		if msaheader in s[0]:
-			#print s[0]
-			print s[1]
-			break
+    for s in m.msaArray:
+        if msaheader in s[0]:
+            #print s[0]
+            print(s[1])
+            break
 
 def pdistDistribution():
-	if len(sys.argv) < 3:
-		print 'pdist: write pairwise sequence simiarity value in a file' 
-		print 'example: python utils_msa.py pdist PF07714_full.fa BTK_HUMAN\n'
-		return
+    if len(sys.argv) < 3:
+        print('pdist: write pairwise sequence simiarity value in a file')
+        print('example: python utils_msa.py pdist PF07714_full.fa BTK_HUMAN\n')
+        return
 
-	msafile = sys.argv[2]
-	target = sys.argv[3]
-	outfile = '%s.pdist' % msafile
+    msafile = sys.argv[2]
+    target = sys.argv[3]
+    outfile = '%s.pdist' % msafile
 
-	print 'msa file: %s\ntarget header: %s\noutfile: %s\n' % (msafile, target, outfile)
+    print('msa file: %s\ntarget header: %s\noutfile: %s\n' % (msafile, target, outfile))
 
-	print 'loading msa ...'
-	m = msa(msafile)
-	m.setTarget(target)
-	print
+    print('loading msa ...')
+    m = msa(msafile)
+    m.setTarget(target)
+    print()
 
-	print 'saving to [%s] ...' % outfile
-	pdist = m.getpdist()
-	np.savetxt(outfile, pdist, fmt='%.8', delimiter='\n')
-	print '%d pdist saved.' % len(pdist)
+    print('saving to [%s] ...' % outfile)
+    pdist = m.getpdist()
+    np.savetxt(outfile, pdist, fmt='%.8', delimiter='\n')
+    print('%d pdist saved.' % len(pdist))
 
 
 def reduceByHamming():
-	if len(sys.argv) < 3:
-		print 'reduceByHamming: reduce a msa file by selecting sequences that have sequential similarity < 62% (hamming dist > 0.38)'
-		print 'example: python utils_msa.py reducebyhamming PF07714_full.fa BTK_HUMAN\n'
-		return
+    if len(sys.argv) < 3:
+        print('reduceByHamming: reduce a msa file by selecting sequences that have sequential similarity < 62% (hamming dist > 0.38)')
+        print('example: python utils_msa.py reducebyhamming PF07714_full.fa BTK_HUMAN\n')
+        return
 
-	msafile = sys.argv[2]
-	target = sys.argv[3]
-	outfile = '%s.s62' % msafile
+    msafile = sys.argv[2]
+    target = sys.argv[3]
+    outfile = '%s.s62' % msafile
 
-	print 'msa file: %s\ntarget header: %s\noutfile: %s\n' % (msafile, target, outfile)
+    print('msa file: %s\ntarget header: %s\noutfile: %s\n' % (msafile, target, outfile))
 
-	print 'loading msa ...'
-	m = msa(msafile)
-	m.setTarget(target)
-	print 
+    print('loading msa ...')
+    m = msa(msafile)
+    m.setTarget(target)
+    print()
 
-	m.hammingReduction(outfile, 0.62)
+    m.hammingReduction(outfile, 0.62)
 
 
 
 def reduceByWeight():
-	if len(sys.argv) < 5:
-		print 'reduceByWeight: reduce a msa file by weighing and reduce scale (x%)'
-		print 'example: python utils_msa.py reducebyweight 1k2p_PF07714_full.fa test.weight BTK_HUMAN 0.5\n'
-		return
+    if len(sys.argv) < 5:
+        print('reduceByWeight: reduce a msa file by weighing and reduce scale (x%)')
+        print('example: python utils_msa.py reducebyweight 1k2p_PF07714_full.fa test.weight BTK_HUMAN 0.5\n')
+        return
 
-	msafile = sys.argv[2]
-	weightfile = sys.argv[3]
-	target = sys.argv[4]
-	scale = float(sys.argv[5])
-	outfile ='%s.r%d' % (msafile, scale*100)
-	print 'msa file: %s' % msafile
-	print 'weight file: %s' % weightfile
-	print 'target: %s' % target
-	print 'reduce scale: %f' % scale
-	print 'output file: %s' % outfile
+    msafile = sys.argv[2]
+    weightfile = sys.argv[3]
+    target = sys.argv[4]
+    scale = float(sys.argv[5])
+    outfile ='%s.r%d' % (msafile, scale*100)
+    print('msa file: %s' % msafile)
+    print('weight file: %s' % weightfile)
+    print('target: %s' % target)
+    print('reduce scale: %f' % scale)
+    print('output file: %s' % outfile)
 
-	weight = np.loadtxt(weightfile, delimiter=',')
-	print 'weight loaded : %s' % repr(weight.shape)
+    weight = np.loadtxt(weightfile, delimiter=',')
+    print('weight loaded : %s' % repr(weight.shape))
 
-	print 'loading msa file ...'
-	m = msa(msafile)
-	m.setTarget(target)
+    print('loading msa file ...')
+    m = msa(msafile)
+    m.setTarget(target)
 
-	rlist=[]
-	for i in xrange(0, len(weight)):
-		rlist.append((i, weight[i]))
+    rlist=[]
+    for i in range(0, len(weight)):
+        rlist.append((i, weight[i]))
 
-	# 0 -> len(weight)
-	# small -> large
-	sort_rlist = sorted(rlist, key=lambda x: x[1])
+    # 0 -> len(weight)
+    # small -> large
+    sort_rlist = sorted(rlist, key=lambda x: x[1])
 
-	#for k in xrange(0, len(sort_rlist)):
-	#	print '[%d]:[%s]' % (k, repr(sort_rlist[k]))
+    #for k in xrange(0, len(sort_rlist)):
+    #       print '[%d]:[%s]' % (k, repr(sort_rlist[k]))
 
-	goal = int(len(weight) * (1-scale))
+    goal = int(len(weight) * (1-scale))
 
-	target_flag = False
-	fout = open(outfile, 'w')
-	# save msa sequences with large weights
-	print 'Writing output ...'
-	for k in xrange(goal, len(weight)):
-		(index, w) = sort_rlist[k]
-		#print '%d, %f' % (index, w)
-		if m.msaArray[index][0] == m.target[0]:
-			target_flag = True
-		fout.write('>%s\n%s\n' % (m.msaArray[index][0], m.msaArray[index][1]))
-	if target_flag == False:
-		print 'Inserting target sequence: %s' % m.target[0]
-		fout.write('>%s\n%s\n' % (m.target[0], m.target[1]))
-	fout.close()
-	print 'reduced msa: [%s]\nlen: %d' % (outfile, goal)
+    target_flag = False
+    fout = open(outfile, 'w')
+    # save msa sequences with large weights
+    print('Writing output ...')
+    for k in range(goal, len(weight)):
+        (index, w) = sort_rlist[k]
+        #print '%d, %f' % (index, w)
+        if m.msaArray[index][0] == m.target[0]:
+            target_flag = True
+        fout.write('>%s\n%s\n' % (m.msaArray[index][0], m.msaArray[index][1]))
+    if target_flag == False:
+        print('Inserting target sequence: %s' % m.target[0])
+        fout.write('>%s\n%s\n' % (m.target[0], m.target[1]))
+    fout.close()
+    print('reduced msa: [%s]\nlen: %d' % (outfile, goal))
 
 
 def findfamiliar():
-	if len(sys.argv)<4:
-		print 'findfamiliar: find sequences with mutually hamming distance'
-		print 'example: python utils_msa.py findfamiliar PF07714_full.txt BTK_HUMAN 0.8 0.1,0.4'
-		return
+    if len(sys.argv)<4:
+        print('findfamiliar: find sequences with mutually hamming distance')
+        print('example: python utils_msa.py findfamiliar PF07714_full.txt BTK_HUMAN 0.8 0.1,0.4')
+        return
 
-	msafile = sys.argv[2]
-	target = sys.argv[3]
-	gap_cutoff = float(sys.argv[4]) # gap cutoff
-	range_str = sys.argv[5] # hamming cutoff
-	rangeArray = [float(i) for i in range_str.split(',')]
-	rangeArray.sort()
+    msafile = sys.argv[2]
+    target = sys.argv[3]
+    gap_cutoff = float(sys.argv[4]) # gap cutoff
+    range_str = sys.argv[5] # hamming cutoff
+    rangeArray = [float(i) for i in range_str.split(',')]
+    rangeArray.sort()
 
-	print '\nmsa file: %s' % msafile
-	print 'target: %s' % target
-	print 'gap cutoff: %f' % gap_cutoff
-	print 'hamming cutoff range: %s' % repr(rangeArray)
+    print('\nmsa file: %s' % msafile)
+    print('target: %s' % target)
+    print('gap cutoff: %f' % gap_cutoff)
+    print('hamming cutoff range: %s' % repr(rangeArray))
 
-	print 'loading msa file ...'
-	m = msa(msafile)
-	m.setTarget(target)
+    print('loading msa file ...')
+    m = msa(msafile)
+    m.setTarget(target)
 
-	print 'filtering sequences ...'
-	row_set = m.find_familiar(gap_cutoff, rangeArray)
+    print('filtering sequences ...')
+    row_set = m.find_familiar(gap_cutoff, rangeArray)
 
-	for i in row_set:
-		(head, msaline) = m.msaArray[i]
-		seq = msaline.replace('.','').replace('-','').lower()
-		headArray = head.split('/')
-		outname = '%s-%s-%d.sseq' % (msafile[0:7], headArray[0], i)
-		#print '%s %s' % (outname, seq)
-		fout = open(outname, 'w')
-		fout.write(seq)
-		fout.close()
+    for i in row_set:
+        (head, msaline) = m.msaArray[i]
+        seq = msaline.replace('.','').replace('-','').lower()
+        headArray = head.split('/')
+        outname = '%s-%s-%d.sseq' % (msafile[0:7], headArray[0], i)
+        #print '%s %s' % (outname, seq)
+        fout = open(outname, 'w')
+        fout.write(seq)
+        fout.close()
 
-	print 'findsimilar: %d sequences generated.' % len(row_set)
+    print('findsimilar: %d sequences generated.' % len(row_set))
 
 
 def extractnseq():
-	if len(sys.argv)<3:
-		print 'findfamiliar: extract n sequences from MSA file' 
-		print 'example: python utils_msa.py extractnseq PF07714_full.txt number_of_sequence'
-		return
+    if len(sys.argv)<3:
+        print('findfamiliar: extract n sequences from MSA file')
+        print('example: python utils_msa.py extractnseq PF07714_full.txt number_of_sequence')
+        return
 
-	msafile = sys.argv[2]
-	nseq = int(sys.argv[3]) 
+    msafile = sys.argv[2]
+    nseq = int(sys.argv[3])
 
-	print '\nmsa file: %s' % msafile
-	print 'nseq: %d' % nseq
+    print('\nmsa file: %s' % msafile)
+    print('nseq: %d' % nseq)
 
-	print 'loading msa file ...'
-	m = msa(msafile)
-	#m.setTarget(target)
+    print('loading msa file ...')
+    m = msa(msafile)
+    #m.setTarget(target)
 
-	if len(m.msaArray) < nseq:
-		print 'not enough sequence in MSA'
-		exit(-1)
+    if len(m.msaArray) < nseq:
+        print('not enough sequence in MSA')
+        exit(-1)
 
-	for i in xrange(0,nseq):
-		(head, msaline) = m.msaArray[i]
-		headArray = head.split('/')
-		seq = msaline.replace('.','').replace('-','').lower()
-		outname = '%s-%s-%d.sseq' % (msafile[0:7], headArray[0], i)
-		#print '%s %s' % (outname, seq)
-		fout = open(outname, 'w')
-		fout.write(seq)
-		fout.close()
+    for i in range(0,nseq):
+        (head, msaline) = m.msaArray[i]
+        headArray = head.split('/')
+        seq = msaline.replace('.','').replace('-','').lower()
+        outname = '%s-%s-%d.sseq' % (msafile[0:7], headArray[0], i)
+        #print '%s %s' % (outname, seq)
+        fout = open(outname, 'w')
+        fout.write(seq)
+        fout.close()
 
-	print 'extractnseq: %d sequences generated.' % nseq
+    print('extractnseq: %d sequences generated.' % nseq)
 
 
 def MSAReduction():
-	if len(sys.argv) < 4:
-		print 'msareduction: reduce columns and rows by cutoffs'
-		print 'example: python utils_msa.py msareduction PF07714_full.fa BTK_HUMAN 0.8 0.38'
-		print 'python utils_msa.py msareduction PF13855_full.txt RTN4R_HUMAN 0.8 -1'
-		print 'python utils_msa.py msareduction PF13855_full.txt null 0.9 -1'
-		return
+    if len(sys.argv) < 4:
+        print('msareduction: reduce columns and rows by cutoffs')
+        print('example: python utils_msa.py msareduction PF07714_full.fa BTK_HUMAN 0.8 0.38')
+        print('python utils_msa.py msareduction PF13855_full.txt RTN4R_HUMAN 0.8 -1')
+        print('python utils_msa.py msareduction PF13855_full.txt null 0.9 -1')
+        return
 
-	msafile = sys.argv[2]
-	target = sys.argv[3]
-	gap_cutoff = float(sys.argv[4]) # gap cutoff
-	hamming_cutoff = float(sys.argv[5]) # hamming cutoff
+    msafile = sys.argv[2]
+    target = sys.argv[3]
+    gap_cutoff = float(sys.argv[4]) # gap cutoff
+    hamming_cutoff = float(sys.argv[5]) # hamming cutoff
 
-	print '\nmsa file: %s' % msafile
-	print 'target: %s' % target
-	print 'gap cutoff: %f' % gap_cutoff
-	print 'hamming cutoff: %s' % hamming_cutoff
+    print('\nmsa file: %s' % msafile)
+    print('target: %s' % target)
+    print('gap cutoff: %f' % gap_cutoff)
+    print('hamming cutoff: %s' % hamming_cutoff)
 
-	print 'loading msa file ...'
-	m = msa(msafile)
+    print('loading msa file ...')
+    m = msa(msafile)
 
-	if target != 'null':
-		m.setTarget(target)
-		(seqboard, scoreboard, column_index, row_index) = m.get_msaboard_RC_RR(gap_cutoff, hamming_cutoff)
-	else:
-		(seqboard, scoreboard, column_index, row_index) = m.msareduction_notarget(gap_cutoff, hamming_cutoff)
+    if target != 'null':
+        m.setTarget(target)
+        (seqboard, scoreboard, column_index, row_index) = m.get_msaboard_RC_RR(gap_cutoff, hamming_cutoff)
+    else:
+        (seqboard, scoreboard, column_index, row_index) = m.msareduction_notarget(gap_cutoff, hamming_cutoff)
 
 
-	'''
-	print 'score matrix:'
-	for i in xrange(0, len(score)):
-		print repr(score[i])
-	print 'column index: %s' % repr(column_index)
-	print 'row index: %s' % repr(row_index)
-	'''
-	#seqs = np.array(seqboard)[row_index,:][:,column_index]
-	seqs = np.array(seqboard)[row_index,:] # complete column reduced row
+    '''
+    print 'score matrix:'
+    for i in xrange(0, len(score)):
+            print repr(score[i])
+    print 'column index: %s' % repr(column_index)
+    print 'row index: %s' % repr(row_index)
+    '''
+    #seqs = np.array(seqboard)[row_index,:][:,column_index]
+    seqs = np.array(seqboard)[row_index,:] # complete column reduced row
 
-	fout = open(msafile+'.rseq', 'w')
-	for i in xrange(0, len(row_index)):
-		header = m.msaArray[row_index[i]][0]
-		fout.write('>'+header+'\n')
-		fout.write(''.join(seqs[i,:])+'\n')
-	fout.close()
-	print 'save reduced sequences to file: [%s]' % (msafile+'.rseq')
-	#np.savetxt(msafile+'.rseq', seqs, delimiter='')
+    fout = open(msafile+'.rseq', 'w')
+    for i in range(0, len(row_index)):
+        header = m.msaArray[row_index[i]][0]
+        fout.write('>'+header+'\n')
+        fout.write(''.join(seqs[i,:])+'\n')
+    fout.close()
+    print('save reduced sequences to file: [%s]' % (msafile+'.rseq'))
+    #np.savetxt(msafile+'.rseq', seqs, delimiter='')
 
-	score = np.array(scoreboard)[row_index,:][:,column_index]
-	#np.savetxt(msafile+'.score', score, fmt='%.8', delimiter=',')
-	print 'save score to file: [%s]' % (msafile+'.score')
-	np.savetxt(msafile+'.score', score, fmt='%d', delimiter=',')
-	print 'save reduced row indices to file: [%s]' % (msafile+'.row')
-	fout = open(msafile+'.row', 'w')
-	fout.write(','.join([str(i) for i in row_index])+'\n')
-	fout.close()
+    score = np.array(scoreboard)[row_index,:][:,column_index]
+    #np.savetxt(msafile+'.score', score, fmt='%.8', delimiter=',')
+    print('save score to file: [%s]' % (msafile+'.score'))
+    np.savetxt(msafile+'.score', score, fmt='%d', delimiter=',')
+    print('save reduced row indices to file: [%s]' % (msafile+'.row'))
+    fout = open(msafile+'.row', 'w')
+    fout.write(','.join([str(i) for i in row_index])+'\n')
+    fout.close()
 
-	print 'save reduced column indices to file: [%s]' % (msafile+'.col')
-	fout = open(msafile+'.col', 'w')
-	fout.write(','.join([str(i) for i in column_index])+'\n')
-	fout.close()
+    print('save reduced column indices to file: [%s]' % (msafile+'.col'))
+    fout = open(msafile+'.col', 'w')
+    fout.write(','.join([str(i) for i in column_index])+'\n')
+    fout.close()
 
 
 
 def searchpdbseq():
-	if len(sys.argv) < 2:
-		print 'searchpdbseq: locate pdb sequence in MSA' 
-		print 'example: python utils_msa.py searchpdbseq PF07714_full.fa 1T49_A.pdb\n'
-		return	
+    if len(sys.argv) < 2:
+        print('searchpdbseq: locate pdb sequence in MSA')
+        print('example: python utils_msa.py searchpdbseq PF07714_full.fa 1T49_A.pdb\n')
+        return
 
-	msafile = sys.argv[2]
-	target = sys.argv[3]
+    msafile = sys.argv[2]
+    target = sys.argv[3]
 
-	print 'msa file: %s' % msafile
-	print 'pdb target: %s' % target
+    print('msa file: %s' % msafile)
+    print('pdb target: %s' % target)
 
-	m = msa(msafile)
-	p = protein(target)
+    m = msa(msafile)
+    p = protein(target)
 
-	if m.searchTargetPDB(p)==0:
-		print 'cannot locate pdb sequence in MSA'
+    if m.searchTargetPDB(p)==0:
+        print('cannot locate pdb sequence in MSA')
 
 
 def resi2msai():
-	if len(sys.argv) < 5:
-		print 'resi2target: given a residue number output the corresponding position in target msa'
-		print 'python utils_msa.py resi2msai PF00014_full.txt BPT1_BOVIN 5pti_pf.pdb A6'
-		return
+    if len(sys.argv) < 5:
+        print('resi2target: given a residue number output the corresponding position in target msa')
+        print('python utils_msa.py resi2msai PF00014_full.txt BPT1_BOVIN 5pti_pf.pdb A6')
+        return
 
-	msafile = sys.argv[2]
-	target = sys.argv[3]
-	pdbfile = sys.argv[4]
-	tvar = sys.argv[5]
+    msafile = sys.argv[2]
+    target = sys.argv[3]
+    pdbfile = sys.argv[4]
+    tvar = sys.argv[5]
 
-	print 'msafile: %s\ntarget header: %s\npdbfile: %s\ntarget variable: %s' % (msafile, target, pdbfile, tvar)
-	m = msa(msafile)
-	p = protein(pdbfile)
-	print p.resDict[tvar]
-	rtmap = m.getResiTargetMap(p, target)
-	if len(rtmap) < 1:
-		return
-	print 'map %s: %s' % (tvar, repr(rtmap[tvar]))
-	return (tvar, rtmap[tvar][0], rtmap[tvar][1])
+    print('msafile: %s\ntarget header: %s\npdbfile: %s\ntarget variable: %s' % (msafile, target, pdbfile, tvar))
+    m = msa(msafile)
+    p = protein(pdbfile)
+    print(p.resDict[tvar])
+    rtmap = m.getResiTargetMap(p, target)
+    if len(rtmap) < 1:
+        return
+    print('map %s: %s' % (tvar, repr(rtmap[tvar])))
+    return (tvar, rtmap[tvar][0], rtmap[tvar][1])
 
 
 
@@ -568,34 +568,34 @@ def resi2msai():
 # return sorted msa column groups
 # [[210, 215], [106, 211], [73, 95, 166], [109, 124, 139]]
 def hcg2msa(filename, rtmap):
-	fin = open(filename, 'r')
-	lines = fin.readlines()
-	fin.close()
+    fin = open(filename, 'r')
+    lines = fin.readlines()
+    fin.close()
 
-	msaGroupArray = []
-	for line in lines:
-		line = line.strip()
-		if len(line)<1:
-			continue
-		print line
-		lineArray = line.split(',')
-		if len(lineArray[1])<2:
-			continue
-		# remove chain ID
-		#resiStr = filter(lambda x: x.isdigit() or x==' ', lineArray[2])
-		resiStr = lineArray[2] # A31 A24 A27
-		#print resiStr.split(' ')
-		msaColArray = [rtmap[resi][0] for resi in resiStr.split(' ')] # [139, 109, 124]
-		#print msaColArray
-		msaColArray.sort()
-		msaGroupArray.append(msaColArray)
-		#msaGroupArray.append('-'.join([str(i) for i in msaColArray])) # ['210-215', '106-211', '73-95-166', '109-124-139']
+    msaGroupArray = []
+    for line in lines:
+        line = line.strip()
+        if len(line)<1:
+            continue
+        print(line)
+        lineArray = line.split(',')
+        if len(lineArray[1])<2:
+            continue
+        # remove chain ID
+        #resiStr = filter(lambda x: x.isdigit() or x==' ', lineArray[2])
+        resiStr = lineArray[2] # A31 A24 A27
+        #print resiStr.split(' ')
+        msaColArray = [rtmap[resi][0] for resi in resiStr.split(' ')] # [139, 109, 124]
+        #print msaColArray
+        msaColArray.sort()
+        msaGroupArray.append(msaColArray)
+        #msaGroupArray.append('-'.join([str(i) for i in msaColArray])) # ['210-215', '106-211', '73-95-166', '109-124-139']
 
-		#print msaColArray
-		#print ''
+        #print msaColArray
+        #print ''
 
-	print repr(msaGroupArray)
-	return msaGroupArray
+    print(repr(msaGroupArray))
+    return msaGroupArray
 
 
 # load sdii into a dictionary
@@ -609,60 +609,60 @@ def hcg2msa(filename, rtmap):
 '''
 # return dictionary with (key: 39-140-210, value = 0.0788593466276019)
 def loadsdii(sdiifile):
-	fin = open(sdiifile, 'r')
-	lines = fin.readlines()
-	fin.close()
+    fin = open(sdiifile, 'r')
+    lines = fin.readlines()
+    fin.close()
 
-	sdict = {}
-	for line in lines:
-		line = line.strip()
-		if len(line)<1:
-			continue
-		strArray = line.split(' ')
-		sdict[strArray[0]] = float(strArray[1])
-	
-	#print repr(sdict)
-	return sdict	
+    sdict = {}
+    for line in lines:
+        line = line.strip()
+        if len(line)<1:
+            continue
+        strArray = line.split(' ')
+        sdict[strArray[0]] = float(strArray[1])
+
+    #print repr(sdict)
+    return sdict
 
 # calculate columwised substritution marix
 # input a column of MSA in list type
 def calcColSM(sm, msaMatrix, column):
-	#rc = msaMatrix[:, column].replace('-','.').replace('O','.').replace('U','.').replace('X','.').replace('B','.').replace('Z','.')
-	colset = set(msaMatrix[:, column])
-	if '.' in colset:
-		colset.remove('.')
-	if '-' in colset:
-		colset.remove('-')
-	if 'O' in colset:
-		colset.remove('O')
-	if 'U' in colset:
-		colset.remove('U')
-	if 'X' in colset:
-		colset.remove('X')
-	if 'B' in colset:
-		colset.remove('B')
-	if 'Z' in colset:
-		colset.remove('Z')
-	#alphabet = sorted(set(msaMatrix[:, column])) # get sorted alphabet list
-	alphabet = sorted(colset) # get sorted alphabet list
-	#print repr(alphabet)
-	# get A frequency
-	freqDict = collections.Counter(msaMatrix[:, column]) # get frequency
-	#print repr(freqDict)
+    #rc = msaMatrix[:, column].replace('-','.').replace('O','.').replace('U','.').replace('X','.').replace('B','.').replace('Z','.')
+    colset = set(msaMatrix[:, column])
+    if '.' in colset:
+        colset.remove('.')
+    if '-' in colset:
+        colset.remove('-')
+    if 'O' in colset:
+        colset.remove('O')
+    if 'U' in colset:
+        colset.remove('U')
+    if 'X' in colset:
+        colset.remove('X')
+    if 'B' in colset:
+        colset.remove('B')
+    if 'Z' in colset:
+        colset.remove('Z')
+    #alphabet = sorted(set(msaMatrix[:, column])) # get sorted alphabet list
+    alphabet = sorted(colset) # get sorted alphabet list
+    #print repr(alphabet)
+    # get A frequency
+    freqDict = collections.Counter(msaMatrix[:, column]) # get frequency
+    #print repr(freqDict)
 
-	# calculate AA frequency cij
-	for i in xrange(0, len(alphabet)):
-		A = alphabet[i].upper()
-		if A not in alphabet:
-			continue
-		for j in xrange(i+1, len(alphabet)):
-			B = alphabet[j].upper()
-			if B not in alphabet:
-				continue
-			sm[A+B] += freqDict[A]*freqDict[B]
-		sm[A+A] += freqDict[A]*(freqDict[A]-1)/2
+    # calculate AA frequency cij
+    for i in range(0, len(alphabet)):
+        A = alphabet[i].upper()
+        if A not in alphabet:
+            continue
+        for j in range(i+1, len(alphabet)):
+            B = alphabet[j].upper()
+            if B not in alphabet:
+                continue
+            sm[A+B] += freqDict[A]*freqDict[B]
+        sm[A+A] += freqDict[A]*(freqDict[A]-1)/2
 
-	return 
+    return
 
 
 
@@ -670,137 +670,137 @@ def calcColSM(sm, msaMatrix, column):
 # read hcg pdb msa(raw) sdii pdbtitle
 # output new substitute matrix
 def hcg2blossum():
-	if len(sys.argv) < 4:
-		print 'hcg2blossum: construct new substitution matrix from contact group'
-		print 'example:python utils_msa.py hcg2blossum 5pti_pf.pdb 5pti_pf.tip.hcg PF00014_full.txt.rseq PF00014_full.txt.sdii PF00014_full.txt.sm BPT1_BOVIN'
-		print 'output: a substitution matrix file (same format as BLOSSUM62)'
-		return
-	#print sys.argv[0] # utils_msa.py
-	#print sys.argv[1] # hcg2blossum
-	pdbfile = sys.argv[2] # pdb name
-	hcgfile = sys.argv[3] # hcg
-	msafile = sys.argv[4] # msa (full or reduced)
-	sdiifile = sys.argv[5] # sdii
-	outfile = sys.argv[6] # new substitution matrix
-	target = sys.argv[7] # target name
+    if len(sys.argv) < 4:
+        print('hcg2blossum: construct new substitution matrix from contact group')
+        print('example:python utils_msa.py hcg2blossum 5pti_pf.pdb 5pti_pf.tip.hcg PF00014_full.txt.rseq PF00014_full.txt.sdii PF00014_full.txt.sm BPT1_BOVIN')
+        print('output: a substitution matrix file (same format as BLOSSUM62)')
+        return
+    #print sys.argv[0] # utils_msa.py
+    #print sys.argv[1] # hcg2blossum
+    pdbfile = sys.argv[2] # pdb name
+    hcgfile = sys.argv[3] # hcg
+    msafile = sys.argv[4] # msa (full or reduced)
+    sdiifile = sys.argv[5] # sdii
+    outfile = sys.argv[6] # new substitution matrix
+    target = sys.argv[7] # target name
 
-	# get msa in matrix format
-	m = msa(msafile)
-	msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
+    # get msa in matrix format
+    m = msa(msafile)
+    msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
 
-	#for i in xrange(0, len(seqs)):
-	#	print seqs[i]
-	print 'msa matrix: ' + repr(msaMatrix.shape)
+    #for i in xrange(0, len(seqs)):
+    #       print seqs[i]
+    print('msa matrix: ' + repr(msaMatrix.shape))
 
-	# get resi -> msai map	
-	p = protein(pdbfile)
-	rtmap = m.getResiTargetMap(p, target)
+    # get resi -> msai map
+    p = protein(pdbfile)
+    rtmap = m.getResiTargetMap(p, target)
 
-	sdiidict = loadsdii(sdiifile) # key: 39-140-210, value = 0.0788593466276019
-	msaGroupArray = hcg2msa(hcgfile, rtmap) # [[210, 215], [106, 211], [73, 95, 166], [109, 124, 139]]
+    sdiidict = loadsdii(sdiifile) # key: 39-140-210, value = 0.0788593466276019
+    msaGroupArray = hcg2msa(hcgfile, rtmap) # [[210, 215], [106, 211], [73, 95, 166], [109, 124, 139]]
 
-	# init substitution matrix
-	EBlist = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*']
-	#AAlist = sorted(EBlist)
-	#AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*'])
-	AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'])
-	sm = {}
-	for i in xrange(0, len(AAlist)):
-		for j in xrange(i, len(AAlist)):
-			key = '%s%s' % (AAlist[i], AAlist[j])
-			sm[key] = 0
-	print AAlist
-	print 'Alphabet: %d' % len(AAlist) 
-	print 'AA: %d' % len(sm)
+    # init substitution matrix
+    EBlist = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*']
+    #AAlist = sorted(EBlist)
+    #AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*'])
+    AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'])
+    sm = {}
+    for i in range(0, len(AAlist)):
+        for j in range(i, len(AAlist)):
+            key = '%s%s' % (AAlist[i], AAlist[j])
+            sm[key] = 0
+    print(AAlist)
+    print('Alphabet: %d' % len(AAlist))
+    print('AA: %d' % len(sm))
 
-	# accumulate substitution matrix AA frequency for all the contact group columns
-	# Sum the scores for each columns across column
-	print ''
-	w = 0 # count column number
-	for mg in msaGroupArray:
-		# form key for co-evolve value 
-		sdiikey = '-'.join([str(i) for i in mg])
-		if sdiikey not in sdiidict:
-			print 'hcg2blossum():discard group: %s' % sdiikey
-			continue
-		sdiiweight = sdiidict[sdiikey]
-		print (sdiikey, sdiiweight)
+    # accumulate substitution matrix AA frequency for all the contact group columns
+    # Sum the scores for each columns across column
+    print('')
+    w = 0 # count column number
+    for mg in msaGroupArray:
+        # form key for co-evolve value
+        sdiikey = '-'.join([str(i) for i in mg])
+        if sdiikey not in sdiidict:
+            print('hcg2blossum():discard group: %s' % sdiikey)
+            continue
+        sdiiweight = sdiidict[sdiikey]
+        print((sdiikey, sdiiweight))
 
-		# accumulate SM for each contact group / column group
-		for col in mg:
-			w +=1
-			calcColSM(sm, msaMatrix, col)
-			# debug
-			'''
-			print 'col: %d' % col
-			if count==2:
-				print repr(sm)
-				return
-			'''
-		print ''
+        # accumulate SM for each contact group / column group
+        for col in mg:
+            w +=1
+            calcColSM(sm, msaMatrix, col)
+            # debug
+            '''
+            print 'col: %d' % col
+            if count==2:
+                    print repr(sm)
+                    return
+            '''
+        print('')
 
-	#print repr(sm)
-	#print ''
+    #print repr(sm)
+    #print ''
 
-	n = msaMatrix.shape[0]
-	T = w*n*(n-1)/2 # normalization term
-	print 'w: %d' % w # number of columns (contact group)
-	print 'n: %d' % n # number of sequence
-	print 'T: %d' % T
+    n = msaMatrix.shape[0]
+    T = w*n*(n-1)/2 # normalization term
+    print('w: %d' % w) # number of columns (contact group)
+    print('n: %d' % n) # number of sequence
+    print('T: %d' % T)
 
 
-	# convert cij to qij
-	# Normalize the pair frequencies so they will sum to 1
-	for c in sm:
-		sm[c] = 1.0*sm[c]/T
+    # convert cij to qij
+    # Normalize the pair frequencies so they will sum to 1
+    for c in sm:
+        sm[c] = 1.0*sm[c]/T
 
-	#print repr(sm)
-	#print ''
+    #print repr(sm)
+    #print ''
 
-	# Calculate the expected probability of occurrence of the ith residue in an (i,j) pair
-	# pi = qii + sum( qij/2 )_{i!=j}
-	pi = {}
-	for i in xrange(0, len(AAlist)):
-		A = AAlist[i]
-		sum_qij = 0
-		for j in xrange(i+1, len(AAlist)): # i should not = j
-			B = AAlist[j]
-			sum_qij += sm[A+B]/2
-		pi[A] = sm[A+A] + sum_qij
+    # Calculate the expected probability of occurrence of the ith residue in an (i,j) pair
+    # pi = qii + sum( qij/2 )_{i!=j}
+    pi = {}
+    for i in range(0, len(AAlist)):
+        A = AAlist[i]
+        sum_qij = 0
+        for j in range(i+1, len(AAlist)): # i should not = j
+            B = AAlist[j]
+            sum_qij += sm[A+B]/2
+        pi[A] = sm[A+A] + sum_qij
 
-	print repr(pi)	
-	print ''
+    print(repr(pi))
+    print('')
 
-	# The desired denominator is the expected frequency for each pair 
-	eij = {}
-	for i in xrange(0, len(AAlist)):
-		A = AAlist[i]
-		for j in xrange(i+1, len(AAlist)):
-			B = AAlist[j]
-			eij[A+B] = 2 * pi[A] * pi[B]
-		eij[A+A] = pi[A] * pi[A]
+    # The desired denominator is the expected frequency for each pair
+    eij = {}
+    for i in range(0, len(AAlist)):
+        A = AAlist[i]
+        for j in range(i+1, len(AAlist)):
+            B = AAlist[j]
+            eij[A+B] = 2 * pi[A] * pi[B]
+        eij[A+A] = pi[A] * pi[A]
 
-	print len(eij)
-	print repr(eij)	
-	print ''
+    print(len(eij))
+    print(repr(eij))
+    print('')
 
-	#  Log odds ratio sij = round(2*log2(qij/eij))
-	sij = {}
-	for i in xrange(0, len(AAlist)):
-		A = AAlist[i]
-		for j in xrange(i, len(AAlist)):
-			B = AAlist[j]
-			if eij[A+B] == 0.0 or sm[A+B]==0.0:
-				sij[A+B] = 0
-			else:
-				sij[A+B] = int(round(2*math.log((sm[A+B]/eij[A+B]),2)))
-			#	sij[A+B] = sm[A+B]/eij[A+B]
+    #  Log odds ratio sij = round(2*log2(qij/eij))
+    sij = {}
+    for i in range(0, len(AAlist)):
+        A = AAlist[i]
+        for j in range(i, len(AAlist)):
+            B = AAlist[j]
+            if eij[A+B] == 0.0 or sm[A+B]==0.0:
+                sij[A+B] = 0
+            else:
+                sij[A+B] = int(round(2*math.log((sm[A+B]/eij[A+B]),2)))
+            #       sij[A+B] = sm[A+B]/eij[A+B]
 
-	print repr(sij)	
-	print len(sij)
-	print ''
+    print(repr(sij))
+    print(len(sij))
+    print('')
 
-	saveBlosum(EBlist, sij, outfile)
+    saveBlosum(EBlist, sij, outfile)
 
 
 # write new substitution matrix to a file
@@ -808,21 +808,21 @@ def hcg2blossum():
 # s: dictionary for a corresponding alphabet
 # filename: output filename
 def saveBlosum(alphabet, s, filename):
-	print 'writing: %s' % filename
-	fout = open(filename, 'w')
-	for i in xrange(0, len(alphabet)):
-		A = alphabet[i]
-		lineArray = []
-		for j in xrange(0, len(alphabet)):
-			B = alphabet[j]
-			if A+B in s:
-				lineArray.append(str(s[A+B]).rjust(2))
-			elif B+A in s:
-				lineArray.append(str(s[B+A]).rjust(2))
-			else:
-				lineArray.append(' 0')
-		fout.write(' '.join(lineArray)+'\n')
-	fout.close()
+    print('writing: %s' % filename)
+    fout = open(filename, 'w')
+    for i in range(0, len(alphabet)):
+        A = alphabet[i]
+        lineArray = []
+        for j in range(0, len(alphabet)):
+            B = alphabet[j]
+            if A+B in s:
+                lineArray.append(str(s[A+B]).rjust(2))
+            elif B+A in s:
+                lineArray.append(str(s[B+A]).rjust(2))
+            else:
+                lineArray.append(' 0')
+        fout.write(' '.join(lineArray)+'\n')
+    fout.close()
 
 
 # called by ncg2blossum
@@ -834,293 +834,293 @@ A97 A23 A96 A24 A27
 '''
 # rtmap['B641'] = (seqpos, 'R')
 def ncg2msa(filename, rtmap):
-	fin = open(filename, 'r')
-	lines = fin.readlines()
-	fin.close()
+    fin = open(filename, 'r')
+    lines = fin.readlines()
+    fin.close()
 
-	#for k in rtmap:
-	#	print (k, rtmap[k])
-	msaGroupArray = []
-	for line in lines:
-		line = line.strip()
-		if len(line)<1:
-			continue
-		#print line
-		resiStr = line
+    #for k in rtmap:
+    #       print (k, rtmap[k])
+    msaGroupArray = []
+    for line in lines:
+        line = line.strip()
+        if len(line)<1:
+            continue
+        #print line
+        resiStr = line
 
-		msaColArray = []
-		discard_flag=False # for inconsistent pfam index. v29.0 1APS 1-97 but in v30.0 1APS 10-97
-		for resi in resiStr.split(' '):
-			if resi not in rtmap:
-				discard_flag = True # if pdb residue not exist in MSA then discard the current contact group mapping
-				break
-			else:
-				msaColArray.append(rtmap[resi][0])
+        msaColArray = []
+        discard_flag=False # for inconsistent pfam index. v29.0 1APS 1-97 but in v30.0 1APS 10-97
+        for resi in resiStr.split(' '):
+            if resi not in rtmap:
+                discard_flag = True # if pdb residue not exist in MSA then discard the current contact group mapping
+                break
+            else:
+                msaColArray.append(rtmap[resi][0])
 
-		if discard_flag == True:
-			continue
-		else:
-			msaGroupArray.append(msaColArray)
+        if discard_flag == True:
+            continue
+        else:
+            msaGroupArray.append(msaColArray)
 
-		#msaColArray = [rtmap[resi][0] for resi in resiStr.split(' ')] # [139, 109, 124]
-		#msaColArray.sort() #Do not sort!
+        #msaColArray = [rtmap[resi][0] for resi in resiStr.split(' ')] # [139, 109, 124]
+        #msaColArray.sort() #Do not sort!
 
-	#print repr(msaGroupArray)
-	return msaGroupArray
+    #print repr(msaGroupArray)
+    return msaGroupArray
 
 
 # read hcg pdb msa(raw) sdii pdbtitle
 # output new substitute matrix
 def ncg2blossum():
-	if len(sys.argv) < 7:
-		print 'ncg2blossum: construct new substitution matrix from contact group'
-		print 'example:python utils_msa.py ncg2blossum 5pti_pf.pdb 5pti_pf.tip.ncg PF00014_full.txt.rseq PF00014_full.txt.sdii BPT1_BOVIN order'
-		print 'output: a substitution matrix file (same format as BLOSSUM62)'
-		return
-	#print sys.argv[0] # utils_msa.py
-	#print sys.argv[1] # hcg2blossum
-	pdbfile = sys.argv[2] # pdb name
-	ncgfile = sys.argv[3] # hcg
-	msafile = sys.argv[4] # msa (full or reduced)
-	sdiifile = sys.argv[5] # sdii
-	target = sys.argv[6] # target name
-	order = int(sys.argv[7])
-	outfile = msafile[0:7]+".sm" # new substitution matrix
+    if len(sys.argv) < 7:
+        print('ncg2blossum: construct new substitution matrix from contact group')
+        print('example:python utils_msa.py ncg2blossum 5pti_pf.pdb 5pti_pf.tip.ncg PF00014_full.txt.rseq PF00014_full.txt.sdii BPT1_BOVIN order')
+        print('output: a substitution matrix file (same format as BLOSSUM62)')
+        return
+    #print sys.argv[0] # utils_msa.py
+    #print sys.argv[1] # hcg2blossum
+    pdbfile = sys.argv[2] # pdb name
+    ncgfile = sys.argv[3] # hcg
+    msafile = sys.argv[4] # msa (full or reduced)
+    sdiifile = sys.argv[5] # sdii
+    target = sys.argv[6] # target name
+    order = int(sys.argv[7])
+    outfile = msafile[0:7]+".sm" # new substitution matrix
 
-	# get msa in matrix format
-	m = msa(msafile)
-	msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
+    # get msa in matrix format
+    m = msa(msafile)
+    msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
 
-	#for i in xrange(0, len(seqs)):
-	#	print seqs[i]
-	print 'msa matrix: ' + repr(msaMatrix.shape)
+    #for i in xrange(0, len(seqs)):
+    #       print seqs[i]
+    print('msa matrix: ' + repr(msaMatrix.shape))
 
-	# get resi -> msai map	
-	p = protein(pdbfile)
-	rtmap = m.getResiTargetMap(p, target)
+    # get resi -> msai map
+    p = protein(pdbfile)
+    rtmap = m.getResiTargetMap(p, target)
 
-	sdiidict = loadsdii(sdiifile) # key: 39-140-210, value = 0.0788593466276019
-	msaGroupArray = ncg2msa(ncgfile, rtmap) # [[210, 215], [106, 211], [73, 95, 166], [109, 124, 139]]
+    sdiidict = loadsdii(sdiifile) # key: 39-140-210, value = 0.0788593466276019
+    msaGroupArray = ncg2msa(ncgfile, rtmap) # [[210, 215], [106, 211], [73, 95, 166], [109, 124, 139]]
 
-	# get non overlapped column indices
-	colset = set()
-	for g in msaGroupArray:
-		rg = g[0:order] # get ith order contact group
-		rg.sort() # for generating key
-		sdiikey = '-'.join([str(r) for r in rg])
-		if sdiikey not in sdiidict:
-			#print 'ncg2sdiicol(): discard group: %s for low sdii' % sdiikey
-			continue
-		print (sdiikey, sdiidict[sdiikey])			
-		for resi in rg: # for significant ncg, add corresponding MSA column index
-			colset.add(resi)
+    # get non overlapped column indices
+    colset = set()
+    for g in msaGroupArray:
+        rg = g[0:order] # get ith order contact group
+        rg.sort() # for generating key
+        sdiikey = '-'.join([str(r) for r in rg])
+        if sdiikey not in sdiidict:
+            #print 'ncg2sdiicol(): discard group: %s for low sdii' % sdiikey
+            continue
+        print((sdiikey, sdiidict[sdiikey]))
+        for resi in rg: # for significant ncg, add corresponding MSA column index
+            colset.add(resi)
 
-	# init substitution matrix
-	EBlist = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*']
-	#AAlist = sorted(EBlist)
-	#AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*'])
-	AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'])
-	sm = {}
-	for i in xrange(0, len(AAlist)):
-		for j in xrange(i, len(AAlist)):
-			key = '%s%s' % (AAlist[i], AAlist[j])
-			sm[key] = 0
-	print AAlist
-	print 'Alphabet: %d' % len(AAlist) 
-	print 'AA: %d' % len(sm)
+    # init substitution matrix
+    EBlist = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*']
+    #AAlist = sorted(EBlist)
+    #AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*'])
+    AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'])
+    sm = {}
+    for i in range(0, len(AAlist)):
+        for j in range(i, len(AAlist)):
+            key = '%s%s' % (AAlist[i], AAlist[j])
+            sm[key] = 0
+    print(AAlist)
+    print('Alphabet: %d' % len(AAlist))
+    print('AA: %d' % len(sm))
 
-	# accumulate substitution matrix AA frequency for all the contact group columns
-	# Sum the scores for each columns across column
-	print ''
-	w = 0 # count column number
-	for col in colset:
-		w+=1
-		calcColSM(sm, msaMatrix, col)
-	'''
-	for mg in msaGroupArray:
-		# form key for co-evolve value 
-		sdiikey = '-'.join([str(i) for i in mg])
-		if sdiikey not in sdiidict:
-			print 'hcg2blossum():discard group: %s' % sdiikey
-			continue
-		sdiiweight = sdiidict[sdiikey]
-		print (sdiikey, sdiiweight)
+    # accumulate substitution matrix AA frequency for all the contact group columns
+    # Sum the scores for each columns across column
+    print('')
+    w = 0 # count column number
+    for col in colset:
+        w+=1
+        calcColSM(sm, msaMatrix, col)
+    '''
+    for mg in msaGroupArray:
+            # form key for co-evolve value
+            sdiikey = '-'.join([str(i) for i in mg])
+            if sdiikey not in sdiidict:
+                    print 'hcg2blossum():discard group: %s' % sdiikey
+                    continue
+            sdiiweight = sdiidict[sdiikey]
+            print (sdiikey, sdiiweight)
 
-		# accumulate SM for each contact group / column group
-		for col in mg:
-			w +=1
-			calcColSM(sm, msaMatrix, col)
-		print ''
-	'''
-	#print repr(sm)
-	#print ''
+            # accumulate SM for each contact group / column group
+            for col in mg:
+                    w +=1
+                    calcColSM(sm, msaMatrix, col)
+            print ''
+    '''
+    #print repr(sm)
+    #print ''
 
-	n = msaMatrix.shape[0]
-	T = w*n*(n-1)/2 # normalization term
-	print 'w: %d' % w # number of columns (contact group)
-	print 'n: %d' % n # number of sequence
-	print 'T: %d' % T
+    n = msaMatrix.shape[0]
+    T = w*n*(n-1)/2 # normalization term
+    print('w: %d' % w) # number of columns (contact group)
+    print('n: %d' % n) # number of sequence
+    print('T: %d' % T)
 
 
-	# convert cij to qij
-	# Normalize the pair frequencies so they will sum to 1
-	for c in sm:
-		sm[c] = 1.0*sm[c]/T
+    # convert cij to qij
+    # Normalize the pair frequencies so they will sum to 1
+    for c in sm:
+        sm[c] = 1.0*sm[c]/T
 
-	#print repr(sm)
-	#print ''
+    #print repr(sm)
+    #print ''
 
-	# Calculate the expected probability of occurrence of the ith residue in an (i,j) pair
-	# pi = qii + sum( qij/2 )_{i!=j}
-	pi = {}
-	for i in xrange(0, len(AAlist)):
-		A = AAlist[i]
-		sum_qij = 0
-		for j in xrange(i+1, len(AAlist)): # i should not = j
-			B = AAlist[j]
-			sum_qij += sm[A+B]/2
-		pi[A] = sm[A+A] + sum_qij
+    # Calculate the expected probability of occurrence of the ith residue in an (i,j) pair
+    # pi = qii + sum( qij/2 )_{i!=j}
+    pi = {}
+    for i in range(0, len(AAlist)):
+        A = AAlist[i]
+        sum_qij = 0
+        for j in range(i+1, len(AAlist)): # i should not = j
+            B = AAlist[j]
+            sum_qij += sm[A+B]/2
+        pi[A] = sm[A+A] + sum_qij
 
-	print repr(pi)	
-	print ''
+    print(repr(pi))
+    print('')
 
-	# The desired denominator is the expected frequency for each pair 
-	eij = {}
-	for i in xrange(0, len(AAlist)):
-		A = AAlist[i]
-		for j in xrange(i+1, len(AAlist)):
-			B = AAlist[j]
-			eij[A+B] = 2 * pi[A] * pi[B]
-		eij[A+A] = pi[A] * pi[A]
+    # The desired denominator is the expected frequency for each pair
+    eij = {}
+    for i in range(0, len(AAlist)):
+        A = AAlist[i]
+        for j in range(i+1, len(AAlist)):
+            B = AAlist[j]
+            eij[A+B] = 2 * pi[A] * pi[B]
+        eij[A+A] = pi[A] * pi[A]
 
-	print len(eij)
-	print repr(eij)	
-	print ''
+    print(len(eij))
+    print(repr(eij))
+    print('')
 
-	#  Log odds ratio sij = round(2*log2(qij/eij))
-	sij = {}
-	for i in xrange(0, len(AAlist)):
-		A = AAlist[i]
-		for j in xrange(i, len(AAlist)):
-			B = AAlist[j]
-			if eij[A+B] == 0.0 or sm[A+B]==0.0:
-				sij[A+B] = 0
-			else:
-				sij[A+B] = int(round(2*math.log((sm[A+B]/eij[A+B]),2)))
-			#	sij[A+B] = sm[A+B]/eij[A+B]
+    #  Log odds ratio sij = round(2*log2(qij/eij))
+    sij = {}
+    for i in range(0, len(AAlist)):
+        A = AAlist[i]
+        for j in range(i, len(AAlist)):
+            B = AAlist[j]
+            if eij[A+B] == 0.0 or sm[A+B]==0.0:
+                sij[A+B] = 0
+            else:
+                sij[A+B] = int(round(2*math.log((sm[A+B]/eij[A+B]),2)))
+            #       sij[A+B] = sm[A+B]/eij[A+B]
 
-	print repr(sij)	
-	print len(sij)
-	print ''
+    print(repr(sij))
+    print(len(sij))
+    print('')
 
-	saveBlosum(EBlist, sij, outfile)
+    saveBlosum(EBlist, sij, outfile)
 
 
 # called in ncg2sdiicol()
-# load map between pdb residue ID and MSA uniprot position ID 
+# load map between pdb residue ID and MSA uniprot position ID
 # dictionary element: ('A9', (14, 'V')) : (chain+resi, (MSA position index, resn))
 # mapfile:
 # AT284 1218 T  : chain A residue T resn 284 => position 1218 (start from 0) resn T
 # AE285 1220 e  : lowercase exists!
-# AR286 -1 -	: residue number that cannot map to MSA position (does not exist)
+# AR286 -1 -    : residue number that cannot map to MSA position (does not exist)
 def getPDBUniprotMap(mapfile):
-	posmap = {}
-	with open(mapfile) as fp:
-		for line in fp:
-			line = line.strip()
-			if len(line) < 1:
-				print 'getPDBUniprotMap: error loading map: %s' % mapfile
-			strArray = line.split(' ')
-			key = strArray[0][0] + strArray[0][2:]
-			value = (int(strArray[1]), strArray[2].upper())
-			posmap[key] = value
-	print 'getPDBUniprotMap: %s %d maps loaded' % (mapfile, len(posmap))
-	return posmap
+    posmap = {}
+    with open(mapfile) as fp:
+        for line in fp:
+            line = line.strip()
+            if len(line) < 1:
+                print('getPDBUniprotMap: error loading map: %s' % mapfile)
+            strArray = line.split(' ')
+            key = strArray[0][0] + strArray[0][2:]
+            value = (int(strArray[1]), strArray[2].upper())
+            posmap[key] = value
+    print('getPDBUniprotMap: %s %d maps loaded' % (mapfile, len(posmap)))
+    return posmap
 
 
 # by just using top sdii columns alone to save sdiicol file
 # no structural info considered
 def topsdii2sdiicol():
-	if len(sys.argv)<3:
-		print 'topsdii2sdiicol: selecting MSA column with top sdii value only into .sdiicol file'
-		print 'python utils_msa.py topsdii2sdiicol PF00589_full.txt.rseq PF00589_full.txt.all_2_sdii.4.top'
-		return	
+    if len(sys.argv)<3:
+        print('topsdii2sdiicol: selecting MSA column with top sdii value only into .sdiicol file')
+        print('python utils_msa.py topsdii2sdiicol PF00589_full.txt.rseq PF00589_full.txt.all_2_sdii.4.top')
+        return
 
-	msafile = sys.argv[2]
-	sdiifile = sys.argv[3]
-	outfile = msafile[0:7]+'.tsdiicol'
+    msafile = sys.argv[2]
+    sdiifile = sys.argv[3]
+    outfile = msafile[0:7]+'.tsdiicol'
 
-	print 'msafile :%s' % msafile
-	print 'sdiifile :%s' % sdiifile
+    print('msafile :%s' % msafile)
+    print('sdiifile :%s' % sdiifile)
 
-	colset = set()
-	with open(sdiifile) as f:
-		for line in f:
-			if len(line)<2:
-				continue
-			sdiiArray = line.strip().split(' ')
-			for i in sdiiArray[0].split('-'):
-				colset.add(int(i))
-	print 'topsdii2sdiicol():writing %s, sdiicol %d' % (outfile, len(colset))
-	print '%s' % (repr(sorted(colset)))
+    colset = set()
+    with open(sdiifile) as f:
+        for line in f:
+            if len(line)<2:
+                continue
+            sdiiArray = line.strip().split(' ')
+            for i in sdiiArray[0].split('-'):
+                colset.add(int(i))
+    print('topsdii2sdiicol():writing %s, sdiicol %d' % (outfile, len(colset)))
+    print('%s' % (repr(sorted(colset))))
 
-	fout = open(outfile, 'w')
-	fout.write('%s %s\n' % (msafile, ' '.join([str(c) for c in sorted(colset)])))
-	fout.close()
+    fout = open(outfile, 'w')
+    fout.write('%s %s\n' % (msafile, ' '.join([str(c) for c in sorted(colset)])))
+    fout.close()
 
 #by just using residue contact to save msa columns
 def cg2col():
-	if len(sys.argv)<5:
-		print 'cg2col: write selected MSA column into .csdiicol file'
-		print 'python utils_msa.py cg2col 1a0p-A.rpdb.tip.ncg PF00589_full.txt.rseq 1a0p-A-PF00589-XERD_ECOLI.map 2'
-		return
+    if len(sys.argv)<5:
+        print('cg2col: write selected MSA column into .csdiicol file')
+        print('python utils_msa.py cg2col 1a0p-A.rpdb.tip.ncg PF00589_full.txt.rseq 1a0p-A-PF00589-XERD_ECOLI.map 2')
+        return
 
-	ncgfile = sys.argv[2] # hcg
-	msafile = sys.argv[3] # msa (full or reduced)
-	resimapfile = sys.argv[4]
-	orderlist = [int(i) for i in sys.argv[6].split(',')]
-	outfile =  msafile[0:7]+'.csdiicol'
+    ncgfile = sys.argv[2] # hcg
+    msafile = sys.argv[3] # msa (full or reduced)
+    resimapfile = sys.argv[4]
+    orderlist = [int(i) for i in sys.argv[6].split(',')]
+    outfile =  msafile[0:7]+'.csdiicol'
 
 
-	print 'ncgfile :%s' % ncgfile
-	print 'msafile :%s' % msafile
-	print 'resimapfile :%s' % resimapfile
-	print 'ncg order list : [%s]' % repr(orderlist)
+    print('ncgfile :%s' % ncgfile)
+    print('msafile :%s' % msafile)
+    print('resimapfile :%s' % resimapfile)
+    print('ncg order list : [%s]' % repr(orderlist))
 
-	# get msa in matrix format
-	m = msa(msafile)
-	msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
+    # get msa in matrix format
+    m = msa(msafile)
+    msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
 
-	#for i in xrange(0, len(seqs)):
-	#	print seqs[i]
-	print 'msa matrix: ' + repr(msaMatrix.shape)
+    #for i in xrange(0, len(seqs)):
+    #       print seqs[i]
+    print('msa matrix: ' + repr(msaMatrix.shape))
 
-	#rtmap = m.getResiTargetMap(p, target) # ('A9', (14, 'V')) : (resi+chain, (MSA index, resn))
-	rtmap = getPDBUniprotMap(resimapfile) # ('A9', (14, 'V')) : (resi+chain, (MSA index, resn))
+    #rtmap = m.getResiTargetMap(p, target) # ('A9', (14, 'V')) : (resi+chain, (MSA index, resn))
+    rtmap = getPDBUniprotMap(resimapfile) # ('A9', (14, 'V')) : (resi+chain, (MSA index, resn))
 
-	sdiidict = loadsdii(sdiifile) # key: 39-140-210, value = 0.0788593466276019
-	msaGroupArray = ncg2msa(ncgfile, rtmap) # unsorted [[86, 83, 198, 127, 120], [138, 76, 82, 127, 132]]
+    sdiidict = loadsdii(sdiifile) # key: 39-140-210, value = 0.0788593466276019
+    msaGroupArray = ncg2msa(ncgfile, rtmap) # unsorted [[86, 83, 198, 127, 120], [138, 76, 82, 127, 132]]
 
-	# output msa column set
-	colset = set()
-	for i in orderlist:
-		for g in msaGroupArray:
-			rg = g[0:i] # get ith order contact group
-			rg.sort() # for generating key
-			#sdiikey = '-'.join([str(r) for r in rg])
-			#if sdiikey not in sdiidict:
-				#print 'ncg2sdiicol(): discard group: %s for low sdii' % sdiikey
-			#	continue
-			#print (sdiikey, sdiidict[sdiikey])			
-			for resi in rg: # for significant ncg, add corresponding MSA column index
-				colset.add(resi)
+    # output msa column set
+    colset = set()
+    for i in orderlist:
+        for g in msaGroupArray:
+            rg = g[0:i] # get ith order contact group
+            rg.sort() # for generating key
+            #sdiikey = '-'.join([str(r) for r in rg])
+            #if sdiikey not in sdiidict:
+                #print 'ncg2sdiicol(): discard group: %s for low sdii' % sdiikey
+            #       continue
+            #print (sdiikey, sdiidict[sdiikey])
+            for resi in rg: # for significant ncg, add corresponding MSA column index
+                colset.add(resi)
 
-	print 'cg2col():writing %s, col %d' % (outfile, len(colset))
-	print '%s' % (repr(sorted(colset)))
-	fout = open(outfile, 'w')
-	#fout.write(' '.join([str(c) for c in colset]))
-	fout.write('%s %s\n' % (msafile, ' '.join([str(c) for c in colset])))
-	fout.close()
+    print('cg2col():writing %s, col %d' % (outfile, len(colset)))
+    print('%s' % (repr(sorted(colset))))
+    fout = open(outfile, 'w')
+    #fout.write(' '.join([str(c) for c in colset]))
+    fout.write('%s %s\n' % (msafile, ' '.join([str(c) for c in colset])))
+    fout.close()
 
 
 # variation of ncg2sdii
@@ -1128,54 +1128,54 @@ def cg2col():
 # select informative sdii columns from MSA and save the column index pairs into file
 # output: .colpair file
 def ncg2colpair():
-	if len(sys.argv)<6:
-		print 'ncg2colpair: write selected MSA column into .colpair file'
-		print '$ python utils_msa.py ncg2colpair 1a0p-A.rpdb.tip.ncg PF00589_full.txt.rseq PF00589_full.txt.all_2_sdii.4.top 1a0p-A-PF00589-XERD_ECOLI.map 2'
-		return
+    if len(sys.argv)<6:
+        print('ncg2colpair: write selected MSA column into .colpair file')
+        print('$ python utils_msa.py ncg2colpair 1a0p-A.rpdb.tip.ncg PF00589_full.txt.rseq PF00589_full.txt.all_2_sdii.4.top 1a0p-A-PF00589-XERD_ECOLI.map 2')
+        return
 
-	ncgfile = sys.argv[2] # hcg
-	msafile = sys.argv[3] # msa (full or reduced)
-	sdiifile = sys.argv[4] # sdii
-	resimapfile = sys.argv[5]
-	orderlist = [int(i) for i in sys.argv[6].split(',')]
-	outStringArray = sdiifile.split('.')
-	outfile =  msafile[0:7]+'.'+outStringArray[-1]+'.colpair' # new substitution matrix
-	
-	for c in sys.argv:
-		print c+' ',
-	print ''
+    ncgfile = sys.argv[2] # hcg
+    msafile = sys.argv[3] # msa (full or reduced)
+    sdiifile = sys.argv[4] # sdii
+    resimapfile = sys.argv[5]
+    orderlist = [int(i) for i in sys.argv[6].split(',')]
+    outStringArray = sdiifile.split('.')
+    outfile =  msafile[0:7]+'.'+outStringArray[-1]+'.colpair' # new substitution matrix
 
-	# get msa in matrix format
-	m = msa(msafile)
-	msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
-	#print 'msa matrix: ' + repr(msaMatrix.shape)
+    for c in sys.argv:
+        print(c+' ', end=' ')
+    print('')
 
-	rtmap = getPDBUniprotMap(resimapfile) # ('A9', (14, 'V')) : (resi+chain, (MSA index, resn))
+    # get msa in matrix format
+    m = msa(msafile)
+    msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
+    #print 'msa matrix: ' + repr(msaMatrix.shape)
 
-	sdiidict = loadsdii(sdiifile) # key: 39-140-210, value = 0.0788593466276019
-	msaGroupArray = ncg2msa(ncgfile, rtmap) # unsorted [[86, 83, 198, 127, 120], [138, 76, 82, 127, 132]]
+    rtmap = getPDBUniprotMap(resimapfile) # ('A9', (14, 'V')) : (resi+chain, (MSA index, resn))
 
-	# output msa column pair list
-	#colset = []
-	colset = set()
-	for i in orderlist:
-		for g in msaGroupArray:
-			rg = g[0:i] # get ith order contact group
-			rg.sort() # for generating key
-			sdiikey = '-'.join([str(r) for r in rg])
-			if sdiikey not in sdiidict:
-				#print 'ncg2sdiicol(): discard group: %s for low sdii' % sdiikey
-				continue
-			#print (sdiikey, sdiidict[sdiikey])			
-			#colset.append(sdiikey)
-			colset.add(sdiikey) # to remove redundancy
-			#for resi in rg: # for significant ncg, add corresponding MSA column index
-			#	colset.add(resi)
+    sdiidict = loadsdii(sdiifile) # key: 39-140-210, value = 0.0788593466276019
+    msaGroupArray = ncg2msa(ncgfile, rtmap) # unsorted [[86, 83, 198, 127, 120], [138, 76, 82, 127, 132]]
 
-	print 'ncg2colpair():write to %s, colpairs %d' % (outfile, len(colset))
-	fout = open(outfile, 'w')
-	fout.write('%s %s\n' % (msafile, ' '.join(colset)))
-	fout.close()
+    # output msa column pair list
+    #colset = []
+    colset = set()
+    for i in orderlist:
+        for g in msaGroupArray:
+            rg = g[0:i] # get ith order contact group
+            rg.sort() # for generating key
+            sdiikey = '-'.join([str(r) for r in rg])
+            if sdiikey not in sdiidict:
+                #print 'ncg2sdiicol(): discard group: %s for low sdii' % sdiikey
+                continue
+            #print (sdiikey, sdiidict[sdiikey])
+            #colset.append(sdiikey)
+            colset.add(sdiikey) # to remove redundancy
+            #for resi in rg: # for significant ncg, add corresponding MSA column index
+            #       colset.add(resi)
+
+    print('ncg2colpair():write to %s, colpairs %d' % (outfile, len(colset)))
+    fout = open(outfile, 'w')
+    fout.write('%s %s\n' % (msafile, ' '.join(colset)))
+    fout.close()
 
 
 
@@ -1183,117 +1183,117 @@ def ncg2colpair():
 # calculate double-columwised substritution marix
 # input two columns of MSA in list type
 def calcColpairSM(sm, msaMatrix, columns):
-	ignore = ['.','-','O','U','B','X','Z']
+    ignore = ['.','-','O','U','B','X','Z']
 
-	col0 = msaMatrix[:, columns[0]]
-	col1 = msaMatrix[:, columns[1]]
+    col0 = msaMatrix[:, columns[0]]
+    col1 = msaMatrix[:, columns[1]]
 
-	AAlist = []
-	for i in xrange(0, msaMatrix.shape[0]):
-		if (col0[i] in ignore) or (col1[i] in ignore):
-			continue
-		AA = ''.join(sorted([col0[i], col1[i]]))
-		AAlist.append(AA)
+    AAlist = []
+    for i in range(0, msaMatrix.shape[0]):
+        if (col0[i] in ignore) or (col1[i] in ignore):
+            continue
+        AA = ''.join(sorted([col0[i], col1[i]]))
+        AAlist.append(AA)
 
-	# get AA frequency
-	freqDict = collections.Counter(AAlist) # get frequency
-	#print repr(freqDict)
-	alphabet = sorted(set(AAlist))
-	#print repr(set(AAlist))
+    # get AA frequency
+    freqDict = collections.Counter(AAlist) # get frequency
+    #print repr(freqDict)
+    alphabet = sorted(set(AAlist))
+    #print repr(set(AAlist))
 
-	# calculate AA frequency cij
-	for i in xrange(0, len(alphabet)):
-		A = alphabet[i].upper()
-		if A not in alphabet:
-			continue
-		for j in xrange(i+1, len(alphabet)):
-			B = alphabet[j].upper()
-			if B not in alphabet:
-				continue
-			sm[A+B] += freqDict[A]*freqDict[B]
-		#sm[A+A] += freqDict[A]*(freqDict[A]-1)/2
+    # calculate AA frequency cij
+    for i in range(0, len(alphabet)):
+        A = alphabet[i].upper()
+        if A not in alphabet:
+            continue
+        for j in range(i+1, len(alphabet)):
+            B = alphabet[j].upper()
+            if B not in alphabet:
+                continue
+            sm[A+B] += freqDict[A]*freqDict[B]
+        #sm[A+A] += freqDict[A]*(freqDict[A]-1)/2
 
-	return 	
+    return
 
 
 # calculate pair col substitution frequency
 def colpairfreq():
-	if len(sys.argv) < 2:
-		print 'colpairfreq: calculate pair col substitution frequency'
-		print 'python utils_msa.py colpairfreq pfam1977.cg-mi.allcolpair'
-		print 'output: pfam1977.cg-mi.allcolpair.freq'
-		return
+    if len(sys.argv) < 2:
+        print('colpairfreq: calculate pair col substitution frequency')
+        print('python utils_msa.py colpairfreq pfam1977.cg-mi.allcolpair')
+        print('output: pfam1977.cg-mi.allcolpair.freq')
+        return
 
-	colpairfile = sys.argv[2]
-	outfile = colpairfile+".freq" # new substitution matrix
+    colpairfile = sys.argv[2]
+    outfile = colpairfile+".freq" # new substitution matrix
 
-	# make pair alphabets
-	AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'])
-	AA2list = []	
-	for i in xrange(0, len(AAlist)):
-		for j in xrange(i, len(AAlist)):
-			AA2list.append('%s%s' % (AAlist[i], AAlist[j]))
+    # make pair alphabets
+    AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'])
+    AA2list = []
+    for i in range(0, len(AAlist)):
+        for j in range(i, len(AAlist)):
+            AA2list.append('%s%s' % (AAlist[i], AAlist[j]))
 
 
-	# load colpairs
-	colpairArray = []
-	with open(colpairfile) as fp:
-		for line in fp:
-			line = line.strip()
-			if len(line) < 1:
-				continue
+    # load colpairs
+    colpairArray = []
+    with open(colpairfile) as fp:
+        for line in fp:
+            line = line.strip()
+            if len(line) < 1:
+                continue
 
-			valueArray = line.split(' ')
-			msafile = valueArray[0]
-			if len(valueArray)==1:
-				print '%s: no column' % msafile
-				continue
+            valueArray = line.split(' ')
+            msafile = valueArray[0]
+            if len(valueArray)==1:
+                print('%s: no column' % msafile)
+                continue
 
-			pairs = []
-			for p in valueArray[1:]:
-				pairs.append([int(s) for s in p.split('-')])
+            pairs = []
+            for p in valueArray[1:]:
+                pairs.append([int(s) for s in p.split('-')])
 
-			colpairArray.append((msafile, pairs))
-	print 'colpairfreq(): %d colpair lines loaded ..' % len(colpairArray)
+            colpairArray.append((msafile, pairs))
+    print('colpairfreq(): %d colpair lines loaded ..' % len(colpairArray))
 
-	# init frequency table
-	AAAAlist = sorted(AA2list)
-	sm = {}
-	for i in xrange(0, len(AAAAlist)):
-		for j in xrange(i+1, len(AAAAlist)):
-			sm['%s%s' % (AAAAlist[i], AAAAlist[j])] = 0
+    # init frequency table
+    AAAAlist = sorted(AA2list)
+    sm = {}
+    for i in range(0, len(AAAAlist)):
+        for j in range(i+1, len(AAAAlist)):
+            sm['%s%s' % (AAAAlist[i], AAAAlist[j])] = 0
 
-	T=0 # total number of possible substitutions
-	for msafile, colpairset in colpairArray:
-		#print len(colset), repr(colset)
+    T=0 # total number of possible substitutions
+    for msafile, colpairset in colpairArray:
+        #print len(colset), repr(colset)
 
-		# get msa in matrix format
-		m = msa(msafile)
-		msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
-		#print 'msa matrix: ' + repr(msaMatrix.shape)
+        # get msa in matrix format
+        m = msa(msafile)
+        msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
+        #print 'msa matrix: ' + repr(msaMatrix.shape)
 
-		# accumulate substitution matrix AA frequency for all the contact group columns
-		# Sum the scores for each columns across column
-		for col in colpairset:
-			calcColpairSM(sm, msaMatrix, col)
+        # accumulate substitution matrix AA frequency for all the contact group columns
+        # Sum the scores for each columns across column
+        for col in colpairset:
+            calcColpairSM(sm, msaMatrix, col)
 
-		w = len(colpairset) # number of columns for current MSA
-		n = msaMatrix.shape[0]
-		T= sum(sm.itervalues())
-		#T = w*n*(n-1)/2 # normalization term, removing gaps will cause T in action is smaller than w*n*(n-1)/2
-		print '%s: w: %d/%d, n: %d, T: %d' % (msafile, w, msaMatrix.shape[1], n, T)
-		#T+=T1
+        w = len(colpairset) # number of columns for current MSA
+        n = msaMatrix.shape[0]
+        T= sum(sm.values())
+        #T = w*n*(n-1)/2 # normalization term, removing gaps will cause T in action is smaller than w*n*(n-1)/2
+        print('%s: w: %d/%d, n: %d, T: %d' % (msafile, w, msaMatrix.shape[1], n, T))
+        #T+=T1
 
-	print 'total T:  %d' % T
-	print 'total sm: %d' % sum(sm.itervalues())
-	print ''
+    print('total T:  %d' % T)
+    print('total sm: %d' % sum(sm.values()))
+    print('')
 
-	fout = open(outfile, 'w')
-	for k in sm:
-		fout.write('%s %.8f\n' % (k, 1.0*sm[k]/T))
-	fout.close()
+    fout = open(outfile, 'w')
+    for k in sm:
+        fout.write('%s %.8f\n' % (k, 1.0*sm[k]/T))
+    fout.close()
 
-	print 'colpairfreq(): write to %s' % outfile
+    print('colpairfreq(): write to %s' % outfile)
 
 
 
@@ -1301,502 +1301,502 @@ def colpairfreq():
 # select informative sdii columns from MSA and save the column indices into file
 # output: .sdiicol file
 def ncg2sdiicol():
-	if len(sys.argv)<6:
-		print 'ncg2sdiicol: write selected MSA column into .sdiicol file'
-		print '$ python utils_msa.py ncg2sdiicol 1a0p-A.rpdb.tip.ncg PF00589_full.txt.rseq PF00589_full.txt.all_2_sdii.4.top 1a0p-A-PF00589-XERD_ECOLI.map 2'
-		return
+    if len(sys.argv)<6:
+        print('ncg2sdiicol: write selected MSA column into .sdiicol file')
+        print('$ python utils_msa.py ncg2sdiicol 1a0p-A.rpdb.tip.ncg PF00589_full.txt.rseq PF00589_full.txt.all_2_sdii.4.top 1a0p-A-PF00589-XERD_ECOLI.map 2')
+        return
 
-	ncgfile = sys.argv[2] # hcg
-	msafile = sys.argv[3] # msa (full or reduced)
-	sdiifile = sys.argv[4] # sdii
-	resimapfile = sys.argv[5]
-	orderlist = [int(i) for i in sys.argv[6].split(',')]
-	outStringArray = sdiifile.split('.')
-	outfile =  msafile[0:7]+'.'+outStringArray[-1]+'.msacol' # new substitution matrix
+    ncgfile = sys.argv[2] # hcg
+    msafile = sys.argv[3] # msa (full or reduced)
+    sdiifile = sys.argv[4] # sdii
+    resimapfile = sys.argv[5]
+    orderlist = [int(i) for i in sys.argv[6].split(',')]
+    outStringArray = sdiifile.split('.')
+    outfile =  msafile[0:7]+'.'+outStringArray[-1]+'.msacol' # new substitution matrix
 
 
-	print 'ncgfile :%s' % ncgfile
-	print 'msafile :%s' % msafile
-	print 'sdiifile :%s' % sdiifile
-	print 'resimapfile :%s' % resimapfile
-	print 'ncg order list : [%s]' % repr(orderlist)
+    print('ncgfile :%s' % ncgfile)
+    print('msafile :%s' % msafile)
+    print('sdiifile :%s' % sdiifile)
+    print('resimapfile :%s' % resimapfile)
+    print('ncg order list : [%s]' % repr(orderlist))
 
-	# get msa in matrix format
-	m = msa(msafile)
-	msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
+    # get msa in matrix format
+    m = msa(msafile)
+    msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
 
-	#for i in xrange(0, len(seqs)):
-	#	print seqs[i]
-	print 'msa matrix: ' + repr(msaMatrix.shape)
+    #for i in xrange(0, len(seqs)):
+    #       print seqs[i]
+    print('msa matrix: ' + repr(msaMatrix.shape))
 
-	#rtmap = m.getResiTargetMap(p, target) # ('A9', (14, 'V')) : (resi+chain, (MSA index, resn))
-	rtmap = getPDBUniprotMap(resimapfile) # ('A9', (14, 'V')) : (resi+chain, (MSA index, resn))
+    #rtmap = m.getResiTargetMap(p, target) # ('A9', (14, 'V')) : (resi+chain, (MSA index, resn))
+    rtmap = getPDBUniprotMap(resimapfile) # ('A9', (14, 'V')) : (resi+chain, (MSA index, resn))
 
-	sdiidict = loadsdii(sdiifile) # key: 39-140-210, value = 0.0788593466276019
-	msaGroupArray = ncg2msa(ncgfile, rtmap) # unsorted [[86, 83, 198, 127, 120], [138, 76, 82, 127, 132]]
+    sdiidict = loadsdii(sdiifile) # key: 39-140-210, value = 0.0788593466276019
+    msaGroupArray = ncg2msa(ncgfile, rtmap) # unsorted [[86, 83, 198, 127, 120], [138, 76, 82, 127, 132]]
 
-	# output msa column set
-	colset = set()
-	for i in orderlist:
-		for g in msaGroupArray:
-			rg = g[0:i] # get ith order contact group
-			rg.sort() # for generating key
-			sdiikey = '-'.join([str(r) for r in rg])
-			if sdiikey not in sdiidict:
-				#print 'ncg2sdiicol(): discard group: %s for low sdii' % sdiikey
-				continue
-			print (sdiikey, sdiidict[sdiikey])			
-			for resi in rg: # for significant ncg, add corresponding MSA column index
-				colset.add(resi)
+    # output msa column set
+    colset = set()
+    for i in orderlist:
+        for g in msaGroupArray:
+            rg = g[0:i] # get ith order contact group
+            rg.sort() # for generating key
+            sdiikey = '-'.join([str(r) for r in rg])
+            if sdiikey not in sdiidict:
+                #print 'ncg2sdiicol(): discard group: %s for low sdii' % sdiikey
+                continue
+            print((sdiikey, sdiidict[sdiikey]))
+            for resi in rg: # for significant ncg, add corresponding MSA column index
+                colset.add(resi)
 
-	print 'ncg2sdiicol():writing %s, col %d' % (outfile, len(colset))
-	print '%s' % (repr(sorted(colset)))
-	fout = open(outfile, 'w')
-	#fout.write(' '.join([str(c) for c in colset]))
-	fout.write('%s %s\n' % (msafile, ' '.join([str(c) for c in colset])))
-	fout.close()
+    print('ncg2sdiicol():writing %s, col %d' % (outfile, len(colset)))
+    print('%s' % (repr(sorted(colset))))
+    fout = open(outfile, 'w')
+    #fout.write(' '.join([str(c) for c in colset]))
+    fout.write('%s %s\n' % (msafile, ' '.join([str(c) for c in colset])))
+    fout.close()
 
 
 # remove ['.', '-', 'O', 'U', 'X', 'B', 'Z']
 def removeGaps(msacol):
-	if '.' in colset:
-		msacol.remove('.')
-	if '-' in colset:
-		msacol.remove('-')
-	if 'O' in colset:
-		msacol.remove('O')
-	if 'U' in colset:
-		msacol.remove('U')
-	if 'X' in colset:
-		mascol.remove('X')
-	if 'B' in colset:
-		msacol.remove('B')
-	if 'Z' in colset:
-		msacol.remove('Z')	
+    if '.' in colset:
+        msacol.remove('.')
+    if '-' in colset:
+        msacol.remove('-')
+    if 'O' in colset:
+        msacol.remove('O')
+    if 'U' in colset:
+        msacol.remove('U')
+    if 'X' in colset:
+        mascol.remove('X')
+    if 'B' in colset:
+        msacol.remove('B')
+    if 'Z' in colset:
+        msacol.remove('Z')
 
-# 
+#
 def mp_freq_count(args):
-	return pairlim_freq_count(*args)
+    return pairlim_freq_count(*args)
 
 def pairlim_freq_count(A,B,ri,mcRef):
-	count = 0
-	for p in ri[A]: # should not have gaps
-		for q in ri[B]:
-			# skip single mutation in mcAim
-			if mcRef[p] != mcRef[q]:
-				count += 1
-	return count	
+    count = 0
+    for p in ri[A]: # should not have gaps
+        for q in ri[B]:
+            # skip single mutation in mcAim
+            if mcRef[p] != mcRef[q]:
+                count += 1
+    return count
 
 # count frequency of the current column when there is a mutation in the correlated column
 def calcPairConstrainSM(sm, msaMatrix, gaps, colaim, colref):
-	mcAim = msaMatrix[:, colaim]
-	mcRef = msaMatrix[:, colref]
+    mcAim = msaMatrix[:, colaim]
+    mcRef = msaMatrix[:, colref]
 
-	# filter gaps and sort alphabet
-	alphabet = sorted(set([A for A in mcAim if A not in gaps]))
+    # filter gaps and sort alphabet
+    alphabet = sorted(set([A for A in mcAim if A not in gaps]))
 
-	# adjacency linked list for A index
-	# row index for echo type of Amino acid
-	ri = {}
-	for A in alphabet:
-		ri[A] =  [i for i in xrange(0, len(mcAim)) if (mcAim[i] == A) and (mcRef[i] not in gaps)]
-		sm[A+A] = len(ri[A])*(len(ri[A])-1)/2
+    # adjacency linked list for A index
+    # row index for echo type of Amino acid
+    ri = {}
+    for A in alphabet:
+        ri[A] =  [i for i in range(0, len(mcAim)) if (mcAim[i] == A) and (mcRef[i] not in gaps)]
+        sm[A+A] = len(ri[A])*(len(ri[A])-1)/2
 
-	arglist = []
-	for i in xrange(0, len(alphabet)):
-		A = alphabet[i].upper()
-		for j in xrange(i+1, len(alphabet)): # include A==A
-			B = alphabet[j].upper()
-			arglist.append((A,B,ri,mcRef))
+    arglist = []
+    for i in range(0, len(alphabet)):
+        A = alphabet[i].upper()
+        for j in range(i+1, len(alphabet)): # include A==A
+            B = alphabet[j].upper()
+            arglist.append((A,B,ri,mcRef))
 
 
-	from multiprocessing import Pool
-	pool = Pool(12)
-	mpret = pool.map(mp_freq_count,arglist)
+    from multiprocessing import Pool
+    pool = Pool(12)
+    mpret = pool.map(mp_freq_count,arglist)
 
-	for i in xrange(0, len(arglist)):
-		A = arglist[i][0]
-		B = arglist[i][1]
-		sm[A+B]+=mpret[i]
-	'''
-	# iterate all the substitution indices
-	for i in xrange(0, len(alphabet)):
-		A = alphabet[i].upper()
-		for j in xrange(i+1, len(alphabet)): # include A==A
-			B = alphabet[j].upper()
+    for i in range(0, len(arglist)):
+        A = arglist[i][0]
+        B = arglist[i][1]
+        sm[A+B]+=mpret[i]
+    '''
+    # iterate all the substitution indices
+    for i in xrange(0, len(alphabet)):
+            A = alphabet[i].upper()
+            for j in xrange(i+1, len(alphabet)): # include A==A
+                    B = alphabet[j].upper()
 
-			count = 0
-			# replace multiplication by counting one-by-one
-			for p in ri[A]: # should not have gaps
-				for q in ri[B]:
-					# skip single mutation in mcAim
-					if mcRef[p] != mcRef[q]:
-						count += 1
-			sm[A+B] += count
-	'''
-	return 
-				 
-	# ignore all pairs with gaps
-	
+                    count = 0
+                    # replace multiplication by counting one-by-one
+                    for p in ri[A]: # should not have gaps
+                            for q in ri[B]:
+                                    # skip single mutation in mcAim
+                                    if mcRef[p] != mcRef[q]:
+                                            count += 1
+                    sm[A+B] += count
+    '''
+    return
+
+    # ignore all pairs with gaps
+
 
 
 
 # calculate sm from paired frequencies with correlated constrains
 # read .allcolpair file
 def sdiipairlimit2sm():
-	if len(sys.argv) < 2:
-		print 'sdii2pairblosum: construct new substitution matrix from msa paired-columns with constrains'
-		print 'python utils_msa.py sdiipairlimit2sm pfam1977.cg-mi.allcolpair'
-		print 'output: a substitution matrix file (same format as BLOSSUM62)'
-		return
+    if len(sys.argv) < 2:
+        print('sdii2pairblosum: construct new substitution matrix from msa paired-columns with constrains')
+        print('python utils_msa.py sdiipairlimit2sm pfam1977.cg-mi.allcolpair')
+        print('output: a substitution matrix file (same format as BLOSSUM62)')
+        return
 
-	sdiicolfile = sys.argv[2]
-	outfile = sdiicolfile+".sm" # new substitution matrix
+    sdiicolfile = sys.argv[2]
+    outfile = sdiicolfile+".sm" # new substitution matrix
 
-	sdiicolArray = []
-	with open(sdiicolfile) as fp:
-		for line in fp:
-			line = line.strip()
-			if len(line) < 1:
-				print 'error sdiicol line: %s' % line
+    sdiicolArray = []
+    with open(sdiicolfile) as fp:
+        for line in fp:
+            line = line.strip()
+            if len(line) < 1:
+                print('error sdiicol line: %s' % line)
 
-			valueArray = line.split(' ')
-			msafile = valueArray[0]
-			if len(valueArray)==1:
-				print '%s: no column' % msafile
-				continue
+            valueArray = line.split(' ')
+            msafile = valueArray[0]
+            if len(valueArray)==1:
+                print('%s: no column' % msafile)
+                continue
 
-			# colpairs: PF00008_full.txt.rseq 17-22 21-22
-			colpairlist = [colpair.split('-') for colpair in valueArray[1:]]
-			sdiicolArray.append((msafile, colpairlist))
-	print 'sdiipairlimit2sm(): %d sdiicol lines loaded ..' % len(sdiicolArray)
+            # colpairs: PF00008_full.txt.rseq 17-22 21-22
+            colpairlist = [colpair.split('-') for colpair in valueArray[1:]]
+            sdiicolArray.append((msafile, colpairlist))
+    print('sdiipairlimit2sm(): %d sdiicol lines loaded ..' % len(sdiicolArray))
 
-	# init substitution matrix
-	AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'])
-	gaps = ['.', '-', 'O', 'U', 'X', 'B', 'Z']
-	sm = {}
-	for i in xrange(0, len(AAlist)):
-		for j in xrange(i, len(AAlist)):
-			key = '%s%s' % (AAlist[i], AAlist[j])
-			sm[key] = 0
-	#print AAlist
-	#print 'Alphabet: %d' % len(AAlist) 
-	#print 'AA: %d' % len(sm)
+    # init substitution matrix
+    AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'])
+    gaps = ['.', '-', 'O', 'U', 'X', 'B', 'Z']
+    sm = {}
+    for i in range(0, len(AAlist)):
+        for j in range(i, len(AAlist)):
+            key = '%s%s' % (AAlist[i], AAlist[j])
+            sm[key] = 0
+    #print AAlist
+    #print 'Alphabet: %d' % len(AAlist)
+    #print 'AA: %d' % len(sm)
 
-	T=0 # total number of possible substitutions
-	count=0
-	for msafile, colpairs in sdiicolArray:
-		count+=1
+    T=0 # total number of possible substitutions
+    count=0
+    for msafile, colpairs in sdiicolArray:
+        count+=1
 
-		# get msa in matrix format
-		m = msa(msafile)
-		msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
-		#print 'msa matrix: ' + repr(msaMatrix.shape)
+        # get msa in matrix format
+        m = msa(msafile)
+        msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
+        #print 'msa matrix: ' + repr(msaMatrix.shape)
 
-		# accumulate substitution matrix AA frequency for all the contact group columns
-		# Sum the scores for each columns across column
-		doneColset = set() # prevent double counting
-		for colpair in colpairs:
-			print '%s, %d/%d, %s' % (msafile, count, len(sdiicolArray), repr(colpair))
-			colA = int(colpair[0])
-			colB = int(colpair[1])
+        # accumulate substitution matrix AA frequency for all the contact group columns
+        # Sum the scores for each columns across column
+        doneColset = set() # prevent double counting
+        for colpair in colpairs:
+            print('%s, %d/%d, %s' % (msafile, count, len(sdiicolArray), repr(colpair)))
+            colA = int(colpair[0])
+            colB = int(colpair[1])
 
-			if colA not in doneColset:
-				calcPairConstrainSM(sm, msaMatrix, gaps, colA, colB)
-				doneColset.add(colA)
-			if colB not in doneColset:
-				calcPairConstrainSM(sm, msaMatrix, gaps, colB, colA)
-				doneColset.add(colB)
+            if colA not in doneColset:
+                calcPairConstrainSM(sm, msaMatrix, gaps, colA, colB)
+                doneColset.add(colA)
+            if colB not in doneColset:
+                calcPairConstrainSM(sm, msaMatrix, gaps, colB, colA)
+                doneColset.add(colB)
 
-		w = len(doneColset) # number of columns for current MSA
-		n = msaMatrix.shape[0]
-		T= sum(sm.itervalues())
-		#T = w*n*(n-1)/2 # normalization term, removing gaps will cause T in action is smaller than w*n*(n-1)/2
-		print '%s: w: %d/%d, n: %d, T: %d' % (msafile, w, msaMatrix.shape[1], n, T)
-		#print repr(sm)
-		#T+=T1
+        w = len(doneColset) # number of columns for current MSA
+        n = msaMatrix.shape[0]
+        T= sum(sm.values())
+        #T = w*n*(n-1)/2 # normalization term, removing gaps will cause T in action is smaller than w*n*(n-1)/2
+        print('%s: w: %d/%d, n: %d, T: %d' % (msafile, w, msaMatrix.shape[1], n, T))
+        #print repr(sm)
+        #T+=T1
 
-	print 'total T:  %d' % T
-	print 'total sm: %d' % sum(sm.itervalues())
-	print ''
-	# convert cij to qij
-	# Normalize the pair frequencies so they will sum to 1
-	for c in sm:
-		sm[c] = 1.0*sm[c]/T
-	print 'sum(sm): %f' % sum(sm.itervalues())
-	print repr(sm)[0:10]
-	print ''
+    print('total T:  %d' % T)
+    print('total sm: %d' % sum(sm.values()))
+    print('')
+    # convert cij to qij
+    # Normalize the pair frequencies so they will sum to 1
+    for c in sm:
+        sm[c] = 1.0*sm[c]/T
+    print('sum(sm): %f' % sum(sm.values()))
+    print(repr(sm)[0:10])
+    print('')
 
-	# Calculate the expected probability of occurrence of the ith residue in an (i,j) pair
-	# pi = qii + sum( qij/2 )_{i!=j}
-	pi = {}
-	for i in xrange(0, len(AAlist)):
-		A = AAlist[i]
-		sum_qij = 0
-		for j in xrange(i+1, len(AAlist)): # i should not = j
-			B = AAlist[j]
-			sum_qij += sm[A+B]/2
-		pi[A] = sm[A+A] + sum_qij
-	print 'sum(pi): %f' % sum(pi.itervalues())
-	#print repr(pi)[0:10]	
-	print ''
+    # Calculate the expected probability of occurrence of the ith residue in an (i,j) pair
+    # pi = qii + sum( qij/2 )_{i!=j}
+    pi = {}
+    for i in range(0, len(AAlist)):
+        A = AAlist[i]
+        sum_qij = 0
+        for j in range(i+1, len(AAlist)): # i should not = j
+            B = AAlist[j]
+            sum_qij += sm[A+B]/2
+        pi[A] = sm[A+A] + sum_qij
+    print('sum(pi): %f' % sum(pi.values()))
+    #print repr(pi)[0:10]
+    print('')
 
-	# The desired denominator is the expected frequency for each pair 
-	eij = {}
-	for i in xrange(0, len(AAlist)):
-		A = AAlist[i]
-		for j in xrange(i+1, len(AAlist)):
-			B = AAlist[j]
-			eij[A+B] = 2 * pi[A] * pi[B]
-		eij[A+A] = pi[A] * pi[A]
+    # The desired denominator is the expected frequency for each pair
+    eij = {}
+    for i in range(0, len(AAlist)):
+        A = AAlist[i]
+        for j in range(i+1, len(AAlist)):
+            B = AAlist[j]
+            eij[A+B] = 2 * pi[A] * pi[B]
+        eij[A+A] = pi[A] * pi[A]
 
-	print 'sum(eij): %f' % sum(eij.itervalues())
-	#print repr(eij)[0:10]
-	print ''
+    print('sum(eij): %f' % sum(eij.values()))
+    #print repr(eij)[0:10]
+    print('')
 
-	#  Log odds ratio sij = round(2*log2(qij/eij))
-	sij = {}
-	for i in xrange(0, len(AAlist)):
-		A = AAlist[i]
-		for j in xrange(i, len(AAlist)):
-			B = AAlist[j]
-			if eij[A+B] == 0.0 or sm[A+B]==0.0:
-				sij[A+B] = 0
-			else:
-				sij[A+B] = int(round(2*math.log((sm[A+B]/eij[A+B]),2)))
-			#	sij[A+B] = sm[A+B]/eij[A+B]
+    #  Log odds ratio sij = round(2*log2(qij/eij))
+    sij = {}
+    for i in range(0, len(AAlist)):
+        A = AAlist[i]
+        for j in range(i, len(AAlist)):
+            B = AAlist[j]
+            if eij[A+B] == 0.0 or sm[A+B]==0.0:
+                sij[A+B] = 0
+            else:
+                sij[A+B] = int(round(2*math.log((sm[A+B]/eij[A+B]),2)))
+            #       sij[A+B] = sm[A+B]/eij[A+B]
 
-	print repr(sij)	
-	print len(sij)
-	print ''
+    print(repr(sij))
+    print(len(sij))
+    print('')
 
-	EBlist = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*']
-	saveBlosum(EBlist, sij, outfile)
+    EBlist = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*']
+    saveBlosum(EBlist, sij, outfile)
 
 
 
 # read combined .sdiicol file
 # for each one calculate the substitution rate cij
 def sdii2blosum():
-	if len(sys.argv) < 2:
-		print 'sdii2blosum: construct new substitution matrix from sdii filtered msa columns'
-		print 'python utils_msa.py sdii2blosum PF00014.sdiicol'
-		print 'output: a substitution matrix file (same format as BLOSSUM62)'
-		return
+    if len(sys.argv) < 2:
+        print('sdii2blosum: construct new substitution matrix from sdii filtered msa columns')
+        print('python utils_msa.py sdii2blosum PF00014.sdiicol')
+        print('output: a substitution matrix file (same format as BLOSSUM62)')
+        return
 
-	sdiicolfile = sys.argv[2]
-	outfile = sdiicolfile+".sm" # new substitution matrix
+    sdiicolfile = sys.argv[2]
+    outfile = sdiicolfile+".sm" # new substitution matrix
 
-	sdiicolArray = []
-	with open(sdiicolfile) as fp:
-		for line in fp:
-			line = line.strip()
-			if len(line) < 1:
-				print 'error sdiicol line: %s' % line
+    sdiicolArray = []
+    with open(sdiicolfile) as fp:
+        for line in fp:
+            line = line.strip()
+            if len(line) < 1:
+                print('error sdiicol line: %s' % line)
 
-			valueArray = line.split(' ')
-			msafile = valueArray[0]
-			if len(valueArray)==1:
-				print '%s: no column' % msafile
-				continue
-			colset = [int(i) for i in valueArray[1:]]
-			sdiicolArray.append((msafile, colset))
-	print 'sdii2bolsum(): %d sdiicol lines loaded ..' % len(sdiicolArray)
+            valueArray = line.split(' ')
+            msafile = valueArray[0]
+            if len(valueArray)==1:
+                print('%s: no column' % msafile)
+                continue
+            colset = [int(i) for i in valueArray[1:]]
+            sdiicolArray.append((msafile, colset))
+    print('sdii2bolsum(): %d sdiicol lines loaded ..' % len(sdiicolArray))
 
-	# init substitution matrix
-	AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'])
-	sm = {}
-	for i in xrange(0, len(AAlist)):
-		for j in xrange(i, len(AAlist)):
-			key = '%s%s' % (AAlist[i], AAlist[j])
-			sm[key] = 0
-	#print AAlist
-	#print 'Alphabet: %d' % len(AAlist) 
-	#print 'AA: %d' % len(sm)
+    # init substitution matrix
+    AAlist = sorted(['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'])
+    sm = {}
+    for i in range(0, len(AAlist)):
+        for j in range(i, len(AAlist)):
+            key = '%s%s' % (AAlist[i], AAlist[j])
+            sm[key] = 0
+    #print AAlist
+    #print 'Alphabet: %d' % len(AAlist)
+    #print 'AA: %d' % len(sm)
 
-	T=0 # total number of possible substitutions
-	for msafile, colset in sdiicolArray:
-		#print len(colset), repr(colset)
+    T=0 # total number of possible substitutions
+    for msafile, colset in sdiicolArray:
+        #print len(colset), repr(colset)
 
-		# get msa in matrix format
-		m = msa(msafile)
-		msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
-		#print 'msa matrix: ' + repr(msaMatrix.shape)
+        # get msa in matrix format
+        m = msa(msafile)
+        msaMatrix = np.array([list(s[1]) for s in m.msaArray]) # matrix format of msa
+        #print 'msa matrix: ' + repr(msaMatrix.shape)
 
-		# accumulate substitution matrix AA frequency for all the contact group columns
-		# Sum the scores for each columns across column
-		for col in colset:
-			calcColSM(sm, msaMatrix, col)
+        # accumulate substitution matrix AA frequency for all the contact group columns
+        # Sum the scores for each columns across column
+        for col in colset:
+            calcColSM(sm, msaMatrix, col)
 
-		w = len(colset) # number of columns for current MSA
-		n = msaMatrix.shape[0]
-		T= sum(sm.itervalues())
-		#T = w*n*(n-1)/2 # normalization term, removing gaps will cause T in action is smaller than w*n*(n-1)/2
-		print '%s: w: %d/%d, n: %d, T: %d' % (msafile, w, msaMatrix.shape[1], n, T)
-		#T+=T1
+        w = len(colset) # number of columns for current MSA
+        n = msaMatrix.shape[0]
+        T= sum(sm.values())
+        #T = w*n*(n-1)/2 # normalization term, removing gaps will cause T in action is smaller than w*n*(n-1)/2
+        print('%s: w: %d/%d, n: %d, T: %d' % (msafile, w, msaMatrix.shape[1], n, T))
+        #T+=T1
 
-	print 'total T:  %d' % T
-	print 'total sm: %d' % sum(sm.itervalues())
-	print ''
-	# convert cij to qij
-	# Normalize the pair frequencies so they will sum to 1
-	for c in sm:
-		sm[c] = 1.0*sm[c]/T
-	print 'sum(sm): %f' % sum(sm.itervalues())
-	print repr(sm)[0:10]
-	print ''
+    print('total T:  %d' % T)
+    print('total sm: %d' % sum(sm.values()))
+    print('')
+    # convert cij to qij
+    # Normalize the pair frequencies so they will sum to 1
+    for c in sm:
+        sm[c] = 1.0*sm[c]/T
+    print('sum(sm): %f' % sum(sm.values()))
+    print(repr(sm)[0:10])
+    print('')
 
-	# Calculate the expected probability of occurrence of the ith residue in an (i,j) pair
-	# pi = qii + sum( qij/2 )_{i!=j}
-	pi = {}
-	for i in xrange(0, len(AAlist)):
-		A = AAlist[i]
-		sum_qij = 0
-		for j in xrange(i+1, len(AAlist)): # i should not = j
-			B = AAlist[j]
-			sum_qij += sm[A+B]
-			#sum_qij += sm[A+B]/2
-		pi[A] = sm[A+A] + sum_qij
-	print 'sum(pi): %f' % sum(pi.itervalues())
-	#print repr(pi)[0:10]	
-	print ''
+    # Calculate the expected probability of occurrence of the ith residue in an (i,j) pair
+    # pi = qii + sum( qij/2 )_{i!=j}
+    pi = {}
+    for i in range(0, len(AAlist)):
+        A = AAlist[i]
+        sum_qij = 0
+        for j in range(i+1, len(AAlist)): # i should not = j
+            B = AAlist[j]
+            sum_qij += sm[A+B]
+            #sum_qij += sm[A+B]/2
+        pi[A] = sm[A+A] + sum_qij
+    print('sum(pi): %f' % sum(pi.values()))
+    #print repr(pi)[0:10]
+    print('')
 
-	# The desired denominator is the expected frequency for each pair 
-	eij = {}
-	for i in xrange(0, len(AAlist)):
-		A = AAlist[i]
-		for j in xrange(i+1, len(AAlist)):
-			B = AAlist[j]
-			eij[A+B] = 2 * pi[A] * pi[B]
-		eij[A+A] = pi[A] * pi[A]
+    # The desired denominator is the expected frequency for each pair
+    eij = {}
+    for i in range(0, len(AAlist)):
+        A = AAlist[i]
+        for j in range(i+1, len(AAlist)):
+            B = AAlist[j]
+            eij[A+B] = 2 * pi[A] * pi[B]
+        eij[A+A] = pi[A] * pi[A]
 
-	print 'sum(eij): %f' % sum(eij.itervalues())
-	#print repr(eij)[0:10]
-	print ''
+    print('sum(eij): %f' % sum(eij.values()))
+    #print repr(eij)[0:10]
+    print('')
 
-	#  Log odds ratio sij = round(2*log2(qij/eij))
-	sij = {}
-	for i in xrange(0, len(AAlist)):
-		A = AAlist[i]
-		for j in xrange(i, len(AAlist)):
-			B = AAlist[j]
-			if eij[A+B] == 0.0 or sm[A+B]==0.0:
-				sij[A+B] = 0
-			else:
-				sij[A+B] = int(round(2*math.log((sm[A+B]/eij[A+B]),2)))
-			#	sij[A+B] = sm[A+B]/eij[A+B]
+    #  Log odds ratio sij = round(2*log2(qij/eij))
+    sij = {}
+    for i in range(0, len(AAlist)):
+        A = AAlist[i]
+        for j in range(i, len(AAlist)):
+            B = AAlist[j]
+            if eij[A+B] == 0.0 or sm[A+B]==0.0:
+                sij[A+B] = 0
+            else:
+                sij[A+B] = int(round(2*math.log((sm[A+B]/eij[A+B]),2)))
+            #       sij[A+B] = sm[A+B]/eij[A+B]
 
-	print repr(sij)	
-	print len(sij)
-	print ''
+    print(repr(sij))
+    print(len(sij))
+    print('')
 
-	EBlist = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*']
-	saveBlosum(EBlist, sij, outfile)
+    EBlist = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*']
+    saveBlosum(EBlist, sij, outfile)
 
 
 
 #
 def applysm():
-	if len(sys.argv) < 6:
-		print 'applysm: write new sm file'
-		print 'python utils_msa.py applysm untitled_blosum62.txt smlist.txt 0.1 1 outfile'
-		return
-	alphabet = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*']
+    if len(sys.argv) < 6:
+        print('applysm: write new sm file')
+        print('python utils_msa.py applysm untitled_blosum62.txt smlist.txt 0.1 1 outfile')
+        return
+    alphabet = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*']
 
-	blosumfile = sys.argv[2]
-	newsmfilelist = sys.argv[3]
-	weight = float(sys.argv[4])
-	title = int(sys.argv[5])
+    blosumfile = sys.argv[2]
+    newsmfilelist = sys.argv[3]
+    weight = float(sys.argv[4])
+    title = int(sys.argv[5])
 
 
-	fin = open(newsmfilelist, 'r')
-	lines = fin.readlines()
-	fin.close()
+    fin = open(newsmfilelist, 'r')
+    lines = fin.readlines()
+    fin.close()
 
-	newsm = np.loadtxt(lines[0].strip())
-	for i in xrange(1, len(lines)):
-		line = lines[i].strip()
-		if len(line) < 1:
-			continue
-		print 'reading %s' % line
-		newsm += np.loadtxt(line)
-	origblosum = np.loadtxt(blosumfile)
+    newsm = np.loadtxt(lines[0].strip())
+    for i in range(1, len(lines)):
+        line = lines[i].strip()
+        if len(line) < 1:
+            continue
+        print('reading %s' % line)
+        newsm += np.loadtxt(line)
+    origblosum = np.loadtxt(blosumfile)
 
-	newblosum = np.rint(origblosum + weight * newsm)
+    newblosum = np.rint(origblosum + weight * newsm)
 
-	#outfilename = 'combined-'+blosumfile+'.'+sys.argv[4]+'.sm'
-	outfilename = sys.argv[6]
-	if title==1:
-		fout = open(outfilename, 'w')
-		fout.write('   '+'  '.join(alphabet)+'\n')
-		for i in xrange(0, newblosum.shape[0]):
-			fout.write(alphabet[i]+' '+' '.join(['%2i'%n for n in newblosum[i,:]])+'\n')
-		fout.close()
-		print 'write: %s with title' % (outfilename)
-	else:
-		np.savetxt(outfilename, newblosum, fmt='%2i', delimiter=' ')
-		print 'write: %s without title' % (outfilename)
+    #outfilename = 'combined-'+blosumfile+'.'+sys.argv[4]+'.sm'
+    outfilename = sys.argv[6]
+    if title==1:
+        fout = open(outfilename, 'w')
+        fout.write('   '+'  '.join(alphabet)+'\n')
+        for i in range(0, newblosum.shape[0]):
+            fout.write(alphabet[i]+' '+' '.join(['%2i'%n for n in newblosum[i,:]])+'\n')
+        fout.close()
+        print('write: %s with title' % (outfilename))
+    else:
+        np.savetxt(outfilename, newblosum, fmt='%2i', delimiter=' ')
+        print('write: %s without title' % (outfilename))
 
 
 def combinesm():
-	if len(sys.argv) < 7:
-		print 'combinsm: write new sm file with improved weighting scheme'
-		print 'python utils_msa.py combinesm untitled_blosum62 newsm.txt 0.5 0.8 title=1 outfile'
-		return
-	alphabet = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*']
+    if len(sys.argv) < 7:
+        print('combinsm: write new sm file with improved weighting scheme')
+        print('python utils_msa.py combinesm untitled_blosum62 newsm.txt 0.5 0.8 title=1 outfile')
+        return
+    alphabet = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'Z', 'X', '*']
 
-	blosumfile = sys.argv[2]
-	newsmfile = sys.argv[3]
-	w1 = float(sys.argv[4])
-	w2 = float(sys.argv[5])
-	title = int(sys.argv[6])
+    blosumfile = sys.argv[2]
+    newsmfile = sys.argv[3]
+    w1 = float(sys.argv[4])
+    w2 = float(sys.argv[5])
+    title = int(sys.argv[6])
 
-	origblosum = np.loadtxt(blosumfile)
-	newsm = np.loadtxt(newsmfile)
+    origblosum = np.loadtxt(blosumfile)
+    newsm = np.loadtxt(newsmfile)
 
-	newblosum = np.rint(w1*origblosum + w2 * newsm)
+    newblosum = np.rint(w1*origblosum + w2 * newsm)
 
-	#outfilename = 'combined-'+blosumfile+'.'+sys.argv[4]+'.sm'
-	outfilename = sys.argv[7]
-	if title==1:
-		fout = open(outfilename, 'w')
-		fout.write('   '+'  '.join(alphabet)+'\n')
-		for i in xrange(0, newblosum.shape[0]):
-			fout.write(alphabet[i]+' '+' '.join(['%2i'%n for n in newblosum[i,:]])+'\n')
-		fout.close()
-		print 'write: %s with title' % (outfilename)
-	else:
-		np.savetxt(outfilename, newblosum, fmt='%2i', delimiter=' ')
-		print 'write: %s without title' % (outfilename)
+    #outfilename = 'combined-'+blosumfile+'.'+sys.argv[4]+'.sm'
+    outfilename = sys.argv[7]
+    if title==1:
+        fout = open(outfilename, 'w')
+        fout.write('   '+'  '.join(alphabet)+'\n')
+        for i in range(0, newblosum.shape[0]):
+            fout.write(alphabet[i]+' '+' '.join(['%2i'%n for n in newblosum[i,:]])+'\n')
+        fout.close()
+        print('write: %s with title' % (outfilename))
+    else:
+        np.savetxt(outfilename, newblosum, fmt='%2i', delimiter=' ')
+        print('write: %s without title' % (outfilename))
 
 
 #######################################################################################################
 def main():
 
-	dispatch = {
-		'resi2msai': resi2msai, 'msai2resi':msai2resi, 'sdii2resi': sdii2resi, 'getseqbyname': getSeqbyName, 'getmsabyname': getMsabyName,
-		'reducebyweight': reduceByWeight, 'reducebyhamming': reduceByHamming, 'resi2target': resi2target, 'pdist': pdistDistribution, 'msareduction':MSAReduction,
-		'searchpdbseq': searchpdbseq, 'hcg2blossum': hcg2blossum, 'applysm': applysm,'colpairfreq': colpairfreq, 'ncg2colpair':ncg2colpair, 'ncg2sdiicol':ncg2sdiicol, 'ncg2blossum':ncg2blossum,
-		'writeuniprotseq':writeUniprotSeq, 'printuniprot':printUniprot, 'sdii2blosum':sdii2blosum, 'findfamiliar':findfamiliar,'extractnseq':extractnseq,
-		'topsdii2sdiicol':topsdii2sdiicol, 'combinesm':combinesm, 'sdiipairlimit2sm': sdiipairlimit2sm
-	}
+    dispatch = {
+            'resi2msai': resi2msai, 'msai2resi':msai2resi, 'sdii2resi': sdii2resi, 'getseqbyname': getSeqbyName, 'getmsabyname': getMsabyName,
+            'reducebyweight': reduceByWeight, 'reducebyhamming': reduceByHamming, 'resi2target': resi2target, 'pdist': pdistDistribution, 'msareduction':MSAReduction,
+            'searchpdbseq': searchpdbseq, 'hcg2blossum': hcg2blossum, 'applysm': applysm,'colpairfreq': colpairfreq, 'ncg2colpair':ncg2colpair, 'ncg2sdiicol':ncg2sdiicol, 'ncg2blossum':ncg2blossum,
+            'writeuniprotseq':writeUniprotSeq, 'printuniprot':printUniprot, 'sdii2blosum':sdii2blosum, 'findfamiliar':findfamiliar,'extractnseq':extractnseq,
+            'topsdii2sdiicol':topsdii2sdiicol, 'combinesm':combinesm, 'sdiipairlimit2sm': sdiipairlimit2sm
+    }
 
-	if len(sys.argv)<2:
-		for k in dispatch:
-			dispatch[k]()
-		return
+    if len(sys.argv)<2:
+        for k in dispatch:
+            dispatch[k]()
+        return
 
-	cmd = sys.argv[1]
+    cmd = sys.argv[1]
 
-	flag = False
-	for key in dispatch:
-		if key == cmd:
-			dispatch[key]()
-			flag = True
-	if flag == False:
-		print 'Wrong cmd string'
+    flag = False
+    for key in dispatch:
+        if key == cmd:
+            dispatch[key]()
+            flag = True
+    if flag == False:
+        print('Wrong cmd string')
 
 
 
 if __name__ == '__main__':
-	main()
+    main()

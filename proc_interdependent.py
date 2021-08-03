@@ -56,9 +56,9 @@ def unskew_zscore(arglist):
 
     outfile = '%s.trans.zscore' % (cefile)
     with open(outfile, 'w') as fout:
-        for i in xrange(0, len(keylist)):
+        for i in range(0, len(keylist)):
             fout.write('%s %.6f %.6f %.6f\n' % (keylist[i], celist[i], trans_ce[i], zscore[i]))
-    print '%s %.6f %.6f %.6f %.6f' % (outfile, oldskew, newskew, m, s)
+    print(('%s %.6f %.6f %.6f %.6f' % (outfile, oldskew, newskew, m, s)))
 
 
 '''
@@ -69,7 +69,7 @@ based on the result of pfam31.0 2247 .cflat
 #   $ head PF00003_full.txt.dca
 # calculate the sknewness before and after taking cubic root transformation
 # output .dca.zscore file based on the transformed values
-#   format: r1 rn1 r2 rn2 dca transformed_dca transformed_zscore 
+#   format: r1 rn1 r2 rn2 dca transformed_dca transformed_zscore
 # print: skewness_before skewness_after
 def unskew_zscore_dca(arglist):
     if len(arglist) < 1:
@@ -96,15 +96,15 @@ def unskew_zscore_dca(arglist):
 
     outfile = '%s.trans.zscore' % (dcafile)
     with open(outfile, 'w') as fout:
-        for i in xrange(0, len(keylist)):
+        for i in range(0, len(keylist)):
             fout.write('%s %.6f %.6f %.6f\n' % (keylist[i], dcalist[i], trans_dca[i], zscore[i]))
-    print '%s %.6f %.6f %.6f %.6f' % (outfile, oldskew, newskew, m, s)
+    print(('%s %.6f %.6f %.6f %.6f' % (outfile, oldskew, newskew, m, s)))
 
 # input .mip file
 # $ head PF00003_p90.mip
 #   374 375 0.76824159 0.31576902 0.45247258
 # output: .trans.mip.zscore (include mi and mip)
-# format: 
+# format:
 def unskew_zscore_mip(arglist):
     if len(arglist) < 1:
         cp._err('Usage: python proc_interdependent.py unskew_zscore_mip PF00003_p90.mip')
@@ -147,9 +147,9 @@ def unskew_zscore_mip(arglist):
     # output mi
     outfile = '%s.trans.zscore' % (infile)
     with open(outfile, 'w') as fout:
-        for i in xrange(0, len(keylist)):
+        for i in range(0, len(keylist)):
             fout.write('%s %.6f %.6f %.6f %.6f %.6f %.6f\n' % (keylist[i], milist[i], trans_mi[i], zscore_mi[i], miplist[i], trans_mip[i], zscore_mip[i]))
-    print '%s %.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f' % (outfile, oldmiskew, newmiskew, m_mi, s_mi, oldmipskew, newmipskew, m_mip, s_mip)
+    print(('%s %.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f' % (outfile, oldmiskew, newmiskew, m_mi, s_mi, oldmipskew, newmipskew, m_mip, s_mip)))
 
 
 # combine with previous .rcflat files
@@ -172,7 +172,7 @@ def unskew_dca_merge(arglist):
         key = '%s %s' % (sarr[0], sarr[2])
         value = sarr[4:]
         zscoredict[key] = value
-    
+
     with open(outfile, 'w') as fout:
         # pdbid chainID ri1 ri2 rn1 rn2 sc_dist ca_dist tip_dis PfamID p1 p2 mip_zscore dca_zscore area1 area2
         for line in cp.loadlines(oldcflatfile):
@@ -215,11 +215,11 @@ def hamming_diff_with(arglist):
     if targetseq == '':
         cp._err('target %s not found' % target)
     for head, seq in msalist:
-        diff = [(str(i),targetseq[i],seq[i]) for i in xrange(0, len(targetseq)) if targetseq[i]!=seq[i]]
+        diff = [(str(i),targetseq[i],seq[i]) for i in range(0, len(targetseq)) if targetseq[i]!=seq[i]]
         diff_idx = ','.join(d[0] for d in diff)
         target_seg = ''.join([d[1] for d in diff])
         seq_seg = ''.join(d[2] for d in diff)
-        print '%s %d %s %s %s' % (head, len(diff), target_seg, seq_seg, diff_idx)
+        print(('%s %d %s %s %s' % (head, len(diff), target_seg, seq_seg, diff_idx)))
 
 if __name__=='__main__':
     cp.dispatch(__name__)

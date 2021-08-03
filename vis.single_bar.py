@@ -25,7 +25,7 @@ infile = 'su.b62.sum.stat'
 
 data = np.loadtxt(infile,delimiter=',')
 
-print(repr(data))
+print((repr(data)))
 
 
 fig, ax = plt.subplots()
@@ -61,4 +61,3 @@ plt.legend()
 
 plt.tight_layout()
 plt.show()
-

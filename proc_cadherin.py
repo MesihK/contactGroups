@@ -1,5 +1,5 @@
 import commp as cp
-import numpy as np 
+import numpy as np
 
 def foo(args):
     cp._info(args)
@@ -18,20 +18,20 @@ def appendce(args):
 
     # load 3q2v_ab.msai.resi.dist
     # 504 338 A 79 H B 58 G 22.1298
-    #_msaikey = lambda x: '%s %s' % (x[0], x[1]) 
+    #_msaikey = lambda x: '%s %s' % (x[0], x[1])
     #distdict = dict((_msaikey(line.split()), line) for line in cp.loadlines(distfile))
     distdict = {}
     for line in cp.loadlines(distfile):
         sarr=line.split()
         keystr = '%s %s' % (sarr[3], sarr[6])
         if keystr in distdict:
-            print('%s: %s already exist' % (keystr, distdict[keystr]) )
+            print(('%s: %s already exist' % (keystr, distdict[keystr]) ))
             cp._err('exit')
         else:
             distdict[keystr] = line
     cp._info('%d dist lines loaded.' % len(distdict))
-    
-    # load cflat2 
+
+    # load cflat2
     cflat2dict = {}
     for line in cp.loadlines(cflat2file):
         sarr = line.split()
@@ -49,7 +49,7 @@ def appendce(args):
         outstrlist.append('%s %s' % (distdict[k], appendvalue))
     cp._info('%d values appended' % len(outstrlist))
 
-    # output new .dist file 
+    # output new .dist file
     with open(outfile, 'w') as fout:
         fout.write('%s\n' % '\n'.join(outstrlist))
     cp._info('save appended dist file to %s' % outfile)
@@ -71,7 +71,7 @@ def vec32mat(args):
 
     ticklist = list(ticks)
     ticklist.sort()
-    print ticklist
+    print(ticklist)
 
     mat = []
     for i in range(len(ticklist)):
@@ -237,7 +237,7 @@ def subtable2bfactor(args):
         fout.write('%s\n' % '\n'.join(outlist))
     cp._info('save to %s' % outfile)
 
-    
+
 
 if __name__=='__main__':
     cp.dispatch(__name__)

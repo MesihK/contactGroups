@@ -3,7 +3,7 @@ import collections
 
 
 # for sh2-btk interaction prediction
-# combine MSAs 
+# combine MSAs
 def msapadding(args):
     if len(args)!= 4:
         cp._err('Usage: python proc_sh2btk.py msapadding from.fa to.fa tax.list outfile')
@@ -43,7 +43,7 @@ def msapadding(args):
         tax = _gettax(header)
         if tax in commontaxlist:
             index = seqbytaxnumdict[tax] % len(seqbytaxlistdict[tax])
-            print tax, index
+            print((tax, index))
             paddingheader, paddingseq = seqbytaxlistdict[tax][index]
             outstr = '>%s|%s\n%s%s\n' % (header, paddingheader, seq, paddingseq)
             fout.write(outstr)
@@ -58,7 +58,7 @@ def msapadding(args):
 def msapaddingbyheader(args):
     if len(args)!=4:
         cp._err('Usage: python proc_sh2btk.py msapaddingbyheader msa1.fa msa2.fa sharedgentax.list outfile')
-    
+
     msa1 = args[0]
     msa2 = args[1]
     headerfile = args[2]
@@ -75,7 +75,7 @@ def msapaddingbyheader(args):
         subheader = sarr[0]
         if subheader in commonheader:
             seqbyheaderlist1[subheader].append((header, seq))
-    
+
     # separate msa2
     for header, seq in cp.fasta_iter(msa2):
         sarr = header.split('/')

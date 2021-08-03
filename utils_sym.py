@@ -4,7 +4,7 @@ import math
 import commp as cp
 
 # (weighed) shannon entropy
-# varset: varible set in list type 
+# varset: varible set in list type
 def _h(data, varset, w='na'):
     X = data[:, varset].T
     if w!='na':
@@ -13,7 +13,7 @@ def _h(data, varset, w='na'):
     else: # non-weighted ver.
         H = np.sum(-p * np.log2(p) if p > 0 else 0 for p in (np.mean(reduce(np.logical_and, (predictions == c for predictions, c in zip(X, classes)))) for classes in itertools.product(*[set(x) for x in X])))
     return H
-    
+
 # for debug purpose
 '''
 $ python utils_sym.py t_wh t_entropy.data t_entropy.weight
@@ -61,17 +61,17 @@ sum: 1.00
 def _wh(data, varset, w):
     X = data[:, varset].T
     meff = np.sum(w)
-    print X.T 
+    print X.T
     print
     print 'meff: %.f' % meff
     H = 0
-    #print [set(x) for x in X] 
+    #print [set(x) for x in X]
     #print
     prob = {}
     for classes in itertools.product(*[set(x) for x in X]):
         print 'alphabet:' + str(classes)
         v = reduce(np.logical_and, (predictions == c for predictions, c in zip(X, classes)))
-        print "v:" 
+        print "v:"
         print v
         # the original p
         p = np.mean(v) # should divide effective number, which is the sum of all weights
@@ -91,7 +91,7 @@ def _wh(data, varset, w):
     print ' '.join(['%s: %s' % (str(k), str(prob[k])) for k in prob])
     print 'sum: %.2f' % (sum(prob.values()))
     return H
-#	return np.sum(-p * np.log2(p) if p > 0 else 0 for p in ((sum(reduce(np.logical_and, (predictions == c for predictions, c in zip(X, classes)))*self.weight))/self.meff for classes in itertools.product(*[set(x) for x in X])))
+#       return np.sum(-p * np.log2(p) if p > 0 else 0 for p in ((sum(reduce(np.logical_and, (predictions == c for predictions, c in zip(X, classes)))*self.weight))/self.meff for classes in itertools.product(*[set(x) for x in X])))
 
 
 # return h(wh):value, (joint) probabilities: dictionary
@@ -336,7 +336,7 @@ def t_linkage(arglist):
     from scipy.cluster.hierarchy import dendrogram
     from scipy.cluster.hierarchy import linkage
     from scipy.cluster.hierarchy import fcluster
-    
+
     data = np.loadtxt(arglist[0], delimiter=',')
     print data.shape
     print data
@@ -363,10 +363,10 @@ def t_linkage(arglist):
         plt.annotate("%.3g" % y, (x, y), xytext=(0, -5),
                         textcoords='offset points',
                         va='top', ha='center')
-        plt.axhline(y=max_d, c='c')   # ['g', 'r', 'c', 'm', 'y', 'k'] 
+        plt.axhline(y=max_d, c='c')   # ['g', 'r', 'c', 'm', 'y', 'k']
 
     plt.tight_layout() # avoid xlabel cutoff
-    plt.show()	        
+    plt.show()
     #plt.savefig(outfile)
 
 # test weighted entropy
@@ -374,7 +374,7 @@ def t_wh(arglist):
     data = np.loadtxt(arglist[0], delimiter=',')
     print data.shape
     print data
-    
+
     w = np.loadtxt(arglist[1], delimiter=',')
     print 'weight:'
     print w

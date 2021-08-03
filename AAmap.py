@@ -49,8 +49,8 @@ class AAmap(object):# -*- coding: utf-8 -*-
         self.A2AAA['M']='MET'
         self.A2AAA['F']='PHE'
         self.A2AAA['Y']='TYR'
-        self.A2AAA['W']='TRP'        
-        
+        self.A2AAA['W']='TRP'
+
         self.A2T={}
         self.A2T['D']='C'
         self.A2T['E']='C'
@@ -75,7 +75,7 @@ class AAmap(object):# -*- coding: utf-8 -*-
 
 
     def getAAmap(self, AAA):
-        return self.AAA2A[AAA]  
-    
+        return self.AAA2A[AAA]
+
     def getA2Tmap(self, A):
         return self.A2T[A]

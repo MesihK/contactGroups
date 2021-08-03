@@ -50,7 +50,7 @@ def heatmap(data, row_labels, col_labels, ax=None,
     #plt.setp(ax.get_xticklabels(), rotation=-30, ha="right", rotation_mode="anchor")
 
     # Turn spines off and create white grid.
-    for edge, spine in ax.spines.items():
+    for edge, spine in list(ax.spines.items()):
         spine.set_visible(False)
 
     ax.set_xticks(np.arange(data.shape[1]+1)-.5, minor=True)
@@ -129,25 +129,8 @@ def main():
     plt.xticks(rotation = 90)
     fig.tight_layout()
     plt.savefig(outfile)
-    print('save to %s' % outfile)
-    plt.show()    
+    print(('save to %s' % outfile))
+    plt.show()
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

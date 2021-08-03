@@ -49,7 +49,7 @@ def heatmap(data, row_labels, col_labels, ax=None,
     #plt.setp(ax.get_xticklabels(), rotation=-30, ha="right", rotation_mode="anchor")
 
     # Turn spines off and create white grid.
-    for edge, spine in ax.spines.items():
+    for edge, spine in list(ax.spines.items()):
         spine.set_visible(False)
 
     ax.set_xticks(np.arange(data.shape[1]+1)-.5, minor=True)
@@ -116,7 +116,7 @@ def annotate_heatmap(im, data=None, valfmt="{x:.2f}",
 
 def main():
     if len(sys.argv)<2:
-        print 'Usage: python vis.heatmap.sm.py sm.vec'
+        print('Usage: python vis.heatmap.sm.py sm.vec')
         exit(0)
 
     # AA alphabet sorted by type
@@ -164,25 +164,8 @@ def main():
     fig.savefig(infile+'.png')
     fig.clf()
     plt.close()
-    #plt.show()    
-    print 'save to %s' % (infile+'.png')
+    #plt.show()
+    print(('save to %s' % (infile+'.png')))
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

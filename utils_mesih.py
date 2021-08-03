@@ -24,7 +24,8 @@ def evaldistdca(args):
     # clasify distance as contact '1' or no contact '0' based on threshold
     distScore = [ 1 if float(e) <= threshold else 0 for a,b,c,d,e in dist ]
     #dcaScore = normalize([[ c for a,b,c in dca ]], norm='max')[0]
-    dcaScore = [ float(c) for a,b,c in dca ]
+    dcaScore = [ float(d) for r1,r2,m1,m2,i,j,M,d in dca ]
+    miScore = [ float(M) for r1,r2,m1,m2,i,j,M,d in dca ]
 
     # create the index list to convert from 0,1... to aligned index and resid at pdb
     ind = []

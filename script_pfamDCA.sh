@@ -36,11 +36,12 @@ NAME=$(cat $PROT.fa | head -n1 | cut -c 2- | sed -e 's/\(.*\)/\U\1/')
 
 # Recalculate MSA with muscle
 if [ ! -f $PFAM.$MAT.msa ]; then
-    echo -e ${RED}muscle -in $PFAM.ng.up -out $PFAM.$MAT.msa -matrix protsub.mat -gapopen -12.0 -gapextend -1.0 -center 0.0: ${NC}
-    muscle -in $PFAM.ng.up -out $PFAM.$MAT.msa -matrix $MAT -gapopen -6.0 -gapextend -0.5 -center 0.0
+    #echo -e ${RED}muscle -in $PFAM.ng.up -out $PFAM.$MAT.msa -matrix protsub.mat -gapopen -12.0 -gapextend -1.0 -center 0.0: ${NC}
+    #muscle -in $PFAM.ng.up -out $PFAM.$MAT.msa -matrix $MAT -gapopen -6.0 -gapextend -0.5 -center 0.0
     #muscle -in $PFAM.ng.up -out $PFAM.ng.up.bl -matrix blosum62.mat -gapopen -12.0 -gapextend -1.0 -center 0.0
+    mafft --textmatrix $MAT --thread 8 $PFAM.ng.up > $PFAM.$MAT.msa
 else
-    echo Previous Muscle MSA found, use it.
+    echo -e ${RED}Previous MSA found, use it.$NC
 fi
 
 # Get our protein alignment from MSA
@@ -84,7 +85,7 @@ python utils_protein2.py writeresdists $PROT $PROT.dist
 echo -e ${RED}python utils_mesih.py evaldistdca $PROT.pb.map $PROT.dist $PFAM.pydca: ${NC}
 python utils_mesih.py evaldistdca $PROT.pb.map $PROT.dist $PFAM.pydca 5
 
-mv roc_curve.png $PROT.$MAT.roc.png
+mv roc_curve.png $PROT.$MAT.$CLUST.roc.png
 
 #rm $PFAM.ng $PFAM.ng.up $PROT.fa $PFAM.$MAT.msa $PFAM.${PROT}* $PROT.weight # $PROT.map 
 

@@ -97,7 +97,7 @@ def align_exec(s1, s2, cmd='needle', matrix='B62', gapopen='10.0', gapextend='0.
         ret = subprocess.Popen(['align.sh', cmd, s1, s2, matrix, gapopen, gapextend], stdout=subprocess.PIPE).communicate()[0].strip()
     else:
         ret = subprocess.check_output(['align.sh', cmd, s1, s2, matrix, gapopen, gapextend])
-    return ret
+    return ret.decode("utf-8")
 
 def parseFasta(lines, i):
     fastalines = []

@@ -1,11 +1,13 @@
 import commp as cp
 import numpy as np
 import math
+import random
 import matplotlib.pyplot as plt
 import matplotlib.colors as clr
 from sklearn.preprocessing import normalize
 from sklearn.metrics import roc_auc_score
 from sklearn import metrics
+from utils_pfammsa import pfammsa
 
 colorscheme1 = ['#a93a28', '#afc8cd', '#266674', '#fb8c32', '#cbc96d',
 '#60e6c1', '#d7295e', '#008ed0', '#747474']
@@ -51,11 +53,64 @@ def evaldistdca(args):
     plt.title('ROC curve')
     plt.legend(loc='best')
     plt.savefig('roc_curve.png')
-    plt.show()
+    #plt.show()
 
     # calculate the ROC area under the curve
     print('AUC:',"{:.4f}".format(aucScore))
 
+# Cluster given MSA with similaritiy cutoff, and then sample each cluster until given threshold achieved 
+def sampleclusters(args):
+    assert len(args) == 5, 'Usage: python utils_mesih.py sampleclusters msafile scoretag{aa} similarity_cutoff{0.7} outprefix targetcnt'
+
+    msafile = args[0]
+    mapfile = args[1]
+    similarity_cutoff = float(args[2])
+    outprefix = args[3]
+    targetcnt = int(args[4])
+
+    # load msa and get scorebycols
+    # msa2score
+    pfm = pfammsa(msafile)
+    cols = pfm.msareduce(['aa'],0.7,0.7)[1]
+    scoremat = pfm.scorebycols('aa',cols)
+
+    # return a list of len(rows of x), clusters[i] = 'cluster ID which i belongs'
+    cp._info('cluster the msa')
+    msaclusters = cp.hamming_cluster(scoremat, 1-similarity_cutoff)
+
+    target_ids = []
+    
+    cp._info('sample resulting clusters')
+    cluster_member_ids = [[ j for j in range(len(msaclusters)) if msaclusters[j] == i ] for i in range(1,max(msaclusters)+1)]
+    cluster_member_ids.sort(key = len, reverse=True)
+    #cluster_member_ids.reverse()
+    print([ len(c) for c in cluster_member_ids ])
+    cnt = 0
+    while cnt < targetcnt:
+        for c in range(len(cluster_member_ids)):
+            if cnt == targetcnt: break
+            if len(cluster_member_ids[c]) > 0:
+                i = random.sample(cluster_member_ids[c], 1)
+                target_ids += i 
+                cnt += 1
+                cluster_member_ids[c].remove(i[0])
+        cluster_member_ids = [ c for c in cluster_member_ids if c != [] ]
+    #            print(cluster_member_ids[c],i[0])
+    #print(target_ids)
+    #print(cluster_member_ids)
+
+    target_cluster = [pfm.msalist[i] for i in target_ids]
+
+    # output target cluster msa
+    outmsafile = '%s_%.2f_cluster.fa' % (outprefix, similarity_cutoff)
+    with open(outmsafile, 'w') as fout:
+        fout.write('\n'.join(['>%s\n%s' % (s[0], s[1]) for s in target_cluster]))
+    cp._info('save target cluster msa to %s' % outmsafile)
+
+    # output target cluster score
+    outscorefile = '%s_%.2f_cluster.scoremat' % (outprefix, similarity_cutoff)
+    np.savetxt(outscorefile, scoremat[target_ids,:])
+    cp._info('save target cluster score to %s' % outscorefile)
 
 if __name__ == '__main__':
     cp.dispatch(__name__)

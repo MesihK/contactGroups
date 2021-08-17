@@ -886,6 +886,13 @@ def loadtuples(filename, delimiter=' '):
         lines = [_f for _f in (line.rstrip() for line in fp) if _f]
         return [line.split(delimiter) for line in lines]
 
+# load lines and break each line into tuples with regex
+def loadtuplesregex(filename, regex=' '):
+    import re
+    with open(filename) as fp:
+        lines = [_f for _f in (line.rstrip() for line in fp) if _f]
+        return [re.split(regex,line) for line in lines]
+
 
 # return pair tuple of (raw title and content)
 def readkblockstr(linesbuff, delimiter='>'):

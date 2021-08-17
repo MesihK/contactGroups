@@ -19,9 +19,9 @@ def evaldistdca(args):
     threshold = float(args[3])
 
     # load files
-    m = cp.loadtuples(mapfile)
-    dist = cp.loadtuples(distfile)
-    dca = cp.loadtuples(dcafile)
+    m = cp.loadtuplesregex(mapfile, '\s{1,}')
+    dist = cp.loadtuplesregex(distfile, '\s{1,}')
+    dca = cp.loadtuplesregex(dcafile, '\s{1,}')
 
     # clasify distance as contact '1' or no contact '0' based on threshold
     distScore = [ 1 if float(e) <= threshold else 0 for a,b,c,d,e in dist ]

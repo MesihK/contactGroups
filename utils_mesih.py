@@ -71,21 +71,28 @@ def sampleclusters(args):
     # load msa and get scorebycols
     # msa2score
     pfm = pfammsa(msafile)
+    if len(pfm.msalist) < targetcnt:
+        cp._info('Target count is smaller than msa length!')
+        return
+        
     cols = pfm.msareduce(['aa'],0.7,0.7)[1]
     scoremat = pfm.scorebycols('aa',cols)
+    cp._info('msa reduce done')
 
     # return a list of len(rows of x), clusters[i] = 'cluster ID which i belongs'
-    cp._info('cluster the msa')
     msaclusters = cp.hamming_cluster(scoremat, 1-similarity_cutoff)
+    cp._info('cluster the msa done')
 
     target_ids = []
     
-    cp._info('sample resulting clusters')
-    cluster_member_ids = [[ j for j in range(len(msaclusters)) if msaclusters[j] == i ] for i in range(1,max(msaclusters)+1)]
+    # get clusters
+    cluster_member_ids = [ np.where(msaclusters == i)[0].tolist() for i in range(1,max(msaclusters)+1)]
+    cp._info('id done')
+    # sort them according to cluster size, smallest is at top
     cluster_member_ids.sort(key = len, reverse=True)
-    #cluster_member_ids.reverse()
-    print([ len(c) for c in cluster_member_ids ])
+    cp._info('sorting done')
     cnt = 0
+    # sample until target count meet
     while cnt < targetcnt:
         for c in range(len(cluster_member_ids)):
             if cnt == targetcnt: break
@@ -95,11 +102,9 @@ def sampleclusters(args):
                 cnt += 1
                 cluster_member_ids[c].remove(i[0])
         cluster_member_ids = [ c for c in cluster_member_ids if c != [] ]
-    #            print(cluster_member_ids[c],i[0])
-    #print(target_ids)
-    #print(cluster_member_ids)
 
     target_cluster = [pfm.msalist[i] for i in target_ids]
+    cp._info('sampling done')
 
     # output target cluster msa
     outmsafile = '%s_%.2f_cluster.fa' % (outprefix, similarity_cutoff)

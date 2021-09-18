@@ -7,6 +7,9 @@ import matplotlib.colors as clr
 from sklearn.preprocessing import normalize
 from sklearn.metrics import roc_auc_score
 from sklearn import metrics
+from scipy.cluster.hierarchy import dendrogram
+from scipy.cluster.hierarchy import linkage
+from scipy.cluster.hierarchy import fcluster
 from utils_pfammsa import pfammsa
 
 colorscheme1 = ['#a93a28', '#afc8cd', '#266674', '#fb8c32', '#cbc96d',
@@ -185,6 +188,46 @@ def sampleclusters(args):
     outscorefile = '%s_%.2f_cluster.scoremat' % (outprefix, similarity_cutoff)
     np.savetxt(outscorefile, scoremat[target_ids,:])
     cp._info('save target cluster score to %s' % outscorefile)
+
+def clusterweight(args):
+    assert len(args) == 1, 'Usage: python utils_mesih.py clusterweight PF0000.score'
+    scorefile = args[0]
+
+    score = np.loadtxt(scorefile, delimiter=',')
+    linkage_matrix = linkage(score, "single", metric='hamming')
+
+    def calc(linkage):
+        n = len(linkage)+1
+        score = n
+        i = 2*n - 1
+        scores = list()
+
+        def _calc(i,score):
+            if i < n:
+                scores.append([i,score])
+                return
+            c1 = int(linkage[i-n][0])
+            c2 = int(linkage[i-n][1])
+            d = linkage[i-n][2]
+            div = 2
+            #if childs are same level as parent, then increase division
+            if c1 > n and d == linkage[c1-n][2]: div += 1
+            if c2 > n and d == linkage[c2-n][2]: div += 1
+            score = score/div
+            #if childs are same level as parent, let them divide, give score*2
+            if c1 > n and d == linkage[c1-n][2]: _calc(c1,score*2)
+            else: _calc(c1,score)
+            if c2 > n and d == linkage[c2-n][2]: _calc(c2,score*2)
+            else: _calc(c2,score)
+
+        _calc(i-1,score)
+        scores.sort()
+        w = [ s for i,s in scores]
+        return w
+
+    w = calc(linkage_matrix)
+    print(repr(w))
+
 
 if __name__ == '__main__':
     cp.dispatch(__name__)

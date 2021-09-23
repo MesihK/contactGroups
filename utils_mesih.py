@@ -11,6 +11,7 @@ from scipy.cluster.hierarchy import dendrogram
 from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import fcluster
 from utils_pfammsa import pfammsa
+import sys
 
 colorscheme1 = ['#a93a28', '#afc8cd', '#266674', '#fb8c32', '#cbc96d',
 '#60e6c1', '#d7295e', '#008ed0', '#747474']
@@ -190,6 +191,7 @@ def sampleclusters(args):
     cp._info('save target cluster score to %s' % outscorefile)
 
 def clusterweight(args):
+    sys.setrecursionlimit(10000)
     assert len(args) == 1, 'Usage: python utils_mesih.py clusterweight PF0000.score'
     scorefile = args[0]
 
@@ -198,36 +200,38 @@ def clusterweight(args):
 
     def calc(linkage):
         n = len(linkage)+1
-        score = n
+        depth = 1
         i = 2*n - 1
-        scores = list()
+        depths = list()
 
-        def _calc(i,score):
+        def _calc(i,depth):
             if i < n:
-                scores.append([i,score])
+                depths.append([i,depth])
                 return
             c1 = int(linkage[i-n][0])
             c2 = int(linkage[i-n][1])
             d = linkage[i-n][2]
-            div = 2
-            #if childs are same level as parent, then increase division
-            if c1 > n and d == linkage[c1-n][2]: div += 1
-            if c2 > n and d == linkage[c2-n][2]: div += 1
-            score = score/div
-            #if childs are same level as parent, let them divide, give score*2
-            if c1 > n and d == linkage[c1-n][2]: _calc(c1,score*2)
-            else: _calc(c1,score)
-            if c2 > n and d == linkage[c2-n][2]: _calc(c2,score*2)
-            else: _calc(c2,score)
+            #if childs are same level as parent then do not increse the depth
+            if c1 > n and d == linkage[c1-n][2]: _calc(c1,depth)
+            else: _calc(c1,depth+1)
+            if c2 > n and d == linkage[c2-n][2]: _calc(c2,depth)
+            else: _calc(c2,depth+1)
 
-        _calc(i-1,score)
-        scores.sort()
-        w = [ s for i,s in scores]
+        #calculate depth of each node in linkage
+        _calc(i-1,depth)
+        #sort based on node number (i)
+        depths.sort()
+        #get depths
+        w = [ s for i,s in depths]
+        #re weight to have small score for deep nodes
+        w = [ 1/i for i in w ]
+        s = sum(w)
+        #re map to have sum n
+        w = [ n/s*i for i in w]
         return w
 
     w = calc(linkage_matrix)
     print(repr(w))
-
 
 if __name__ == '__main__':
     cp.dispatch(__name__)

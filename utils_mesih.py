@@ -75,9 +75,9 @@ def evaldistdca(args):
 
     # check if there are differences in the index sense on distfile and dcafile
     for i in range(len(dist)):
-        if ind[int(dca[i][0])][1] != int(dist[i][1]) or ind[int(dca[i][1])][1] != int(dist[i][3]):
-            print('Mapping error:',ind[int(dca[i][0])][1],':',
-                  ind[int(dca[i][1])][1],'=',dca[i][2],',',dist[i][1],':',
+        if ind[int(dca[i][2])][1] != int(dist[i][1]) or ind[int(dca[i][3])][1] != int(dist[i][3]):
+            print('Mapping error:',ind[int(dca[i][2])][1],':',
+                  ind[int(dca[i][3])][1],'=',dca[i][5],',',dist[i][1],':',
                   dist[i][3],'=',dist[i][4])
             exit()
 
@@ -113,7 +113,7 @@ def evalmultdistdca(args):
     distScore = [ 1 if float(e) <= threshold else 0 for a,b,c,d,e in dist ]
     dcaScore = list()
     for di in dca:
-        dcaScore.append([ float(c) for a,b,c in di ])
+        dcaScore.append( [ float(d) for c1,c2,i,j,M,d in dca ])
 
     # calculate the ROC curve
     # calculate the ROC area under the curve

@@ -237,5 +237,14 @@ def clusterweight(args):
     w = calc(linkage_matrix)
     print(repr(w))
 
+def dummyweight(args):
+    assert len(args) == 1, 'Usage: python utils_mesih.py dummyweight PF00000.score'
+
+    datafile = args[0]
+
+    score = np.loadtxt(datafile, delimiter=',')
+    print((repr(np.ones(len(score)).tolist())))
+
+
 if __name__ == '__main__':
     cp.dispatch(__name__)

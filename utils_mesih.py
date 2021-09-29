@@ -82,11 +82,14 @@ def evaldistdca(args):
             exit()
 
     # calculate the ROC curve
-    aucScore = roc_auc_score(distScore, dcaScore)
+    dcaAucScore = roc_auc_score(distScore, dcaScore)
+    miAucScore = roc_auc_score(distScore, miScore)
     curve = metrics.roc_curve(distScore, dcaScore, pos_label=1)
     plt.figure(1)
     plt.plot([0, 1], [0, 1], 'k--')
-    plt.plot(curve[0], curve[1], color=colorscheme1[0], label='AUC:'+"{:.4f}".format(aucScore))
+    plt.plot(curve[0], curve[1], color=colorscheme1[0], label='DCA AUC:'+"{:.4f}".format(dcaAucScore))
+    curve = metrics.roc_curve(distScore, miScore, pos_label=1)
+    plt.plot(curve[0], curve[1], color=colorscheme1[1], label='MI AUC:'+"{:.4f}".format(miAucScore))
     plt.xlabel('False positive rate')
     plt.ylabel('True positive rate')
     plt.title('ROC curve')
@@ -95,7 +98,8 @@ def evaldistdca(args):
     #plt.show()
 
     # calculate the ROC area under the curve
-    print('AUC:',"{:.4f}".format(aucScore))
+    print('DCA AUC:',"{:.4f}".format(dcaAucScore))
+    print('MI AUC:',"{:.4f}".format(miAucScore))
 
 def evalmultdistdca(args):
     distfile = args[0] # A 6 A 7 0.123 resid

@@ -131,6 +131,14 @@ class pfammsa(object):
     def seqvalues(self, kdict):
         return [[kdict[a] for a in s[1]] for s in self.msalist]
 
+    #reduce columns by given cols index list
+    def reducebycols(self, cols):
+        seq = [ list(r[1]) for r in self.msalist ]
+        seq = np.array(seq)
+        seq = np.take(seq, cols, 1)
+        for i in range(len(self.msalist)):
+            self.msalist[i] = [self.msalist[i][0], ''.join(seq[i])]
+
 
 # calculate AA frequency by given column indices
 def aafreq(arglist):
@@ -927,6 +935,24 @@ def msareduce_withmap(args):
             fout.write('%s\n' % (','.join(map(lambda x: '%d' % x, ress))))
     '''
     cp._info('save to %s {.scoremat, .rcol, .rcid}' % outprefix)
+
+# reduce given msa with given map so that the msa has only mapped columns
+# ex: MSA: ....AD..VS.. cols: 4,5,8,9 out: ADVS
+def reducemsa_withmap(args):
+    assert len(args) == 2, 'Usage: python utils_pfammsa.py reducemsa_withmap msafile mapfile'
+    msafile = args[0]
+    mapfile = args[1]
+
+    # load resimap columns
+    # 212 A 3051 E
+    _func_getmsai = lambda x: int(x[2])
+    cols = [_func_getmsai(line.split()) for line in cp.loadlines(mapfile)]
+
+    # msa2score
+    pfm = pfammsa(msafile)
+    pfm.reducebycols(cols)
+
+    pfm.dump()
 
 # reduce a msa by the given sequence
 # output: reduced msa, reduced score, column_mapping
@@ -1972,6 +1998,7 @@ def main():
             'hamming_similarity': hamming_similarity,
             'msareduce': msareduce,
             'msareduce_withmap': msareduce_withmap,
+            'reducemsa_withmap': reducemsa_withmap,
             'msareduce_byseq': msareduce_byseq,
             'pairsubstitution': pairsubstitution,
             'psicovaln': psicovaln,

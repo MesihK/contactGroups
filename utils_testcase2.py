@@ -9,7 +9,7 @@ import numpy as np
 import math
 import time
 import sys
-import commp as cp
+from . import commp as cp
 from operator import itemgetter
 
 '''

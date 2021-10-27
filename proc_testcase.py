@@ -1,7 +1,7 @@
 import sys
 import subprocess as sp
 
-from alignflat import palign
+from .alignflat import palign
 
 
 '''

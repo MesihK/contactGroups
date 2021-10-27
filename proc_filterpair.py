@@ -3,7 +3,7 @@ import sys
 import subprocess as sp
 from sets import Set
 
-from alignflat import palign
+from .alignflat import palign
 
 def smcheck(s1a, s1b, s2a, s2b):
     #ret = sp.Popen(['aln.sh',s1a,s2a], stdout=sp.PIPE).communicate()[0]

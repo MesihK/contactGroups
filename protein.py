@@ -4,11 +4,11 @@ import math
 import copy
 import numpy as np
 
-from atom import atom
-from AAmap import AAmap
-from cluster import cluster
-from ncg import ncg
-import commp as cp
+from .atom import atom
+from .AAmap import AAmap
+from .cluster import cluster
+from .ncg import ncg
+from . import commp as cp
 
 __all__=['protein']
 

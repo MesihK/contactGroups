@@ -1,7 +1,7 @@
 import sys
-from atom import atom
-from protein import protein
-from ncg import ncg
+from .atom import atom
+from .protein import protein
+from .ncg import ncg
 
 def writencg():
     if len(sys.argv) < 4:

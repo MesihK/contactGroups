@@ -1,5 +1,5 @@
 import sys
-from msa import msa
+from .msa import msa
 
 # convert evfold output to kv format
 def main():

@@ -1,4 +1,4 @@
-import commp as cp
+from . import commp as cp
 '''
 input: namelist: list of fa names
 output: save each .fa with its name

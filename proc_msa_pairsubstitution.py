@@ -3,8 +3,8 @@ import numpy as np
 #import collections
 from collections import defaultdict
 import math
-from msa import msa
-from protein import protein
+from .msa import msa
+from .protein import protein
 
 '''
 calculate distinct pair substitution frequency for each pfam

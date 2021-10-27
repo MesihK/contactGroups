@@ -2,9 +2,9 @@
 get resid list of varname
 '''
 import sys
-from naccess import naccess
-from naccess import rsa
-import commp as cp
+from .naccess import naccess
+from .naccess import rsa
+from . import commp as cp
 
 def rcflat(arglist):
     if len(arglist) < 2:

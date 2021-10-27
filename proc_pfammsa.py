@@ -1,5 +1,5 @@
 import sys
-from utils_pfammsa import utils_pfammsa
+from .utils_pfammsa import utils_pfammsa
 
 # updated from proc_extractMSAbyname.py
 def extractbyname(arglist):

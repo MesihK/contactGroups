@@ -5,10 +5,10 @@ import math
 import os
 import sys
 import time
-import commp as cp
+from . import commp as cp
 import subprocess as sp
-import utils_testcase as ut
-from utils_pfammsa import pfammsa
+from . import utils_testcase as ut
+from .utils_pfammsa import pfammsa
 
 def init():
     if len(sys.argv) < 3:

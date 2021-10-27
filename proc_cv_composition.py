@@ -1,11 +1,11 @@
 import sys
 import numpy as np
 
-from atom import atom
-from msa import msa
-from protein import protein
+from .atom import atom
+from .msa import msa
+from .protein import protein
 
-import common.commp as cp
+from . import common.commp as cp
 
 def addscore(msacol, sm):
     for aa in msacol:

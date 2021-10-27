@@ -1,4 +1,4 @@
-import commp as cp
+from . import commp as cp
 import numpy as np
 
 def foo(args):
@@ -114,7 +114,7 @@ def alnflatresi(args):
     alnfile = args[0]
     resilist = [int(c) for c in args[1].split(',')]
     # palign
-    from utils_testcase import palign
+    from .utils_testcase import palign
     totalset = set()
     for line in cp.loadlines(alnfile):
         p = palign(line)
@@ -140,7 +140,7 @@ def alnflatsubtable(args):
     alnfile = args[0]
     outfile = args[1]
     # palign
-    from utils_testcase import palign
+    from .utils_testcase import palign
     fout = open(outfile, 'w')
     minchange = 10000
     for line in cp.loadlines(alnfile):
@@ -182,7 +182,7 @@ def alnflat2msa(args):
     alnfile = args[0]
     outfile = args[1]
     # palign
-    from utils_testcase import palign
+    from .utils_testcase import palign
     fout = open(outfile, 'w')
     finaloutlist = []
     for line in cp.loadlines(alnfile):

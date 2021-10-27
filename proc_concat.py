@@ -1,5 +1,5 @@
 import sys
-from msa import msa
+from .msa import msa
 
 def main():
     if len(sys.argv)< 4:

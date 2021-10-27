@@ -1,4 +1,4 @@
-import commp as cp
+from . import commp as cp
 
 # generate combination of pairs from a single column file
 def pairgen(args):

@@ -1,9 +1,9 @@
 import numpy as np
-import commp as cp
-from protein import protein
-from atom import atom
-from utils_pfammsa import pfammsa
-from utils_gnm import gnm
+from . import commp as cp
+from .protein import protein
+from .atom import atom
+from .utils_pfammsa import pfammsa
+from .utils_gnm import gnm
 import collections
 
 # for plotting ce,dist vs resi scatter plot

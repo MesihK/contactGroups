@@ -1,6 +1,6 @@
 import sys
 import subprocess
-import commp as cp
+from . import commp as cp
 
 '''
 new version of alignflat and proc_testcase.py

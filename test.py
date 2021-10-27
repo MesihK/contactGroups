@@ -1,5 +1,5 @@
 import sys
-import common.commp as cp
+from . import common.commp as cp
 
 def main():
 

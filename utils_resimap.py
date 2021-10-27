@@ -2,13 +2,13 @@ import sys
 import json
 import collections
 
-from utils_pfamscan import utils_pfamscan as ups
-from utils_embossalign import embossalign as ea
-from protein import protein
-from utils_testcase import palign
+from .utils_pfamscan import utils_pfamscan as ups
+from .utils_embossalign import embossalign as ea
+from .protein import protein
+from .utils_testcase import palign
 
-import utils_embossalign as uea
-import commp as cp
+from . import utils_embossalign as uea
+from . import commp as cp
 import numpy as np
 
 class pfamscan(object):

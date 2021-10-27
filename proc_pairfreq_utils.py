@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import operator
 import math
-import common.commp as cm
+from . import common.commp as cm
 from collections import defaultdict
 
 

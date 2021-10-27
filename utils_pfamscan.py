@@ -1,6 +1,6 @@
 import sys
 import json
-import commp as cp
+from . import commp as cp
 
 '''
 advanced version of proc_pfamscan_json.py

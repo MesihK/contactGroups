@@ -1,5 +1,5 @@
-from atom import atom
-from AAmap import AAmap
+from .atom import atom
+from .AAmap import AAmap
 
 
 __all__=['cluster']

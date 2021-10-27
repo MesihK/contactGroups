@@ -5,8 +5,8 @@ import sys
 import numpy as np
 import collections
 import math
-from msa import msa
-from protein import protein
+from .msa import msa
+from .protein import protein
 
 # print out whether a uniprot name is existing in the PFam MSA
 def printUniprot():

@@ -1,9 +1,9 @@
 import sys
 import math
-import commp as cp
+from . import commp as cp
 import numpy as np
-from msa import msa
-from protein import protein
+from .msa import msa
+from .protein import protein
 
 def contact(x1,y1,z1,x2,y2,z2,cutoff=6.5):
     dist =  np.linalg.norm(np.array((x1,y1,z1))-np.array((x2,y2,z2)))

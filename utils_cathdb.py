@@ -1,7 +1,7 @@
 import sys
 from collections import defaultdict
 
-import commp as cp
+from . import commp as cp
 
 # generate sh script for pairing cath sequences with the same T level but different H level
 #def pairgen_t1h0(arglist):

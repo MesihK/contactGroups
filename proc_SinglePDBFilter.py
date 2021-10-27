@@ -6,7 +6,7 @@ Created on Thu Apr 30 06:50:38 2015
 """
 
 # -*- coding: utf-8 -*-
-from protein import protein
+from .protein import protein
 import sys
 
 def main():

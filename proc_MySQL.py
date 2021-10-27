@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import MySQLdb as mdb
-from protein import protein
-from msa import msa
+from .protein import protein
+from .msa import msa
 import sys
 # pre-process all atom pdb
 # extract CA in Chain A and save to file

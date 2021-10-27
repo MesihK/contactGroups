@@ -1,7 +1,7 @@
 import sys
-import commp as cp
-from protein import protein
-from atom import atom
+from . import commp as cp
+from .protein import protein
+from .atom import atom
 
 class cetuple(object):
     def __init__(self, flatstr):

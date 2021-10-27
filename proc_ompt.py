@@ -1,7 +1,7 @@
-import commp as cp
+from . import commp as cp
 import numpy as np
-from protein import protein
-from atom import atom
+from .protein import protein
+from .atom import atom
 
 def filterpdbwithresi(args):
     assert len(args)==3, 'Usage: python proc_ompt.py filterpdbwithresi pdbfile resi.vec outfile'

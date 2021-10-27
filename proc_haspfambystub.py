@@ -1,7 +1,7 @@
 import sys
-import commp as cp
+from . import commp as cp
 import collections
-from utils_pfamscan import utils_pfamscan
+from .utils_pfamscan import utils_pfamscan
 
 def main():
     if len(sys.argv) < 4:

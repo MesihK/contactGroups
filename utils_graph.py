@@ -1,5 +1,5 @@
 import numpy as np
-import commp as cp
+from . import commp as cp
 
 
 # implementation of "eigenvector centrality for characterization of protein allosteric pathways" ec analysis

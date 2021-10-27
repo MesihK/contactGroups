@@ -1,8 +1,8 @@
 import sys
 import numpy as np
 
-import common.commp as cp
-from protein import protein
+from . import common.commp as cp
+from .protein import protein
 import os
 
 # wrapper for multi-processing

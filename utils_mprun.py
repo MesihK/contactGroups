@@ -4,7 +4,7 @@ import time
 import subprocess
 import multiprocessing as mp
 
-import commp as cp
+from . import commp as cp
 
 # mp class for separated jobs
 class mprun(object):

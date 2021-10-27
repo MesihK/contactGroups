@@ -1,5 +1,5 @@
 import sys
-import commp as cp
+from . import commp as cp
 
 
 class iprscan(object):

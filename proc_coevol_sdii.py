@@ -5,8 +5,8 @@ import math
 import time
 import sys
 
-from sdii import sdii
-from msa import msa
+from .sdii import sdii
+from .msa import msa
 from scipy.special import binom
 
 #alphabet = ['A','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','Y']

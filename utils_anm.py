@@ -2,7 +2,7 @@
 # acknowledge Yuan Wang as the author of anm implementation
 ##############################################################
 
-import commp as cp
+from . import commp as cp
 import numpy as np
 
 ###################################

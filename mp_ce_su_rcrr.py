@@ -5,8 +5,8 @@ import math
 import os
 import sys
 import time
-from sdii import sdii
-from msa import msa
+from .sdii import sdii
+from .msa import msa
 from scipy.special import binom
 
 

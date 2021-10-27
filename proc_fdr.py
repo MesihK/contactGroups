@@ -1,8 +1,8 @@
 import numpy as np
 from itertools import groupby
 
-import commp as cp
-from utils_pfammsa import pfammsa
+from . import commp as cp
+from .utils_pfammsa import pfammsa
 
 def topfdrdca(args):
     if len(args)!=2:

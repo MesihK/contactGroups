@@ -1,7 +1,7 @@
 import numpy as np
 import itertools
 import math
-import commp as cp
+from . import commp as cp
 
 # (weighed) shannon entropy
 # varset: varible set in list type

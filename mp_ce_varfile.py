@@ -5,9 +5,9 @@ import math
 import os
 import sys
 import time
-import commp as cp
-from sdii import sdii
-#from msa import msa
+from . import commp as cp
+from .sdii import sdii
+#from .msa import msa
 
 # varfile is based on the index of .rcol file (from msareduce)
 

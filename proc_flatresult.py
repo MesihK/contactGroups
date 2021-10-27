@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-from alignflat import palign
+from .alignflat import palign
 
 '''
 name = flatArray[0]

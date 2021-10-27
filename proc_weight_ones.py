@@ -1,4 +1,4 @@
-import commp as cp
+from . import commp as cp
 
 # generate weight file with all values of one
 # for pfam31.0 p90 stage .90.weight

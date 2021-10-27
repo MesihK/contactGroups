@@ -1,5 +1,5 @@
-from sdii import sdii
-from msa import msa
+from .sdii import sdii
+from .msa import msa
 import numpy as np
 
 def main():

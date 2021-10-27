@@ -9,7 +9,7 @@ import csv
 import time
 import sys
 
-from sdii import sdii
+from .sdii import sdii
 
 
 # bootstrap data generation

@@ -3,8 +3,8 @@ post-process for sdii result
 '''
 import sys
 import numpy as np
-from protein import protein
-from sdii import sdii
+from .protein import protein
+from .sdii import sdii
 
 
 # read key-value sdii result file

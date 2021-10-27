@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-from protein import protein
+from .protein import protein
 # pre-process all atom pdb
 # extract CA in Chain A and save to file
 def main():

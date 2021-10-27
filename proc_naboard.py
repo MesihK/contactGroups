@@ -1,8 +1,8 @@
 # output contact group in WenZhou's format
 import sys
 import itertools
-from cg import cg
-from naccess import naccess
+from .cg import cg
+from .naccess import naccess
 
 # varset: list of alphabet sets
 # varset = [list1, list2, list3]

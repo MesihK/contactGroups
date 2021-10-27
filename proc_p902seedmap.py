@@ -1,5 +1,5 @@
 import sys
-import commp as cp
+from . import commp as cp
 
 def searchbytitle(msafile, title):
     for head, seq in cp.fasta_iter(msafile):

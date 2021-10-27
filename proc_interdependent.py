@@ -1,4 +1,4 @@
-import commp as cp
+from . import commp as cp
 import numpy as np
 from scipy.stats import skew
 

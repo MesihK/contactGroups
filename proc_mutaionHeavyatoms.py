@@ -1,6 +1,6 @@
 import sys
 import math
-import commp as cp
+from . import commp as cp
 
 def main():
 

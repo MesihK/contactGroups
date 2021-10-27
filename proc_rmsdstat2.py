@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-import commp as cp
+from . import commp as cp
 
 # side-by-side rmsd stats for one .rmsd file
 # [kjia@lhb-ps1 ~/workspace/pfam31.0/testcase/cath.testpool/selected.flatrmsd]

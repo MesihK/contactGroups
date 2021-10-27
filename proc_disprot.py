@@ -1,5 +1,5 @@
 import json
-import commp as cp
+from . import commp as cp
 import collections
 
 # from disprot.json extract all the entries that pfam region contains disordered region

@@ -1,6 +1,6 @@
 import sys
-from protein import protein
-from atom import atom
+from .protein import protein
+from .atom import atom
 
 #
 # AV9 -1 -

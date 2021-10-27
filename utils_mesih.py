@@ -1,4 +1,4 @@
-import commp as cp
+from . import commp as cp
 import numpy as np
 import math
 import random
@@ -10,7 +10,7 @@ from sklearn import metrics
 from scipy.cluster.hierarchy import dendrogram
 from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import fcluster
-from utils_pfammsa import pfammsa
+from .utils_pfammsa import pfammsa
 import sys
 
 colorscheme1 = ['#a93a28', '#afc8cd', '#266674', '#fb8c32', '#cbc96d',

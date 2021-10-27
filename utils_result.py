@@ -2,7 +2,7 @@
 post-process for result
 '''
 import sys
-from protein import protein
+from .protein import protein
 
 # parse sdii_resi result
 # ('B552', 'T')-('B604', 'S')-('B618', 'R') 1.198224093447873

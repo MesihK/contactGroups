@@ -1,5 +1,5 @@
 import sys
-import commp as cp
+from . import commp as cp
 '''
 append msai to a psicov output file
 psicov index: ungapped sequence from its input MSA .aln file (first sequence)

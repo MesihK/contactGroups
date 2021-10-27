@@ -1,7 +1,7 @@
 import numpy as np
-import commp as cp
+from . import commp as cp
 
-from protein import protein
+from .protein import protein
 
 class anm:
     def __init__(self, atoms, cutoff=12.0, gamma=1.0, ctmat=None):

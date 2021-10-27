@@ -3,9 +3,9 @@ import numpy as np
 from scipy.cluster.hierarchy import dendrogram
 from scipy.cluster.hierarchy import linkage
 
-from atom import atom
-from AAmap import AAmap
-from protein import protein
+from .atom import atom
+from .AAmap import AAmap
+from .protein import protein
 #import matplotlib.pyplot as plt
 
 # contact group parser

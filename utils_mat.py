@@ -1,5 +1,5 @@
 import numpy as np
-import commp as cp
+from . import commp as cp
 
 # calculate (accumulative) overlaps between two sets of vectors
 # kuse: Vector of values for the number of modes to use in accumulative overlap 

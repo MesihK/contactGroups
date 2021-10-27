@@ -1,5 +1,5 @@
 import itertools
-import commp as cp
+from . import commp as cp
 
 # for protsub testcase cath.h1
 # filter out all the sequences included in the training pfam dataset

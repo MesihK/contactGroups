@@ -1,4 +1,4 @@
-import commp as cp
+from . import commp as cp
 
 def splitbyprotein(arglist):
     if len(arglist) < 1:

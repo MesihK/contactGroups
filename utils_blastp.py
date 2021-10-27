@@ -1,4 +1,4 @@
-import commp as cp
+from . import commp as cp
 
 # generate batch blastp script file
 # iterate all query sequences, sseq.stub

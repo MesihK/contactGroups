@@ -1,10 +1,10 @@
 import sys
-from protein import protein
-from AAmap import AAmap
+from .protein import protein
+from .AAmap import AAmap
 import os.path
 from collections import defaultdict
 import numpy as np
-import commp as cp
+from . import commp as cp
 
 def alterbfactor(arglist):
     if len(arglist) < 4:

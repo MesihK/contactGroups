@@ -7,7 +7,7 @@ Created on Thu Oct 01 00:40:27 2015
 
 # -*- coding: utf-8 -*-
 from cgroup import cgroup
-from protein import protein
+from .protein import protein
 import itertools
 import sys
 

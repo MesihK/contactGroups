@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
 from itertools import groupby
-#from protein import protein
+#from .protein import protein
 
 __all__=['msa']
 

@@ -5,7 +5,7 @@ from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import fcluster
 
 import matplotlib.pyplot as plt
-import commp as cp
+from . import commp as cp
 
 def fancy_dendrogram(*args, **kwargs):
     max_d = kwargs.pop('max_d', None)

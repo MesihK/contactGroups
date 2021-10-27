@@ -1,12 +1,12 @@
 import sys
 import operator
-import commp as cp
+from . import commp as cp
 import numpy as np
 import collections
 import string
 import math
 
-import correlation as corr
+from . import correlation as corr
 
 
 

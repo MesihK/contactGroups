@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-import commp as cp
+from . import commp as cp
 import matplotlib
 import matplotlib.pyplot as plt
 

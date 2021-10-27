@@ -1,5 +1,5 @@
 import sys
-import commp as cp
+from . import commp as cp
 
 # generate bash script for sm generation
 def cflat2sm(arglist):

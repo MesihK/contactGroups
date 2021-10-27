@@ -1,8 +1,8 @@
 import sys
 
-import commp as cp
-from protein import protein
-from alignflat import palign
+from . import commp as cp
+from .protein import protein
+from .alignflat import palign
 
 def main():
     if len(sys.argv)<3:

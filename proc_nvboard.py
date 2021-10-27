@@ -1,8 +1,8 @@
 # output contact group in contact group score + volume + rsa
 import sys
 import itertools
-from cg import cg
-from naccess import naccess
+from .cg import cg
+from .naccess import naccess
 
 def main():
     if len(sys.argv) < 3:

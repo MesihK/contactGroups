@@ -1,7 +1,7 @@
 '''
 test protein class
 '''
-from protein import protein
+from .protein import protein
 
 
 def main():

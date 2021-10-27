@@ -1,7 +1,7 @@
 import sys
 import math
 from collections import defaultdict
-import commp as cp
+from . import commp as cp
 
 '''
 $ sort -r -gk 4 4-tip-scol.allpsub.norm.t2|head

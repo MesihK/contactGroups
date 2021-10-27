@@ -1,6 +1,6 @@
 import sys
 import math
-from atom import atom
+from .atom import atom
 class ncg(object):
     #init starts from a single atom
     #the final result(overlapped ncgs) rely on each atoms

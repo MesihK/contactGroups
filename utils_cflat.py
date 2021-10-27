@@ -3,7 +3,7 @@
 [kjia@lhb-ps1 ~/workspace/pfam31.0/p90_ext] *.rcflat
 '''
 
-import commp as cp
+from . import commp as cp
 import numpy as np
 
 def buriedchargepair(arglist):

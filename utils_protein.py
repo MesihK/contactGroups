@@ -2,9 +2,9 @@
 get resid list of varname
 '''
 import sys
-from protein import protein
-from AAmap import AAmap
-import commp as cp
+from .protein import protein
+from .AAmap import AAmap
+from . import commp as cp
 import os.path
 import numpy as np
 

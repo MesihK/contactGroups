@@ -1,7 +1,7 @@
 # extract cath domain from tip file by referening domain_desc_file (pdbname, startRES, endRES)
 import sys
-from protein import protein
-from atom import atom
+from .protein import protein
+from .atom import atom
 def main():
     if len(sys.argv) < 2:
         print("Usage python proc_extractDomain.py domain_desc_file")

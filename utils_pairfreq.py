@@ -1,5 +1,5 @@
 import numpy as np
-import commp as cp
+from . import commp as cp
 #from collections import defaultdict
 import collections
 import itertools

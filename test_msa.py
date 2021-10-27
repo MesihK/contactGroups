@@ -2,8 +2,8 @@
 test msa class
 '''
 import numpy as np
-from protein import protein
-from msa import msa
+from .protein import protein
+from .msa import msa
 
 def main():
     #msafile = 'PF07714_seed.txt'

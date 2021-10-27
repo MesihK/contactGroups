@@ -23,7 +23,7 @@ TOTAL         13134.9      11364.2       1770.7       7723.4       5411.4
 import numpy as np
 import time
 import sys
-from AAmap import AAmap
+from .AAmap import AAmap
 from collections import defaultdict
 
 __all__=['naccess', 'rsa']

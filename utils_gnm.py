@@ -1,7 +1,7 @@
 import numpy as np
-import commp as cp
+from . import commp as cp
 
-from protein import protein
+from .protein import protein
 '''
 calculate gnm freqieunces, modes, contact matrix, squared pdist matrix,
      cross-correlations, distance fluctuations, squared fluctuations

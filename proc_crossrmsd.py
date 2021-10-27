@@ -1,7 +1,7 @@
 import sys
-import common.commp as cp
-from alignflat import palign
-from protein import protein
+from . import common.commp as cp
+from .alignflat import palign
+from .protein import protein
 
 # calculate RMSD for the aligned positions
 def alnRMSD(pa):

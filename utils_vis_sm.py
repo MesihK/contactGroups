@@ -1,5 +1,5 @@
 import sys
-import commp as cp
+from . import commp as cp
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as clr

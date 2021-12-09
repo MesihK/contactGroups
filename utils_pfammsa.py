@@ -712,6 +712,23 @@ def getcolumns(arglist):
             fout.write(outstr)
     cp._info('column(s) data save to %s' % outfile)
 
+def getorgsinglemsa(arglist):
+    if len(arglist) < 1:
+        cp._err('Usage: python utils_pfammsa.py getorgsinglemsa PF00000.txt head PF00000')
+
+    msafile = arglist[0]
+    head = arglist[1]
+    outprefix = arglist[2]
+    outmsafile = '%s_MSA.fa' % outprefix
+    for header, seq in cp.fasta_iter(msafile):
+        if head in header:
+            with open(outmsafile, 'w') as fp:
+                fp.write('>%s\n%s' % (header,seq))
+
+            cp._info('save [%s] orig MSA seq : %s' % (head, outmsafile))
+            return
+    cp._err('head %s not found' % head)
+
 
 # get single MSA gapped / ungapped fa with sequence name or null
 '''
@@ -1991,6 +2008,7 @@ def main():
             'freqlookupscol': freqlookupscol,
             'getcolumns': getcolumns, # get columns from MSA
             'getsinglemsa': getsinglemsa, # get single MSA gapped / ungapped fa with sequence name or null
+            'getorgsinglemsa': getorgsinglemsa,
             'getbatchmsa': getbatchmsa,
             'getsinglemsacluster': getsinglemsacluster,
             'msa2rawseq': msa2rawseq, # convert aligned MSA to fasta raw sequences
